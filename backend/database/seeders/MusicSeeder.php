@@ -55,3 +55,4 @@ class MusicSeeder extends Seeder
         }
     }
 }
+

@@ -95,3 +95,4 @@ class MusicApiTest extends TestCase
         $this->assertDatabaseMissing('ms_music', ['id' => $track->id]);
     }
 }
+
