@@ -1,7 +1,7 @@
-# PRD 03: Renderer Undangan Publik & Tema
+# PRD 04: Renderer Undangan Publik & Tema
 
 **Fase Roadmap:** Fase 3 (Renderer Publik & Tema MVP)  
-**Dokumen Acuan:** [project-plan-undangan-digital.md](file:///var/www/html/niskala/docs/project-plan-undangan-digital.md) | [design.md](file:///var/www/html/niskala/docs/design.md) | [rules.md](file:///var/www/html/niskala/docs/rules.md)  
+**Dokumen Acuan:** [project-plan-undangan-digital.md](file:///var/www/html/niskala/docs/project-plan-undangan-digital.md) | [design.md](file:///var/www/html/niskala/docs/design.md) | [rules.md](file:///var/www/html/niskala/docs/rules.md) | [03-visual-editor.md](file:///var/www/html/niskala/docs/prd/03-visual-editor.md)  
 **Status:** Draf Spesifikasi Lengkap
 
 ---

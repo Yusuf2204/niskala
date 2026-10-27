@@ -1,7 +1,7 @@
-# PRD 02: Visual Drag-and-Drop Editor
+# PRD 03: Visual Drag-and-Drop Editor
 
 **Fase Roadmap:** Fase 2 (Editor Visual Undangan)  
-**Dokumen Acuan:** [project-plan-undangan-digital.md](file:///var/www/html/niskala/docs/project-plan-undangan-digital.md) | [design.md](file:///var/www/html/niskala/docs/design.md) | [rules.md](file:///var/www/html/niskala/docs/rules.md)  
+**Dokumen Acuan:** [project-plan-undangan-digital.md](file:///var/www/html/niskala/docs/project-plan-undangan-digital.md) | [design.md](file:///var/www/html/niskala/docs/design.md) | [rules.md](file:///var/www/html/niskala/docs/rules.md) | [02-navigasi-menu-dan-master-data.md](file:///var/www/html/niskala/docs/prd/02-navigasi-menu-dan-master-data.md)  
 **Status:** Draf Spesifikasi Lengkap
 
 ---

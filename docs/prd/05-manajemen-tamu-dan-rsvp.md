@@ -1,7 +1,7 @@
-# PRD 04: Manajemen Tamu & Sistem RSVP
+# PRD 05: Manajemen Tamu & Sistem RSVP
 
 **Fase Roadmap:** Mendukung Fase 1, 2, dan 3  
-**Dokumen Acuan:** [project-plan-undangan-digital.md](file:///var/www/html/niskala/docs/project-plan-undangan-digital.md) | [rules.md](file:///var/www/html/niskala/docs/rules.md) | [context.md](file:///var/www/html/niskala/docs/context.md)  
+**Dokumen Acuan:** [project-plan-undangan-digital.md](file:///var/www/html/niskala/docs/project-plan-undangan-digital.md) | [rules.md](file:///var/www/html/niskala/docs/rules.md) | [context.md](file:///var/www/html/niskala/docs/context.md) | [02-navigasi-menu-dan-master-data.md](file:///var/www/html/niskala/docs/prd/02-navigasi-menu-dan-master-data.md)  
 **Status:** Draf Spesifikasi Lengkap
 
 ---
