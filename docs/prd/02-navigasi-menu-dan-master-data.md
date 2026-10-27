@@ -138,3 +138,4 @@ Wizard 2-langkah yang ringkas dan ramah pengguna sebelum melompat ke Visual Edit
 3. [ ] **Tabel & API Musik Latar:** Migrasi `ms_music` berjalan lancar, dan endpoint REST API `GET /api/v1/music` siap melayani pemilihan lagu latar.
 4. [ ] **Halaman Daftar Undangan Terhubung:** Frontend `/invitations` berhasil memuat data dari `GET /api/v1/invitations`, mendukung filter status (Draft/Published/Archived), dan tombol aksi.
 5. [ ] **Wizard Buat Undangan Mengarah ke Editor:** Alur pembuatan `/invitations/create` berhasil menyimpan undangan baru berstatus `draft` dan melakukan redirect otomatis ke editor.
+
