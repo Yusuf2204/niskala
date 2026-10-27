@@ -21,6 +21,19 @@ use OpenApi\Annotations as OA;
  * )
  *
  * @OA\Schema(
+ *     schema="Music",
+ *     @OA\Property(property="id", type="integer", example=1),
+ *     @OA\Property(property="title", type="string", example="A Thousand Years (Instrumental)"),
+ *     @OA\Property(property="artist", type="string", nullable=true, example="The Piano Guys"),
+ *     @OA\Property(property="file_path", type="string", example="/storage/music/sample.mp3"),
+ *     @OA\Property(property="category", type="string", example="wedding"),
+ *     @OA\Property(property="duration_seconds", type="integer", nullable=true, example=255),
+ *     @OA\Property(property="is_active", type="boolean", example=true),
+ *     @OA\Property(property="created_at", type="string", format="date-time"),
+ *     @OA\Property(property="updated_at", type="string", format="date-time")
+ * )
+ *
+ * @OA\Schema(
  *     schema="InvitationEvent",
  *     @OA\Property(property="id", type="integer", example=1),
  *     @OA\Property(property="invitation_id", type="integer", example=1),
@@ -165,6 +178,76 @@ class InvitationDocumentation
      * )
      */
     public function themes(): void {}
+
+    /**
+     * @OA\Get(
+     *     path="/v1/music",
+     *     tags={"Music"},
+     *     summary="List active background music tracks",
+     *     @OA\Parameter(name="category", in="query", required=false, description="Filter by category", @OA\Schema(type="string")),
+     *     @OA\Parameter(name="search", in="query", required=false, description="Search title or artist", @OA\Schema(type="string")),
+     *     @OA\Response(
+     *         response=200,
+     *         description="List of music tracks",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="data", type="array", @OA\Items(ref="#/components/schemas/Music")),
+     *             @OA\Property(property="message", type="string", example="Music tracks retrieved successfully."),
+     *             @OA\Property(property="errors", nullable=true, example=null)
+     *         )
+     *     )
+     * )
+     *
+     * @OA\Post(
+     *     path="/v1/music",
+     *     tags={"Music"},
+     *     summary="Upload a new background music track (auth required)",
+     *     security={{"bearerAuth":{}}},
+     *     @OA\RequestBody(
+     *         required=true,
+     *         @OA\MediaType(
+     *             mediaType="multipart/form-data",
+     *             @OA\Schema(
+     *                 required={"title", "file"},
+     *                 @OA\Property(property="title", type="string", example="Canon in D"),
+     *                 @OA\Property(property="artist", type="string", nullable=true, example="Pachelbel"),
+     *                 @OA\Property(property="category", type="string", example="wedding"),
+     *                 @OA\Property(property="duration_seconds", type="integer", nullable=true, example=240),
+     *                 @OA\Property(property="file", type="string", format="binary")
+     *             )
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=201,
+     *         description="Music track uploaded",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="data", ref="#/components/schemas/Music"),
+     *             @OA\Property(property="message", type="string", example="Music track uploaded successfully."),
+     *             @OA\Property(property="errors", nullable=true, example=null)
+     *         )
+     *     ),
+     *     @OA\Response(response=401, description="Unauthorized")
+     * )
+     *
+     * @OA\Delete(
+     *     path="/v1/music/{id}",
+     *     tags={"Music"},
+     *     summary="Delete a master music track (admin only)",
+     *     security={{"bearerAuth":{}}},
+     *     @OA\Parameter(name="id", in="path", required=true, description="Music ID", @OA\Schema(type="integer", example=1)),
+     *     @OA\Response(
+     *         response=200,
+     *         description="Music track deleted",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="data", nullable=true, example=null),
+     *             @OA\Property(property="message", type="string", example="Music track deleted successfully."),
+     *             @OA\Property(property="errors", nullable=true, example=null)
+     *         )
+     *     ),
+     *     @OA\Response(response=401, description="Unauthorized"),
+     *     @OA\Response(response=403, description="Forbidden (Admin only)")
+     * )
+     */
+    public function music(): void {}
 
     /**
      * @OA\Get(

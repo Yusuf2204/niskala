@@ -23,6 +23,7 @@ use OpenApi\Annotations as OA;
  * @OA\Tag(name="Role Permissions", description="Dynamic sidebar permission system")
  * @OA\Tag(name="Company", description="Company profile and branding")
  * @OA\Tag(name="Themes", description="Master catalog of invitation design themes")
+ * @OA\Tag(name="Music", description="Master background music catalog")
  * @OA\Tag(name="Invitations", description="Digital invitation management and lifecycle")
  *
  * @OA\SecurityScheme(

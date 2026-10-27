@@ -2,7 +2,7 @@
 
 **Fase Roadmap:** Fase 1.5 (Fondasi Navigasi CMS & Antarmuka Undangan)  
 **Dokumen Acuan:** [project-plan-undangan-digital.md](file:///var/www/html/niskala/docs/project-plan-undangan-digital.md) | [rules.md](file:///var/www/html/niskala/docs/rules.md) | [design.md](file:///var/www/html/niskala/docs/design.md) | [01-fondasi-data-dan-api.md](file:///var/www/html/niskala/docs/prd/01-fondasi-data-dan-api.md)  
-**Status:** Draf Spesifikasi Lengkap
+**Status:** Selesai Diimplementasi & Terverifikasi (Fase 1.5)
 
 ---
 
@@ -133,9 +133,9 @@ Wizard 2-langkah yang ringkas dan ramah pengguna sebelum melompat ke Visual Edit
 
 ## 6. Kriteria Penerimaan & Verifikasi (Acceptance Criteria)
 
-1. [ ] **Hirarki Menu Database Lengkap:** Seeder `MenuSeeder` dan `RoleMenuSeeder` memasukkan seluruh menu baru (`/master`, `/master/themes`, `/master/music`, `/invitations`, `/invitations/create`, `/guests`, `/service-orders`) dengan ikon CoreUI yang sesuai.
-2. [ ] **Hak Akses Role Tervalidasi:** User dengan role `customer` hanya melihat menu yang relevan (Dashboard, Undangan, Tamu/RSVP, Layanan Bantuan, Change Password) tanpa menu Setup.
-3. [ ] **Tabel & API Musik Latar:** Migrasi `ms_music` berjalan lancar, dan endpoint REST API `GET /api/v1/music` siap melayani pemilihan lagu latar.
-4. [ ] **Halaman Daftar Undangan Terhubung:** Frontend `/invitations` berhasil memuat data dari `GET /api/v1/invitations`, mendukung filter status (Draft/Published/Archived), dan tombol aksi.
-5. [ ] **Wizard Buat Undangan Mengarah ke Editor:** Alur pembuatan `/invitations/create` berhasil menyimpan undangan baru berstatus `draft` dan melakukan redirect otomatis ke editor.
+1. [x] **Hirarki Menu Database Lengkap:** Seeder `MenuSeeder` dan `RoleMenuSeeder` memasukkan seluruh menu baru (`/master`, `/master/themes`, `/master/music`, `/invitations`, `/invitations/create`, `/guests`, `/service-orders`) dengan ikon CoreUI yang sesuai.
+2. [x] **Hak Akses Role Tervalidasi:** User dengan role `customer` hanya melihat menu yang relevan (Dashboard, Undangan, Tamu/RSVP, Layanan Bantuan, Change Password) tanpa menu Setup.
+3. [x] **Tabel & API Musik Latar:** Migrasi `ms_music` berjalan lancar, dan endpoint REST API `GET /api/v1/music` siap melayani pemilihan lagu latar.
+4. [x] **Halaman Daftar Undangan Terhubung:** Frontend `/invitations` berhasil memuat data dari `GET /api/v1/invitations`, mendukung filter status (Draft/Published/Archived), dan tombol aksi.
+5. [x] **Wizard Buat Undangan Mengarah ke Editor:** Alur pembuatan `/invitations/create` berhasil menyimpan undangan baru berstatus `draft` dan melakukan redirect otomatis ke editor.
 

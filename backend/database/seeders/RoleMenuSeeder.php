@@ -12,7 +12,7 @@ class RoleMenuSeeder extends Seeder
     public function run(): void
     {
         $admin = Roles::where('role_name', 'admin')->first();
-        $user  = Roles::where('role_name', 'user')->first();
+        $userRoles = Roles::whereIn('role_name', ['user', 'customer'])->get();
 
         // ===== ADMIN → semua menu =====
         if ($admin) {
@@ -27,20 +27,30 @@ class RoleMenuSeeder extends Seeder
             }
         }
 
-        // ===== USER → limited but structural =====
-        if ($user) {
-            $userMenuPaths = [
-                '/dashboard',
-                '/setup',
-                '/setup/change-password',
-            ];
+        // ===== USER / CUSTOMER → limited functional menus =====
+        $userMenuPaths = [
+            '/dashboard',
+            '/master',
+            '/master/themes',
+            '/master/music',
+            '/invitations',
+            '/invitations/list',
+            '/invitations/create',
+            '/guests',
+            '/guests/list',
+            '/guests/rsvp',
+            '/service-orders',
+            '/setup',
+            '/setup/change-password',
+        ];
 
-            $userMenuIds = Menus::whereIn('menu_path', $userMenuPaths)->pluck('id')->all();
+        $userMenuIds = Menus::whereIn('menu_path', $userMenuPaths)->pluck('id')->all();
 
-            RoleMenus::where('role_id', $user->id)->delete();
+        foreach ($userRoles as $uRole) {
+            RoleMenus::where('role_id', $uRole->id)->delete();
             foreach ($userMenuIds as $menuId) {
                 RoleMenus::firstOrCreate([
-                    'role_id' => $user->id,
+                    'role_id' => $uRole->id,
                     'menu_id' => $menuId,
                 ]);
             }
