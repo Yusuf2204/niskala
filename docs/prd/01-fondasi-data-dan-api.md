@@ -2,7 +2,7 @@
 
 **Fase Roadmap:** Fase 1 (Fondasi Backend Undangan)  
 **Dokumen Acuan:** [project-plan-undangan-digital.md](file:///var/www/html/niskala/docs/project-plan-undangan-digital.md) | [rules.md](file:///var/www/html/niskala/docs/rules.md) | [context.md](file:///var/www/html/niskala/docs/context.md)  
-**Status:** Draf Spesifikasi Lengkap
+**Status:** Selesai Diimplementasi & Terverifikasi (Fase 1)
 
 ---
 
@@ -142,9 +142,9 @@ CREATE TABLE `tr_invitation_events` (
 
 ## 5. Kriteria Penerimaan & Verifikasi (Acceptance Criteria)
 
-1. [ ] **Migrasi Berjalan Mulus:** Seluruh tabel (`themes`, `invitations`, `invitation_contents`, `invitation_events`) berhasil dimigrasi tanpa error foreign key atau collation.
-2. [ ] **Theme Seeder:** Disediakan minimal 2 tema awal (`classic-ivory` dan `modern-charcoal`).
-3. [ ] **Anti-IDOR Lolos Uji:** User A tidak bisa melihat, mengedit, atau menghapus undangan milik User B (mengembalikan status `403 Forbidden`).
-4. [ ] **Slug Unik & Reserved Slug:** Slug duplikat atau slug terlarang (seperti `api` atau `admin`) ditolak dengan pesan validasi yang jelas (`422 Unprocessable Content`).
-5. [ ] **Dokumentasi OpenAPI Sinkron:** Semua controller di atas memiliki anotasi OpenAPI lengkap dan dapat diuji melalui Swagger UI di `http://localhost:8031/api/documentation`.
+1. [x] **Migrasi Berjalan Mulus:** Seluruh tabel (`ms_themes`, `tr_invitations`, `tr_invitation_contents`, `tr_invitation_events`) berhasil dimigrasi tanpa error foreign key atau collation.
+2. [x] **Theme Seeder:** Disediakan minimal 2 tema awal (`classic-ivory` dan `modern-charcoal`).
+3. [x] **Anti-IDOR Lolos Uji:** User A tidak bisa melihat, mengedit, atau menghapus undangan milik User B (mengembalikan status `403 Forbidden`).
+4. [x] **Slug Unik & Reserved Slug:** Slug duplikat atau slug terlarang (seperti `api` atau `admin`) ditolak dengan pesan validasi yang jelas (`422 Unprocessable Content`).
+5. [x] **Dokumentasi OpenAPI Sinkron:** Semua controller di atas memiliki anotasi OpenAPI lengkap dan dapat diuji melalui Swagger UI di `http://localhost:8031/api/documentation`.
 

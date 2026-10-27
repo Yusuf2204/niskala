@@ -49,7 +49,18 @@ class User extends Authenticatable
         ];
     }
 
-    public function role() {
+    public function role()
+    {
         return $this->belongsTo(Roles::class, 'role_id');
+    }
+
+    public function isAdmin(): bool
+    {
+        return $this->role?->role_name === 'admin';
+    }
+
+    public function invitations(): \Illuminate\Database\Eloquent\Relations\HasMany
+    {
+        return $this->hasMany(Invitation::class, 'user_id');
     }
 }
