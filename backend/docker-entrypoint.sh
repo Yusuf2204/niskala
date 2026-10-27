@@ -1,12 +1,12 @@
 #!/bin/bash
 # ============================================================
-# React CMS Backend — Docker Entrypoint
+# Niskala Backend — Docker Entrypoint
 # ============================================================
 
 set -e
 
 echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
-echo "  React CMS Backend — starting up"
+echo "  Niskala Backend — starting up"
 echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
 
 # ── ensure .env exists ──────────────────────────────────────
@@ -83,6 +83,14 @@ if [ "${L5_SWAGGER_GENERATE_ALWAYS:-false}" = "true" ] || [ ! -f storage/api-doc
   php artisan l5-swagger:generate || true
   echo "✓ swagger docs ready"
 fi
+
+# ── storage link & directory structure ──────────────────────
+echo "→ preparing storage directories and links…"
+mkdir -p storage/app/public storage/framework/cache storage/framework/sessions storage/framework/views storage/logs
+if [ ! -L public/storage ]; then
+  php artisan storage:link --force --no-interaction 2>/dev/null || true
+fi
+echo "✓ storage prepared"
 
 # ── optimize caches (only in production) ─────────────────────
 if [ "${APP_ENV:-production}" = "production" ]; then

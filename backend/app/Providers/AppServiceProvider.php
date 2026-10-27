@@ -2,7 +2,9 @@
 
 namespace App\Providers;
 
+use App\Services\SwaggerGeneratorFactory;
 use Illuminate\Support\ServiceProvider;
+use L5Swagger\GeneratorFactory;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -11,7 +13,7 @@ class AppServiceProvider extends ServiceProvider
      */
     public function register(): void
     {
-        //
+        $this->app->bind(GeneratorFactory::class, SwaggerGeneratorFactory::class);
     }
 
     /**
@@ -22,3 +24,4 @@ class AppServiceProvider extends ServiceProvider
         //
     }
 }
+

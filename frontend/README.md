@@ -1,14 +1,14 @@
-# React CMS Frontend
+# Niskala Frontend
 
-Frontend React CMS adalah single-page application untuk mengelola pengguna,
-roles, menu dan permission, pengaturan perusahaan, serta dashboard operasional.
+Frontend Niskala adalah single-page application untuk platform undangan digital dan pengelolaan
+pengguna, roles, menu dan permission, pengaturan perusahaan/aplikasi, serta dashboard operasional.
 Antarmuka dibangun dengan React, Vite, Redux, dan CoreUI.
 
 ## Persyaratan
 
 - Node.js 20 atau lebih baru
 - npm
-- Backend React CMS yang aktif
+- Backend Niskala yang aktif
 
 ## Instalasi
 

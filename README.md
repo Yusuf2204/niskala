@@ -1,20 +1,20 @@
-# React CMS v1
+# Niskala
 
-React CMS adalah aplikasi content management system berbasis Laravel dan React.
-Proyek ini menyediakan autentikasi API, pengelolaan pengguna, role dan permission,
-menu dinamis, pengaturan perusahaan, dashboard ringkas, serta dokumentasi OpenAPI.
+Niskala adalah platform undangan digital dan content management system berbasis Laravel dan React.
+Proyek ini menyediakan layanan pembuatan undangan digital, manajemen pengguna, role dan permission,
+menu dinamis, pengaturan identitas perusahaan, dashboard ringkas, serta dokumentasi OpenAPI.
 
 ## Fitur Utama
 
 - Autentikasi token menggunakan Laravel Sanctum
 - Users dan roles CRUD
 - Menu bertingkat dan role-based navigation
-- Pengaturan identitas perusahaan, logo, dan favicon
+- Pengaturan identitas platform/perusahaan, logo, dan favicon
 - Dashboard summary
 - Respons API yang konsisten
 - Dokumentasi Swagger/OpenAPI
 - Penanganan error dan validasi terpusat di frontend
-- Deployment Docker (reverse proxy, backend, frontend — tiga container terpisah)
+- Deployment Docker lengkap (reverse proxy, backend, frontend, database MySQL)
 
 ## Teknologi
 
@@ -23,15 +23,15 @@ menu dinamis, pengaturan perusahaan, dashboard ringkas, serta dokumentasi OpenAP
 | Backend | Laravel 12, PHP 8.3+, Laravel Sanctum |
 | Frontend | React 19, Vite 7, Redux, CoreUI |
 | API Docs | L5 Swagger / OpenAPI |
-| Database | MySQL, MariaDB, atau SQLite |
-| Deployment | Docker, Nginx reverse proxy |
+| Database | MySQL 8.0 (Docker container) |
+| Deployment | Docker Compose, Nginx reverse proxy |
 
 ## Struktur Proyek
 
 ```text
-react-cms/
+niskala/
 ├── backend/          Laravel REST API dan Swagger
-├── frontend/         React CMS application
+├── frontend/         React application
 ├── nginx/            Reverse proxy configuration
 ├── docker-compose.yml
 ├── .env              Docker environment variables
@@ -46,13 +46,12 @@ react-cms/
 - Composer 2
 - Node.js 20 atau lebih baru
 - npm
-- Database yang didukung Laravel
+- Database MySQL/MariaDB
 
 ### Docker Deployment
 
 - Docker Engine 24+
 - Docker Compose v2
-- Database MySQL/MariaDB yang sudah berjalan (eksternal)
 
 ---
 
@@ -73,7 +72,7 @@ Atur koneksi database dan akun administrator di `.env`:
 DB_CONNECTION=mysql
 DB_HOST=127.0.0.1
 DB_PORT=3306
-DB_DATABASE=react_cms
+DB_DATABASE=niskala
 DB_USERNAME=root
 DB_PASSWORD=
 
@@ -109,24 +108,24 @@ request `/api` ke backend di `http://localhost:8000`.
 
 ## Deployment Docker
 
-Database diasumsikan sudah berjalan sebagai container terpisah dan tidak menjadi
-bagian dari stack ini. Contoh: `mysql-container` atau `mariadb-container`.
+Stack Docker Niskala mencakup database MySQL 8.0, backend Laravel, frontend React SPA, dan Nginx reverse proxy.
 
 ### Arsitektur
 
 ```text
-Internet
+Pengguna / Klien
     │
     ▼
- Nginx Reverse Proxy (port 80)
+ Nginx Reverse Proxy (:8031)
     │
-    ├── /       → Frontend Container (React SPA)
-    │
-    └── /api/*  → Backend Container (Laravel)
-                       │
-                       ▼
-                 External Database
-              (mysql-container:3306)
+    ├── /           → Frontend Container (:80)
+    ├── /api/*      → Backend Container (:80)
+    ├── /storage/*  → Backend Media Storage (:80)
+    ├── /docs/*     → Swagger UI & API Docs (:80)
+    └── /up         → Backend Health Check (:80)
+                            │
+                            ▼
+                      MySQL Container (:3306)
 ```
 
 ### Konfigurasi
@@ -138,37 +137,47 @@ cp .env.example .env
 nano .env
 ```
 
-Isi minimal yang harus disesuaikan:
+Nilai port dan kredensial default yang disediakan sudah siap pakai:
 
 ```dotenv
-APP_URL=http://your-domain.com
-DB_HOST=mysql-container
-DB_PORT=3306
-DB_DATABASE=react_cms
-DB_USERNAME=root
-DB_PASSWORD=your-db-password
-ADMIN_PASSWORD=your-admin-password
+NGINX_PORT=8031
+BACKEND_PORT=9003
+FRONTEND_PORT=9004
+DB_EXTERNAL_PORT=3320
+
+DB_DATABASE=niskala
+DB_USERNAME=niskala
+DB_PASSWORD=niskala_db_secret123
+
+ADMIN_NAME=Administrator
+ADMIN_EMAIL=admin@example.com
+ADMIN_PASSWORD=change_this_admin_password_123
 ```
 
 ### Menjalankan
 
 ```bash
-# Build dan jalankan semua service
+# Build dan jalankan semua service di background
 docker compose up -d --build
 
-# Cek status
+# Cek status seluruh container
 docker compose ps
 
-# Lihat logs
+# Lihat logs jika diperlukan
 docker compose logs -f backend
-docker compose logs -f frontend
-docker compose logs -f nginx
+docker compose logs -f db
 ```
 
 ### Menghentikan
 
 ```bash
 docker compose down
+```
+
+Untuk mereset database dan storage jika diperlukan instalasi ulang bersih:
+
+```bash
+docker compose down -v
 ```
 
 ### Restart
@@ -186,34 +195,25 @@ docker compose up -d --build
 
 ### Service dan Port
 
-| Service | Container Name | Host Port | Internal |
-| --- | --- | --- | --- |
-| Nginx Reverse Proxy | `react-cms-proxy` | `80` | — |
-| Backend | `react-cms-backend` | `9001` | `80` |
-| Frontend | `react-cms-frontend` | `9002` | `80` |
-
-Port backend (`9001`) dan frontend (`9002`) diekspos untuk debugging; di
-production cukup gunakan port `80` melalui reverse proxy.
+| Service | Container Name | Host Port | Internal | Keterangan |
+| --- | --- | --- | --- | --- |
+| Nginx Reverse Proxy | `niskala-proxy` | `8031` | `80` | Entrypoint utama aplikasi |
+| Backend | `niskala-backend` | `9003` | `80` | Laravel 12 API & Nginx |
+| Frontend | `niskala-frontend` | `9004` | `80` | React SPA static build |
+| Database | `niskala-db` | `3320` | `3306` | MySQL 8.0 (data persist) |
 
 ---
 
-## URL Development
+## URL Akses Docker
 
-| Layanan | URL |
-| --- | --- |
-| Frontend | `http://localhost:3000` |
-| Backend | `http://127.0.0.1:8000` |
-| Swagger UI | `http://127.0.0.1:8000` |
-| Swagger UI alternatif | `http://127.0.0.1:8000/api/documentation` |
-| API base URL | `http://127.0.0.1:8000/api` |
-
-## URL Docker
-
-| Layanan | URL |
-| --- | --- |
-| Aplikasi | `http://localhost` |
-| API | `http://localhost/api` |
-| Swagger | `http://localhost/api/documentation` |
+| Layanan | URL | Keterangan |
+| --- | --- | --- |
+| Aplikasi Utama | `http://localhost:8031` | Akses web frontend via proxy |
+| API Base URL | `http://localhost:8031/api` | REST API |
+| Health Check | `http://localhost:8031/up` | Status kesiapan Laravel |
+| Swagger Docs | `http://localhost:8031/api/documentation` | Dokumentasi interaktif OpenAPI |
+| Direct Frontend (Dev) | `http://localhost:9004` | Container frontend langsung |
+| Direct Backend (Dev) | `http://localhost:9003` | Container backend langsung |
 
 Di Swagger, jalankan endpoint login, salin token yang diterima, lalu gunakan
 tombol **Authorize** dengan bearer token tersebut untuk menguji endpoint

@@ -6,9 +6,9 @@ use OpenApi\Annotations as OA;
 
 /**
  * @OA\Info(
- *     title="React CMS API",
+ *     title="Niskala API",
  *     version="1.0.0",
- *     description="OpenAPI documentation for the React CMS backend."
+ *     description="OpenAPI documentation for the Niskala backend."
  * )
  *
  * @OA\Server(

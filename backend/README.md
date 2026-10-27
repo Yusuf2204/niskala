@@ -1,6 +1,6 @@
-# React CMS Backend
+# Niskala Backend
 
-Backend React CMS adalah REST API berbasis Laravel 12. Modul utamanya mencakup
+Backend Niskala adalah REST API berbasis Laravel 12. Modul utamanya mencakup
 autentikasi Sanctum, users, roles, menu dan permission, company settings,
 dashboard summary, serta dokumentasi OpenAPI.
 
@@ -29,7 +29,7 @@ APP_URL=http://127.0.0.1:8000
 DB_CONNECTION=mysql
 DB_HOST=127.0.0.1
 DB_PORT=3306
-DB_DATABASE=react_cms
+DB_DATABASE=niskala
 DB_USERNAME=root
 DB_PASSWORD=
 ```
@@ -127,7 +127,7 @@ Saat container pertama kali berjalan, entrypoint akan:
 
 ### Logs
 
-Log Laravel disimpan di volume `react-cms-logs` dan selamat dari restart container.
+Log Laravel disimpan di volume `niskala-logs` dan selamat dari restart container.
 
 ```bash
 docker compose logs -f backend

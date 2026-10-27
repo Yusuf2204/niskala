@@ -1,5 +1,5 @@
 # ============================================================
-# React CMS Backend — PHP 8.3 FPM + Nginx (supervisor)
+# Niskala Backend — PHP 8.3 FPM + Nginx (supervisor)
 # ============================================================
 
 FROM php:8.3-fpm-alpine

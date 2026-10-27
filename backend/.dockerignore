@@ -16,6 +16,9 @@ package-lock.json
 package.json
 vite.config.js
 
+# ── composer ────────────────────────────────────────────────
+vendor
+
 # ── Docker files (self) ─────────────────────────────────────
 Dockerfile
 .dockerignore
@@ -24,6 +27,7 @@ docker-compose*.yml
 # ── environment ─────────────────────────────────────────────
 .env
 .env.*
+!.env.example
 !.env.production.example
 
 # ── test ────────────────────────────────────────────────────
@@ -36,10 +40,13 @@ docs
 README.md
 
 # ── storage (runtime only via volumes) ───────────────────────
+storage/app/*
 storage/logs/*
 storage/framework/cache/*
 storage/framework/sessions/*
 storage/framework/views/*
+!storage/app/.gitkeep
+!storage/app/public/.gitkeep
 !storage/logs/.gitkeep
 !storage/framework/cache/.gitkeep
 !storage/framework/sessions/.gitkeep

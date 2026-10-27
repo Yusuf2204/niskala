@@ -1,5 +1,5 @@
 # ============================================================
-# React CMS Frontend — Multi-stage (Node 22 → Nginx Alpine)
+# Niskala Frontend — Multi-stage (Node 22 → Nginx Alpine)
 # ============================================================
 
 # ── Stage 1: Build ──────────────────────────────────────────
