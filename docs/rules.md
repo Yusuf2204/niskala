@@ -69,7 +69,25 @@ Slug undangan publik tidak boleh menabrak rute sistem. Slug berikut **wajib dica
 
 ## 3. Standar Backend (Laravel 12 API)
 
-1. **Format Respons Standar:** Semua endpoint API wajib mengembalikan format seragam:
+### 3.1 Konvensi Penamaan Tabel Database (Prefixing Convention)
+Agar database rapi dan mudah dibedakan antara data master, data transaksi pengguna, dan sistem:
+1. **Master Data (`ms_`):** Tabel referensi/katalog sistem.
+   * `ms_themes`: Katalog tema dan preset desain.
+   * `ms_music`: Katalog lagu latar bawaan.
+2. **Transaksi / Operasional (`tr_`):** Tabel data dinamis yang dibuat/dikelola user.
+   * `tr_invitations`: Undangan digital milik user.
+   * `tr_invitation_contents`: Struktur block/section dan pengaturan undangan.
+   * `tr_invitation_events`: Sesi rangkaian acara (Akad, Resepsi, dll).
+   * `tr_guests`: Daftar tamu undangan.
+   * `tr_rsvps`: Konfirmasi kehadiran dan ucapan/doa tamu.
+   * `tr_service_orders`: Tiket permintaan bantuan pembuatan undangan.
+3. **Audit & Log (`log_`):** Tabel pencatatan riwayat aktivitas operasional.
+   * `log_audits`: Catatan tindakan kritis admin dan perubahan penting.
+4. **Bawaan System / Laravel (Tanpa Prefix):** Dibiarkan asli sesuai bawaan framework template:
+   * `users`, `roles`, `menus`, `rolemenus`, `companies`, `personal_access_tokens`, `cache`, `jobs`, `migrations`.
+5. **Model Eloquent:** Model tetap menggunakan nama entitas tunggal bersih (misal: `Theme`, `Invitation`, `Guest`) dengan mendefinisikan properti eksplisit `protected $table = 'ms_themes';`, `protected $table = 'tr_invitations';`, dst.
+
+### 3.2 Format Respons & Validasi API
    ```json
    {
      "data": null,

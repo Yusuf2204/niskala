@@ -92,13 +92,20 @@ stateDiagram-v2
 
 ---
 
-## 5. Entitas Data Utama
+## 5. Entitas Data Utama & Konvensi Tabel
 
-1. **Users:** Identitas, kredensial, role (`admin` / `customer`).
-2. **Invitations:** Pemilik (`user_id`), judul, jenis acara (`wedding`, `birthday`, `event`), status (`draft`, `published`, `archived`), `slug`, `theme_id`, waktu publikasi.
-3. **Invitation Content:** Dokumen JSON tervalidasi yang memuat daftar block/section terurut, schema version, dan props masing-masing komponen.
-4. **Themes:** Identitas tema, versi tema, palet warna bawaan, font yang didukung, dan metadata preview.
-5. **Guests:** Nama tamu, nomor kontak/WhatsApp, kategori tamu, kode/tautan khusus.
-6. **RSVPs:** Status kehadiran (`hadir`, `tidak_hadir`, `ragu`), jumlah tamu yang datang, pesan ucapan/doa, alamat IP/fingerprint.
-7. **Service Orders:** Permintaan bantuan dari pelanggan ke admin, status pengerjaan, dan catatan instruksi.
+Untuk menjaga kerapian database, penamaan tabel menggunakan skema prefix terstruktur:
+* **Tabel Master (`ms_`):**
+  * `ms_themes`: Identitas tema, versi tema, palet warna bawaan, font, dan preset section.
+* **Tabel Transaksi / Operasional (`tr_`):**
+  * `tr_invitations`: Entitas undangan (pemilik `user_id`, judul, event type, status, slug, waktu publikasi).
+  * `tr_invitation_contents`: Dokumen JSON tervalidasi (schema version, array ordered sections, settings).
+  * `tr_invitation_events`: Rangkaian sesi acara (Akad, Resepsi, waktu, alamat, link Google Maps).
+  * `tr_guests`: Daftar tamu undangan, kategori (VIP, Keluarga), dan token personalisasi link.
+  * `tr_rsvps`: Jawaban kehadiran (hadir, tidak hadir, ragu), perkiraan pax, dan doa/ucapan buku tamu.
+  * `tr_service_orders`: Tiket permintaan bantuan dari pelanggan ke admin beserta status pengerjaannya.
+* **Tabel Log & Audit (`log_`):**
+  * `log_audits`: Pencatatan tindakan kritis admin dan perubahan sistem.
+* **Tabel Bawaan Sistem / Laravel (Tanpa Prefix):**
+  * `users`, `roles`, `menus`, `rolemenus`, `companies`, `personal_access_tokens`, `cache`, `jobs`.
 
