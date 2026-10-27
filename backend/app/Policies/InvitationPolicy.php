@@ -75,3 +75,4 @@ class InvitationPolicy
         return (int) $user->id === (int) $invitation->user_id;
     }
 }
+

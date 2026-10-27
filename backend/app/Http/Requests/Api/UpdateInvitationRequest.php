@@ -69,3 +69,4 @@ class UpdateInvitationRequest extends FormRequest
         ], 422));
     }
 }
+

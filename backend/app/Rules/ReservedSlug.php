@@ -63,3 +63,4 @@ class ReservedSlug implements ValidationRule
         }
     }
 }
+

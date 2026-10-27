@@ -339,3 +339,4 @@ class InvitationDocumentation
      */
     public function invitations(): void {}
 }
+

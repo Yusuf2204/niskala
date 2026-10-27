@@ -73,3 +73,4 @@ class StoreInvitationRequest extends FormRequest
         ], 422));
     }
 }
+

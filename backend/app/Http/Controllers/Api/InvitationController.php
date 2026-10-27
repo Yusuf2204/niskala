@@ -333,3 +333,4 @@ class InvitationController extends Controller
         return $slug;
     }
 }
+

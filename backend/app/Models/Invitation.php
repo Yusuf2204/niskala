@@ -68,3 +68,4 @@ class Invitation extends Model
         return $this->status === 'archived';
     }
 }
+

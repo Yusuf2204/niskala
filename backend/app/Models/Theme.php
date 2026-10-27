@@ -36,3 +36,4 @@ class Theme extends Model
         return $this->hasMany(Invitation::class, 'theme_id');
     }
 }
+

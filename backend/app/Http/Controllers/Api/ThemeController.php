@@ -43,3 +43,4 @@ class ThemeController extends Controller
         ]);
     }
 }
+

@@ -33,3 +33,4 @@ class InvitationContent extends Model
         return $this->belongsTo(Invitation::class, 'invitation_id');
     }
 }
+
