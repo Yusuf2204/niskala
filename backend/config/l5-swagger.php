@@ -5,7 +5,7 @@ return [
     'documentations' => [
         'default' => [
             'api' => [
-                'title' => 'React CMS API',
+                'title' => 'Niskala API',
             ],
 
             'routes' => [
@@ -18,7 +18,7 @@ return [
                 /*
                  * Edit to include full URL in ui for assets
                  */
-                'use_absolute_path' => env('L5_SWAGGER_USE_ABSOLUTE_PATH', true),
+                'use_absolute_path' => env('L5_SWAGGER_USE_ABSOLUTE_PATH', false),
 
                 /*
                 * Edit to set path where swagger ui assets should be stored
@@ -125,10 +125,7 @@ return [
              *
              * @see \OpenApi\scan
              */
-            'analyser' => new \OpenApi\Analysers\ReflectionAnalyser([
-                new \OpenApi\Analysers\AttributeAnnotationFactory(),
-                new \OpenApi\Analysers\DocBlockAnnotationFactory(),
-            ]),
+            'analyser' => null,
 
             /**
              * analysis: defaults to a new \OpenApi\Analysis .
@@ -315,7 +312,7 @@ return [
          * Constants which can be used in annotations
          */
         'constants' => [
-            'L5_SWAGGER_CONST_HOST' => rtrim(env('L5_SWAGGER_CONST_HOST', env('APP_URL', 'http://localhost')), '/').'/api',
+            'L5_SWAGGER_CONST_HOST' => env('L5_SWAGGER_CONST_HOST', '/api'),
         ],
     ],
 ];

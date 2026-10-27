@@ -13,8 +13,8 @@ class CompanyController extends Controller
         $company = Company::firstOrCreate(
             ['id' => 1],
             [
-                'comp_name' => 'CMS Template',
-                'app_title' => 'CMS Template',
+                'comp_name' => 'Niskala',
+                'app_title' => 'Niskala',
             ]
         );
 
@@ -30,8 +30,8 @@ class CompanyController extends Controller
         $company = Company::firstOrCreate(
             ['id' => 1],
             [
-                'comp_name' => 'CMS Template',
-                'app_title' => 'CMS Template',
+                'comp_name' => 'Niskala',
+                'app_title' => 'Niskala',
             ]
         );
 

@@ -4,9 +4,11 @@ use App\Http\Controllers\Api\AuthController;
 // Route Controllers
 use App\Http\Controllers\Api\CompanyController;
 use App\Http\Controllers\Api\DashboardController;
+use App\Http\Controllers\Api\InvitationController;
 use App\Http\Controllers\Api\MenuController;
 use App\Http\Controllers\Api\RoleController;
 use App\Http\Controllers\Api\RoleMenuController;
+use App\Http\Controllers\Api\ThemeController;
 use App\Http\Controllers\Api\UserController;
 use Illuminate\Support\Facades\Route;
 
@@ -14,11 +16,25 @@ use Illuminate\Support\Facades\Route;
 Route::post('/login', [AuthController::class, 'login'])->middleware('throttle:5,1')->name('login');
 Route::get('company', [CompanyController::class, 'show']);
 
+// Theme Catalog (Public & Authenticated)
+Route::prefix('v1')->group(function () {
+    Route::get('themes', [ThemeController::class, 'index']);
+    Route::get('themes/{id}', [ThemeController::class, 'show']);
+});
+
 Route::middleware('auth:sanctum')->group(function () {
     Route::get('/me', [AuthController::class, 'me']);
     Route::post('/logout', [AuthController::class, 'logout']);
     Route::get('/dashboard-summary', [DashboardController::class, 'summary']);
     Route::post('change-password', [UserController::class, 'changePassword']);
+
+    // Invitations Management (PRD 01)
+    Route::prefix('v1')->group(function () {
+        Route::apiResource('invitations', InvitationController::class);
+        Route::put('invitations/{id}/content', [InvitationController::class, 'updateContent']);
+        Route::post('invitations/{id}/publish', [InvitationController::class, 'publish']);
+        Route::post('invitations/{id}/archive', [InvitationController::class, 'archive']);
+    });
 
     // Setup (Admin only)
     Route::middleware('role.admin')->group(function () {

@@ -42,7 +42,7 @@ const AppSidebar = () => {
               style={{ objectFit: 'contain' }}
             />
           ) : (
-            company?.comp_name || 'CMS'
+            company?.comp_name || 'Niskala'
           )}
         </CSidebarBrand>
 

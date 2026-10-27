@@ -20,16 +20,16 @@ Never commit the production `.env`.
 Create a timestamped backup before every migration:
 
 ```bash
-mkdir -p /var/backups/react-cms
+mkdir -p /var/backups/niskala
 mysqldump --single-transaction --routines --triggers \
   -h "$DB_HOST" -P "$DB_PORT" -u "$DB_USERNAME" -p \
-  "$DB_DATABASE" | gzip > "/var/backups/react-cms/pre-migrate-$(date +%Y%m%d-%H%M%S).sql.gz"
+  "$DB_DATABASE" | gzip > "/var/backups/niskala/pre-migrate-$(date +%Y%m%d-%H%M%S).sql.gz"
 ```
 
 Verify the backup before migrating:
 
 ```bash
-gzip -t /var/backups/react-cms/pre-migrate-YYYYMMDD-HHMMSS.sql.gz
+gzip -t /var/backups/niskala/pre-migrate-YYYYMMDD-HHMMSS.sql.gz
 ```
 
 Run migrations only after the backup succeeds:
@@ -41,7 +41,7 @@ php artisan migrate --force
 Restore procedure:
 
 ```bash
-gunzip -c /var/backups/react-cms/backup.sql.gz \
+gunzip -c /var/backups/niskala/backup.sql.gz \
   | mysql -h "$DB_HOST" -P "$DB_PORT" -u "$DB_USERNAME" -p "$DB_DATABASE"
 ```
 
@@ -100,7 +100,7 @@ available.
 Sanctum expired tokens should be pruned by Laravel's scheduler:
 
 ```cron
-* * * * * cd /var/www/react-cms/backend && php artisan schedule:run >> /dev/null 2>&1
+* * * * * cd /var/www/niskala/backend && php artisan schedule:run >> /dev/null 2>&1
 ```
 
 ## Deployment Verification
