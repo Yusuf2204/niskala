@@ -9,7 +9,9 @@
 
 :root,
 [data-coreui-theme="light"] {
-  // Light Theme Variables (60-30-10: Ivory - Charcoal - Muted Gold)
+  color-scheme: light;
+
+  // Niskala Design System Tokens (Light Mode)
   --bg-color: #F1EDE5;
   --surface-color: #FAF8F5;
   --text-primary: #34342F;
@@ -18,40 +20,38 @@
   --accent-gold: #A68B65;
   --border-color: rgba(52, 52, 47, 0.12);
 
-  // CoreUI Semantic Overrides for Light Theme
+  // CoreUI Global Semantic Tokens
   --cui-body-bg: #F1EDE5;
+  --cui-body-bg-rgb: 241, 237, 229;
   --cui-body-color: #34342F;
+  --cui-body-color-rgb: 52, 52, 47;
   --cui-tertiary-bg: #F1EDE5;
   --cui-secondary-bg: #EAE5DC;
   --cui-card-bg: #FAF8F5;
   --cui-card-color: #34342F;
   --cui-card-border-color: rgba(52, 52, 47, 0.12);
   --cui-border-color: rgba(52, 52, 47, 0.15);
-  --cui-border-color-translucent: rgba(52, 52, 47, 0.1);
+  --cui-border-color-translucent: rgba(52, 52, 47, 0.12);
   --cui-header-bg: #FAF8F5;
-  --cui-footer-bg: #FAF8F5;
-  --cui-primary: #34342F;
-  --cui-primary-rgb: 52, 52, 47;
-
-  // Sidebar Light Theme (Matches Ivory / Surface / Charcoal)
+  --cui-header-color: #34342F;
+  --cui-header-border-color: rgba(52, 52, 47, 0.12);
   --cui-sidebar-bg: #FAF8F5;
   --cui-sidebar-color: #34342F;
   --cui-sidebar-border-color: rgba(52, 52, 47, 0.12);
-  --cui-sidebar-header-bg: #FAF8F5;
-  --cui-sidebar-footer-bg: #FAF8F5;
-  --cui-sidebar-nav-link-color: #34342F;
-  --cui-sidebar-nav-link-hover-color: #1a1a17;
-  --cui-sidebar-nav-link-hover-bg: rgba(166, 139, 101, 0.12);
-  --cui-sidebar-nav-link-active-color: #A68B65;
-  --cui-sidebar-nav-link-active-bg: rgba(166, 139, 101, 0.18);
-  --cui-sidebar-nav-link-icon-color: #A68B65;
-  --cui-sidebar-toggler-color: #34342F;
-  --cui-sidebar-toggler-bg: rgba(52, 52, 47, 0.08);
+  --cui-footer-bg: #FAF8F5;
+  --cui-footer-color: #34342F;
+  --cui-primary: #34342F;
+  --cui-primary-rgb: 52, 52, 47;
+  --cui-emphasis-color: #1a1a17;
+  --cui-secondary-color: rgba(52, 52, 47, 0.70);
+  --cui-tertiary-color: rgba(52, 52, 47, 0.50);
 }
 
 [data-coreui-theme="dark"],
 .theme-dark {
-  // Dark Theme Variables (Deep Espresso - Soft Ivory - Champagne Gold)
+  color-scheme: dark;
+
+  // Niskala Design System Tokens (Dark Mode)
   --bg-color: #242420;
   --surface-color: #2D2D28;
   --text-primary: #F1EDE5;
@@ -60,95 +60,357 @@
   --accent-gold: #D8C2A0;
   --border-color: rgba(216, 194, 160, 0.18);
 
-  // CoreUI Semantic Overrides for Dark Theme
-  --cui-body-bg: #242420;
-  --cui-body-color: #F1EDE5;
-  --cui-tertiary-bg: #242420;
-  --cui-secondary-bg: #2D2D28;
-  --cui-card-bg: #2D2D28;
-  --cui-card-color: #F1EDE5;
-  --cui-card-border-color: rgba(216, 194, 160, 0.18);
-  --cui-border-color: rgba(216, 194, 160, 0.18);
-  --cui-border-color-translucent: rgba(216, 194, 160, 0.12);
-  --cui-header-bg: #2D2D28;
-  --cui-footer-bg: #2D2D28;
-  --cui-primary: #D8C2A0;
-  --cui-primary-rgb: 216, 194, 160;
-
-  // Sidebar Dark Theme (Matches Deep Espresso / Charcoal / Champagne Gold)
-  --cui-sidebar-bg: #1E1E1B;
-  --cui-sidebar-color: #F1EDE5;
-  --cui-sidebar-border-color: rgba(216, 194, 160, 0.18);
-  --cui-sidebar-header-bg: #181816;
-  --cui-sidebar-footer-bg: #181816;
-  --cui-sidebar-nav-link-color: rgba(241, 237, 229, 0.85);
-  --cui-sidebar-nav-link-hover-color: #FFFFFF;
-  --cui-sidebar-nav-link-hover-bg: rgba(216, 194, 160, 0.12);
-  --cui-sidebar-nav-link-active-color: #D8C2A0;
-  --cui-sidebar-nav-link-active-bg: rgba(216, 194, 160, 0.22);
-  --cui-sidebar-nav-link-icon-color: #D8C2A0;
-  --cui-sidebar-toggler-color: #D8C2A0;
-  --cui-sidebar-toggler-bg: rgba(216, 194, 160, 0.10);
+  // CoreUI Global Semantic Tokens (Dark Mode Override: Deep Espresso #242420 instead of CoreUI old blue-gray #212631)
+  --cui-body-bg: #242420 !important;
+  --cui-body-bg-rgb: 36, 36, 32 !important;
+  --cui-body-color: #F1EDE5 !important;
+  --cui-body-color-rgb: 241, 237, 229 !important;
+  --cui-tertiary-bg: #242420 !important;
+  --cui-secondary-bg: #2D2D28 !important;
+  --cui-card-bg: #2D2D28 !important;
+  --cui-card-color: #F1EDE5 !important;
+  --cui-card-border-color: rgba(216, 194, 160, 0.18) !important;
+  --cui-border-color: rgba(216, 194, 160, 0.18) !important;
+  --cui-border-color-translucent: rgba(216, 194, 160, 0.12) !important;
+  --cui-header-bg: #2D2D28 !important;
+  --cui-header-color: #F1EDE5 !important;
+  --cui-header-border-color: rgba(216, 194, 160, 0.18) !important;
+  --cui-sidebar-bg: #1E1E1B !important;
+  --cui-sidebar-color: #F1EDE5 !important;
+  --cui-sidebar-border-color: rgba(216, 194, 160, 0.18) !important;
+  --cui-footer-bg: #2D2D28 !important;
+  --cui-footer-color: #F1EDE5 !important;
+  --cui-primary: #D8C2A0 !important;
+  --cui-primary-rgb: 216, 194, 160 !important;
+  --cui-emphasis-color: #FFFFFF !important;
+  --cui-secondary-color: rgba(241, 237, 229, 0.70) !important;
+  --cui-tertiary-color: rgba(241, 237, 229, 0.50) !important;
 }
 
-// Sidebar styling adapting dynamically to the application theme
+// Global Body & Wrapper Background
+body {
+  background-color: var(--cui-body-bg) !important;
+  color: var(--cui-body-color) !important;
+}
+
+.wrapper {
+  background-color: var(--cui-body-bg);
+}
+
+// ------------------------------------------------------------
+// Navbar / Header Theming (Light & Dark)
+// ------------------------------------------------------------
+.header {
+  background-color: #FAF8F5 !important;
+  color: #34342F !important;
+  border-bottom: 1px solid rgba(52, 52, 47, 0.12) !important;
+
+  .container,
+  .container-fluid {
+    border-color: rgba(52, 52, 47, 0.12) !important;
+  }
+
+  .header-toggler,
+  .nav-link {
+    color: #34342F !important;
+
+    &:hover {
+      color: #A68B65 !important;
+    }
+  }
+
+  .breadcrumb-item {
+    color: #34342F;
+
+    &.active {
+      color: #A68B65;
+      font-weight: 600;
+    }
+
+    a {
+      color: #34342F;
+      text-decoration: none;
+
+      &:hover {
+        color: #A68B65;
+      }
+    }
+  }
+}
+
+[data-coreui-theme="dark"] .header {
+  background-color: #2D2D28 !important;
+  color: #F1EDE5 !important;
+  border-bottom: 1px solid rgba(216, 194, 160, 0.18) !important;
+
+  .container,
+  .container-fluid {
+    border-color: rgba(216, 194, 160, 0.18) !important;
+  }
+
+  .header-toggler,
+  .nav-link {
+    color: #F1EDE5 !important;
+
+    &:hover {
+      color: #D8C2A0 !important;
+    }
+  }
+
+  .breadcrumb-item {
+    color: rgba(241, 237, 229, 0.65);
+
+    &.active {
+      color: #D8C2A0;
+      font-weight: 600;
+    }
+
+    a {
+      color: rgba(241, 237, 229, 0.85);
+
+      &:hover {
+        color: #D8C2A0;
+      }
+    }
+  }
+}
+
+// ------------------------------------------------------------
+// Sidebar Theming (Light & Dark)
+// ------------------------------------------------------------
 .sidebar {
-  border-right: 1px solid var(--cui-sidebar-border-color) !important;
-  background-color: var(--cui-sidebar-bg) !important;
-  color: var(--cui-sidebar-color) !important;
+  background-color: #FAF8F5 !important;
+  color: #34342F !important;
+  border-right: 1px solid rgba(52, 52, 47, 0.12) !important;
 
   .sidebar-header,
   .sidebar-footer {
-    background-color: var(--cui-sidebar-header-bg) !important;
-    border-color: var(--cui-sidebar-border-color) !important;
+    background-color: #FAF8F5 !important;
+    border-color: rgba(52, 52, 47, 0.12) !important;
   }
 
   .sidebar-brand {
-    color: var(--cui-sidebar-color) !important;
+    color: #34342F !important;
+  }
+
+  .sidebar-nav {
+    background-color: #FAF8F5 !important;
   }
 
   .nav-link {
-    color: var(--cui-sidebar-nav-link-color);
+    color: #34342F !important;
     transition: all 0.15s ease-in-out;
 
     .nav-icon {
-      color: inherit;
-      opacity: 0.85;
+      color: #34342F;
+      opacity: 0.8;
     }
 
     &:hover {
-      color: var(--cui-sidebar-nav-link-hover-color) !important;
-      background-color: var(--cui-sidebar-nav-link-hover-bg) !important;
+      color: #1a1a17 !important;
+      background-color: rgba(166, 139, 101, 0.12) !important;
+
+      .nav-icon {
+        color: #A68B65;
+        opacity: 1;
+      }
     }
 
     &.active {
-      color: var(--cui-sidebar-nav-link-active-color) !important;
-      background-color: var(--cui-sidebar-nav-link-active-bg) !important;
+      color: #A68B65 !important;
+      background-color: rgba(166, 139, 101, 0.18) !important;
       font-weight: 600;
 
       .nav-icon {
-        color: var(--cui-sidebar-nav-link-active-color) !important;
+        color: #A68B65 !important;
         opacity: 1;
       }
     }
   }
 
   .nav-group-toggle {
-    color: var(--cui-sidebar-nav-link-color);
+    color: #34342F !important;
 
     &:hover {
-      color: var(--cui-sidebar-nav-link-hover-color);
-      background-color: var(--cui-sidebar-nav-link-hover-bg);
+      color: #1a1a17 !important;
+      background-color: rgba(166, 139, 101, 0.12) !important;
     }
   }
 
   .sidebar-toggler {
-    color: var(--cui-sidebar-toggler-color);
+    color: #34342F;
+    background-color: rgba(52, 52, 47, 0.08);
+
+    &:hover {
+      background-color: rgba(52, 52, 47, 0.15);
+    }
   }
 }
 
-body {
-  background-color: var(--cui-tertiary-bg);
+[data-coreui-theme="dark"] .sidebar {
+  background-color: #1E1E1B !important;
+  color: #F1EDE5 !important;
+  border-right: 1px solid rgba(216, 194, 160, 0.18) !important;
+
+  .sidebar-header,
+  .sidebar-footer {
+    background-color: #181816 !important;
+    border-color: rgba(216, 194, 160, 0.18) !important;
+  }
+
+  .sidebar-brand {
+    color: #F1EDE5 !important;
+  }
+
+  .sidebar-nav {
+    background-color: #1E1E1B !important;
+  }
+
+  .nav-link {
+    color: rgba(241, 237, 229, 0.85) !important;
+
+    .nav-icon {
+      color: rgba(241, 237, 229, 0.7);
+    }
+
+    &:hover {
+      color: #FFFFFF !important;
+      background-color: rgba(216, 194, 160, 0.12) !important;
+
+      .nav-icon {
+        color: #D8C2A0;
+      }
+    }
+
+    &.active {
+      color: #D8C2A0 !important;
+      background-color: rgba(216, 194, 160, 0.22) !important;
+      font-weight: 600;
+
+      .nav-icon {
+        color: #D8C2A0 !important;
+        opacity: 1;
+      }
+    }
+  }
+
+  .nav-group-toggle {
+    color: rgba(241, 237, 229, 0.85) !important;
+
+    &:hover {
+      color: #FFFFFF !important;
+      background-color: rgba(216, 194, 160, 0.12) !important;
+    }
+
+    &::after {
+      filter: invert(1);
+    }
+  }
+
+  .sidebar-toggler {
+    color: #D8C2A0;
+    background-color: rgba(216, 194, 160, 0.10);
+
+    &:hover {
+      background-color: rgba(216, 194, 160, 0.18);
+    }
+  }
+}
+
+// ------------------------------------------------------------
+// Dropdown Menu Theming
+// ------------------------------------------------------------
+.dropdown-menu {
+  background-color: #FAF8F5 !important;
+  color: #34342F !important;
+  border: 1px solid rgba(52, 52, 47, 0.15) !important;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+
+  .dropdown-item {
+    color: #34342F !important;
+
+    &:hover,
+    &:focus {
+      background-color: rgba(166, 139, 101, 0.15) !important;
+      color: #1a1a17 !important;
+    }
+
+    &.active {
+      background-color: rgba(166, 139, 101, 0.25) !important;
+      color: #A68B65 !important;
+      font-weight: 600;
+    }
+  }
+
+  .dropdown-header {
+    color: rgba(52, 52, 47, 0.65) !important;
+    background-color: transparent !important;
+  }
+}
+
+[data-coreui-theme="dark"] .dropdown-menu {
+  background-color: #2D2D28 !important;
+  color: #F1EDE5 !important;
+  border: 1px solid rgba(216, 194, 160, 0.2) !important;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.35);
+
+  .dropdown-item {
+    color: #F1EDE5 !important;
+
+    &:hover,
+    &:focus {
+      background-color: rgba(216, 194, 160, 0.15) !important;
+      color: #D8C2A0 !important;
+    }
+
+    &.active {
+      background-color: rgba(216, 194, 160, 0.25) !important;
+      color: #D8C2A0 !important;
+      font-weight: 600;
+    }
+  }
+
+  .dropdown-header {
+    color: rgba(241, 237, 229, 0.65) !important;
+    background-color: transparent !important;
+  }
+}
+
+// ------------------------------------------------------------
+// Cards & Modals Theming
+// ------------------------------------------------------------
+.card {
+  background-color: var(--cui-card-bg) !important;
+  color: var(--cui-card-color) !important;
+  border: 1px solid var(--cui-card-border-color) !important;
+
+  .card-header {
+    background-color: transparent !important;
+    border-bottom: 1px solid var(--cui-card-border-color) !important;
+    color: var(--cui-card-color) !important;
+  }
+
+  .card-footer {
+    background-color: transparent !important;
+    border-top: 1px solid var(--cui-card-border-color) !important;
+  }
+}
+
+.modal-content {
+  background-color: var(--cui-card-bg) !important;
+  color: var(--cui-body-color) !important;
+  border: 1px solid var(--cui-border-color) !important;
+
+  .modal-header,
+  .modal-footer {
+    border-color: var(--cui-border-color) !important;
+  }
+}
+
+.footer {
+  background-color: var(--cui-header-bg) !important;
+  color: var(--cui-secondary-color) !important;
+  border-top: 1px solid var(--cui-border-color) !important;
 }
 
 .wrapper {
@@ -276,16 +538,7 @@ body {
   color: var(--cui-body-color);
 }
 
-@include color-mode(dark) {
-  body {
-    background-color: var(--cui-dark-bg-subtle);
-  }
-
-  .react-select-container .react-select__menu {
-    background-color: var(--cui-dark-bg-subtle);
-  }
-
-  .footer {
-    --cui-footer-bg: var(--cui-body-bg);
-  }
+[data-coreui-theme="dark"] .react-select-container .react-select__menu {
+  background-color: #2D2D28;
+  border-color: rgba(216, 194, 160, 0.2);
 }
