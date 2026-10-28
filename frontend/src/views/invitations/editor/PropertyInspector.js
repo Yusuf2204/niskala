@@ -4,6 +4,7 @@ import {
   CFormInput,
   CFormTextarea,
   CFormLabel,
+  CFormSelect,
   CButton,
   CSpinner,
   CBadge,
@@ -240,6 +241,17 @@ const PropertyInspector = ({
                 value={props.open_button_text || ''}
                 onChange={(e) => handlePropChange('open_button_text', e.target.value)}
               />
+            </div>
+            <div>
+              <CFormLabel className="fw-bold small text-body">Hiasan Ornamen Cover</CFormLabel>
+              <CFormSelect
+                size="sm"
+                value={props.ornament_type || ''}
+                onChange={(e) => handlePropChange('ornament_type', e.target.value)}
+              >
+                <option value="">Tanpa Ornamen (Standar)</option>
+                <option value="gunungan">Gunungan Wayang (Adat Jawa)</option>
+              </CFormSelect>
             </div>
           </div>
         )}
@@ -520,6 +532,130 @@ const PropertyInspector = ({
                       const updated = [...props.events]
                       updated[idx].address = e.target.value
                       handlePropChange('events', updated)
+                    }}
+                  />
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+
+        {/* ===================== TRADITION ACCORDION (PROSESI ADAT) ===================== */}
+        {section.type === 'TraditionAccordion' && (
+          <div className="d-flex flex-column gap-3">
+            <div>
+              <CFormLabel className="fw-bold small text-body">Judul Bagian</CFormLabel>
+              <CFormInput
+                size="sm"
+                value={props.title || ''}
+                onChange={(e) => handlePropChange('title', e.target.value)}
+              />
+            </div>
+            <div>
+              <CFormLabel className="fw-bold small text-body">Subjudul</CFormLabel>
+              <CFormInput
+                size="sm"
+                value={props.subtitle || ''}
+                onChange={(e) => handlePropChange('subtitle', e.target.value)}
+              />
+            </div>
+            <div>
+              <CFormLabel className="fw-bold small text-body">Hiasan Ornamen Header</CFormLabel>
+              <CFormSelect
+                size="sm"
+                value={props.ornament || 'gunungan'}
+                onChange={(e) => handlePropChange('ornament', e.target.value)}
+              >
+                <option value="gunungan">Gunungan Wayang (Adat Jawa)</option>
+                <option value="none">Tanpa Ornamen</option>
+              </CFormSelect>
+            </div>
+
+            <div>
+              <div className="d-flex justify-content-between align-items-center mb-2">
+                <CFormLabel className="fw-bold small text-body mb-0">Daftar Prosesi Adat</CFormLabel>
+                <CButton
+                  size="sm"
+                  color="secondary"
+                  variant="outline"
+                  className="py-0 px-2"
+                  onClick={() => {
+                    const newItems = [
+                      ...(props.items || []),
+                      {
+                        id: `item-${Date.now().toString(36)}`,
+                        title: 'Prosesi Adat Baru',
+                        time_info: 'Waktu Pelaksanaan',
+                        location: 'Papan / Tempat',
+                        description: 'Penjelasan tata cara dan makna luhur prosesi adat.',
+                      },
+                    ]
+                    handlePropChange('items', newItems)
+                  }}
+                >
+                  <CIcon icon={cilPlus} size="sm" /> Tambah Prosesi
+                </CButton>
+              </div>
+
+              {(props.items || []).map((item, idx) => (
+                <div key={item.id || idx} className="p-2 rounded panel-card mb-2">
+                  <div className="d-flex justify-content-between align-items-center mb-1">
+                    <span className="fw-bold small text-body">Tahap #{idx + 1}</span>
+                    <CButton
+                      size="sm"
+                      color="danger"
+                      variant="ghost"
+                      className="p-0 text-danger"
+                      onClick={() => {
+                        const updated = props.items.filter((_, i) => i !== idx)
+                        handlePropChange('items', updated)
+                      }}
+                    >
+                      <CIcon icon={cilTrash} size="sm" />
+                    </CButton>
+                  </div>
+                  <CFormInput
+                    size="sm"
+                    className="mb-1"
+                    placeholder="Nama Prosesi (cth: Upacara Siraman)"
+                    value={item.title || ''}
+                    onChange={(e) => {
+                      const updated = [...props.items]
+                      updated[idx].title = e.target.value
+                      handlePropChange('items', updated)
+                    }}
+                  />
+                  <CFormInput
+                    size="sm"
+                    className="mb-1"
+                    placeholder="Waktu (cth: Jumat Pon — 09:00 WIB)"
+                    value={item.time_info || ''}
+                    onChange={(e) => {
+                      const updated = [...props.items]
+                      updated[idx].time_info = e.target.value
+                      handlePropChange('items', updated)
+                    }}
+                  />
+                  <CFormInput
+                    size="sm"
+                    className="mb-1"
+                    placeholder="Lokasi (cth: Kediaman Penganten)"
+                    value={item.location || ''}
+                    onChange={(e) => {
+                      const updated = [...props.items]
+                      updated[idx].location = e.target.value
+                      handlePropChange('items', updated)
+                    }}
+                  />
+                  <CFormTextarea
+                    rows={2}
+                    className="small"
+                    placeholder="Makna & Keterangan Prosesi"
+                    value={item.description || ''}
+                    onChange={(e) => {
+                      const updated = [...props.items]
+                      updated[idx].description = e.target.value
+                      handlePropChange('items', updated)
                     }}
                   />
                 </div>

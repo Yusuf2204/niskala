@@ -144,6 +144,37 @@ class InvitationApiTest extends TestCase
         ]);
     }
 
+    public function test_authenticated_user_can_create_invitation_with_adat_jawa_theme_and_accordion(): void
+    {
+        Sanctum::actingAs($this->userA);
+
+        $jawaTheme = Theme::where('slug', 'adat-jawa')->first();
+        $this->assertNotNull($jawaTheme, 'Theme Adat Jawa should exist');
+
+        $payload = [
+            'title' => 'Dhaup Suci Rama & Shinta',
+            'theme_id' => $jawaTheme->id,
+            'event_type' => 'wedding',
+        ];
+
+        $response = $this->postJson('/api/v1/invitations', $payload);
+
+        $response->assertStatus(201)
+            ->assertJsonPath('data.title', 'Dhaup Suci Rama & Shinta')
+            ->assertJsonPath('data.theme_id', $jawaTheme->id);
+
+        $invitationId = $response->json('data.id');
+        $content = \App\Models\InvitationContent::where('invitation_id', $invitationId)->first();
+        $this->assertNotNull($content);
+
+        $sectionTypes = collect($content->sections_data)->pluck('type')->all();
+        $this->assertContains('TraditionAccordion', $sectionTypes);
+
+        $accordion = collect($content->sections_data)->firstWhere('type', 'TraditionAccordion');
+        $this->assertNotEmpty($accordion['props']['items']);
+        $this->assertEquals('gunungan', $accordion['props']['ornament']);
+    }
+
     public function test_reserved_slugs_are_rejected(): void
     {
         Sanctum::actingAs($this->userA);

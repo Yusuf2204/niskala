@@ -1,5 +1,6 @@
 import React from 'react'
 import PropTypes from 'prop-types'
+import { GununganEmblem } from './Ornaments'
 
 const HeroCoverSection = ({ props = {}, isWeb = true }) => {
   const {
@@ -10,6 +11,7 @@ const HeroCoverSection = ({ props = {}, isWeb = true }) => {
     bg_image_url = 'https://images.unsplash.com/photo-1519741497674-611481863552?auto=format&fit=crop&w=1200&q=80',
     open_button_text = 'Buka Undangan',
     guest_greeting_prefix = 'Kepada Yth. Bapak/Ibu/Saudara/i:',
+    ornament_type = '',
   } = props
 
   return (
@@ -26,6 +28,11 @@ const HeroCoverSection = ({ props = {}, isWeb = true }) => {
       }}
     >
       <div style={{ maxWidth: isWeb ? '720px' : '100%', zIndex: 2 }}>
+        {ornament_type === 'gunungan' && (
+          <div className="mb-3 animate-fade-in">
+            <GununganEmblem width={isWeb ? 54 : 44} height={isWeb ? 64 : 54} color="#D4AF37" />
+          </div>
+        )}
         <p
           className="text-uppercase tracking-widest mb-2"
           style={{

@@ -82,6 +82,61 @@ export const COMPONENT_REGISTRY = {
       ],
     },
   },
+  TraditionAccordion: {
+    type: 'TraditionAccordion',
+    name: 'Accordion Acara Adat & Hiasan',
+    category: 'Acara & Tradisi',
+    description:
+      'Accordion berornamen Gunungan Wayang untuk prosesi adat sakral (Siraman, Midodareni, Akad, Panggih).',
+    icon: 'cilList',
+    defaultProps: {
+      title: 'Tata Upacara & Prosesi Adat Jawa',
+      subtitle: 'Rangkaian Ritual Suci Sakral Penganten Jawa',
+      ornament: 'gunungan',
+      items: [
+        {
+          id: 'item-1',
+          title: 'Upacara Siraman',
+          time_info: 'Jumat Pon, 11 Desember 2026 — 09:00 WIB',
+          location: 'Kediaman Mempelai Putri',
+          description:
+            'Upacara sesuci raga dalah jiwa calon penganten kanthi toya pitu sumber kembang setaman, pinangka lambang reresik lair lan batin sadurunge ngambah gesang anyar.',
+        },
+        {
+          id: 'item-2',
+          title: 'Malam Midodareni',
+          time_info: 'Jumat Pon, 11 Desember 2026 — 19:00 WIB',
+          location: 'Kediaman Mempelai Putri',
+          description:
+            'Wanci wengi ing ngendi para widadari mudhun maringi berkah kaendahan, kasekten, lan karaharjan dhumateng calon penganten putri.',
+        },
+        {
+          id: 'item-3',
+          title: 'Ijab Kabul / Akad Nikah',
+          time_info: 'Sabtu Pahing, 12 Desember 2026 — 08:00 WIB',
+          location: 'Pendopo Ageng Handrawina',
+          description:
+            'Ikrar suci prajanjen nikah ing ngarsanipun Gusti Allah SWT, saksi, para sepuh, lan wali.',
+        },
+        {
+          id: 'item-4',
+          title: 'Upacara Panggih Penganten',
+          time_info: 'Sabtu Pahing, 12 Desember 2026 — 10:00 WIB',
+          location: 'Sasana Hinggil Handrawina',
+          description:
+            'Temuning sri penganten kakung lan putri lumantar prosesi adat Balangan Gantal, Wijik Suku/Ngidak Endhog, Sinduran, Kacar Kucur, Dahar Klimah, lan Sungkeman.',
+        },
+        {
+          id: 'item-5',
+          title: 'Pahargyan Temu Manten (Resepsi)',
+          time_info: 'Sabtu Pahing, 12 Desember 2026 — 11:30 - 14:00 WIB',
+          location: 'Grand Ballroom Handrawina',
+          description:
+            'Syukuran agung bebarengan para tamu rawuh kinurmatan dalah sedherek kanthi suwasana pinarak gamelan lan beksan Jawa.',
+        },
+      ],
+    },
+  },
   LocationMap: {
     type: 'LocationMap',
     name: 'Lokasi & Peta',

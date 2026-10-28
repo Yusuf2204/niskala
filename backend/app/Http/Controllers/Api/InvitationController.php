@@ -87,16 +87,21 @@ class InvitationController extends Controller
                 'EventSchedule',
                 'FooterSection',
             ];
+            $sectionPresets = $defaultConfig['section_presets'] ?? [];
 
             $sectionsData = [];
             foreach ($defaultSections as $index => $sectionType) {
+                $props = $sectionPresets[$sectionType] ?? [];
+                if ($sectionType === 'HeroCover') {
+                    if (empty($props['title'])) {
+                        $props['title'] = $validated['title'];
+                    }
+                }
                 $sectionsData[] = [
                     'id' => Str::slug($sectionType).'-'.Str::random(6),
                     'type' => $sectionType,
                     'order' => $index,
-                    'props' => [
-                        'title' => $sectionType === 'HeroCover' ? $validated['title'] : '',
-                    ],
+                    'props' => $props,
                 ];
             }
 

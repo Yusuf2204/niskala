@@ -1,10 +1,10 @@
 import React, { useEffect, useState } from 'react'
+import { useNavigate } from 'react-router-dom'
 import {
   CRow,
   CCol,
   CCard,
   CCardBody,
-  CCardHeader,
   CButton,
   CBadge,
   CSpinner,
@@ -15,10 +15,12 @@ import {
   CModalFooter,
 } from '@coreui/react'
 import CIcon from '@coreui/icons-react'
-import { cilPaint, cilReload, cilCheckAlt } from '@coreui/icons'
+import { cilPaint, cilReload, cilCheckAlt, cilPlus } from '@coreui/icons'
 import api from '../../../services/api'
+import { GununganEmblem } from '../../invitations/editor/sections/Ornaments'
 
 const Themes = () => {
+  const navigate = useNavigate()
   const [themes, setThemes] = useState([])
   const [loading, setLoading] = useState(false)
   const [selectedTheme, setSelectedTheme] = useState(null)
@@ -45,15 +47,19 @@ const Themes = () => {
     setModalOpen(true)
   }
 
+  const handleCreateWithTheme = (themeId) => {
+    navigate(`/invitations/create?theme_id=${themeId}`)
+  }
+
   return (
     <div className="themes-container">
       <div className="d-flex justify-content-between align-items-center mb-4">
         <div>
           <h4 className="fw-bold text-body mb-1 d-flex align-items-center gap-2">
-            <CIcon icon={cilPaint} className="text-secondary" /> Master Tema Desain
+            <CIcon icon={cilPaint} className="text-secondary" /> Master Tema Undangan
           </h4>
           <p className="text-muted mb-0 small">
-            Katalog master tema desain bawaan yang tersedia untuk seluruh undangan digital Niskala.
+            Katalog master tema undangan pernikahan &amp; perayaan dengan aset visual, ornamen khusus, dan rangkaian prosesi adat bawaan.
           </p>
         </div>
         <CButton
@@ -88,10 +94,9 @@ const Themes = () => {
             >
               ✦
             </div>
-            <h5 className="fw-bold text-body mb-2">Katalog Tema Sedang Dikonsepkan</h5>
+            <h5 className="fw-bold text-body mb-2">Belum Ada Tema Undangan</h5>
             <p className="text-muted small mx-auto mb-0" style={{ maxWidth: '480px' }}>
-              Data tema undangan visual khusus (seperti rustic, floral, adat tradisi, dan modern)
-              dikosongkan sementara untuk pematangan konsep dan akan hadir pada fase mendatang.
+              Belum ada data master tema undangan di sistem. Silakan jalankan seeder atau hubungi administrator.
             </p>
           </CCardBody>
         </CCard>
@@ -101,34 +106,60 @@ const Themes = () => {
             const palette = theme.default_config?.palette || {}
             const typography = theme.default_config?.typography || {}
             const sections = theme.default_config?.default_sections || []
+            const presets = theme.default_config?.section_presets || {}
+            const hasGunungan =
+              theme.slug === 'adat-jawa' ||
+              theme.default_config?.assets?.ornament === 'gunungan'
 
             return (
               <CCol xs={12} md={6} lg={4} key={theme.id}>
                 <CCard className="h-100 shadow-sm border-0 rounded-3 overflow-hidden">
+                  {/* Banner Preview Tema */}
                   <div
                     style={{
-                      height: '140px',
-                      background: palette.background || '#F1EDE5',
-                      borderBottom: '1px solid #E5DFC5',
+                      height: '160px',
+                      background: palette.background || '#FAF6EE',
+                      borderBottom: '1px solid rgba(197, 160, 89, 0.3)',
                       position: 'relative',
                       display: 'flex',
                       flexDirection: 'column',
                       justifyContent: 'center',
                       alignItems: 'center',
-                      color: palette.text || '#34342F',
+                      color: palette.text || '#2B1E16',
+                      padding: '1rem',
                     }}
                   >
+                    {hasGunungan && (
+                      <div className="mb-2">
+                        <GununganEmblem
+                          width={38}
+                          height={46}
+                          color={palette.primary || '#C5A059'}
+                        />
+                      </div>
+                    )}
                     <span
                       style={{
-                        fontFamily: typography.heading_font || 'inherit',
-                        fontSize: '1.25rem',
+                        fontFamily: typography.heading_font || "'Playfair Display', serif",
+                        fontSize: '1.35rem',
                         fontWeight: 'bold',
                         letterSpacing: '0.05em',
+                        color: palette.secondary || '#4A3525',
                       }}
                     >
                       {theme.name}
                     </span>
-                    <span className="small opacity-75 mt-1">Palet Desain Bawaan</span>
+                    <span
+                      className="small mt-1 px-2 py-0.5 rounded-pill"
+                      style={{
+                        fontSize: '0.72rem',
+                        backgroundColor: 'rgba(197, 160, 89, 0.18)',
+                        color: palette.secondary || '#4A3525',
+                        fontWeight: 600,
+                      }}
+                    >
+                      Tema Spesifik Budaya Tradisi
+                    </span>
 
                     {theme.is_active && (
                       <span
@@ -153,9 +184,51 @@ const Themes = () => {
                         {theme.description || 'Tidak ada deskripsi tema.'}
                       </p>
 
+                      {/* Feature Pills */}
+                      <div className="d-flex flex-wrap gap-1 mb-3">
+                        {hasGunungan && (
+                          <span
+                            className="badge"
+                            style={{
+                              backgroundColor: 'rgba(197, 160, 89, 0.15)',
+                              color: '#4A3525',
+                              border: '1px solid rgba(197, 160, 89, 0.35)',
+                              fontSize: '0.72rem',
+                            }}
+                          >
+                            ◈ Ornamen Gunungan
+                          </span>
+                        )}
+                        {presets.TraditionAccordion && (
+                          <span
+                            className="badge"
+                            style={{
+                              backgroundColor: 'rgba(197, 160, 89, 0.15)',
+                              color: '#4A3525',
+                              border: '1px solid rgba(197, 160, 89, 0.35)',
+                              fontSize: '0.72rem',
+                            }}
+                          >
+                            ✦ Accordion 5 Prosesi Adat
+                          </span>
+                        )}
+                        <span
+                          className="badge"
+                          style={{
+                            backgroundColor: 'rgba(197, 160, 89, 0.15)',
+                            color: '#4A3525',
+                            border: '1px solid rgba(197, 160, 89, 0.35)',
+                            fontSize: '0.72rem',
+                          }}
+                        >
+                          ✦ Palet Sogan Jawa
+                        </span>
+                      </div>
+
+                      {/* Swatch Palet Warna */}
                       <div className="mb-3">
                         <small className="fw-semibold text-secondary d-block mb-1">
-                          Kombinasi Warna (60-30-10):
+                          Palet Warna (60-30-10):
                         </small>
                         <div className="d-flex gap-2">
                           {Object.entries(palette).map(([key, val]) => (
@@ -183,20 +256,32 @@ const Themes = () => {
                           <strong>Body:</strong> {typography.body_font || '-'}
                         </div>
                         <div className="mt-1">
-                          <strong>Default Sections:</strong> {sections.length} komponen
+                          <strong>Default Sections:</strong> {sections.length} komponen bawaan
                         </div>
                       </div>
                     </div>
 
-                    <div className="mt-3 pt-2 border-top">
+                    <div className="mt-3 pt-3 border-top d-flex flex-column gap-2">
                       <CButton
-                        color="dark"
+                        color="secondary"
                         variant="outline"
                         size="sm"
                         className="w-100"
                         onClick={() => handleOpenDetail(theme)}
                       >
-                        Lihat Preset Lengkap
+                        Lihat Detail Preset
+                      </CButton>
+                      <CButton
+                        size="sm"
+                        className="w-100 fw-bold d-flex align-items-center justify-content-center gap-1"
+                        style={{
+                          backgroundColor: '#C5A059',
+                          borderColor: '#C5A059',
+                          color: '#FFFFFF',
+                        }}
+                        onClick={() => handleCreateWithTheme(theme.id)}
+                      >
+                        <CIcon icon={cilPlus} size="sm" /> Buat Undangan dengan Tema Ini
                       </CButton>
                     </div>
                   </CCardBody>
@@ -210,22 +295,42 @@ const Themes = () => {
       {/* Modal Detail Preset Tema */}
       <CModal visible={modalOpen} onClose={() => setModalOpen(false)} size="lg">
         <CModalHeader>
-          <CModalTitle className="fw-bold">
-            Detail Tema: {selectedTheme?.name} (v{selectedTheme?.version})
+          <CModalTitle className="fw-bold d-flex align-items-center gap-2">
+            <span>Detail Tema: {selectedTheme?.name}</span>
+            <CBadge color="secondary" className="border small">
+              v{selectedTheme?.version}
+            </CBadge>
           </CModalTitle>
         </CModalHeader>
         <CModalBody>
           {selectedTheme && (
             <div>
-              <p className="text-muted">{selectedTheme.description}</p>
-              <h6 className="fw-bold mt-3 mb-2">Konfigurasi JSON Bawaan:</h6>
+              <p className="text-muted mb-3">{selectedTheme.description}</p>
+
+              {/* Rincian Accordion Adat jika ada */}
+              {selectedTheme.default_config?.section_presets?.TraditionAccordion && (
+                <div className="p-3 rounded mb-3" style={{ backgroundColor: 'rgba(197, 160, 89, 0.08)', border: '1px solid rgba(197, 160, 89, 0.3)' }}>
+                  <h6 className="fw-bold mb-2" style={{ color: '#4A3525' }}>
+                    ✦ Bawaan Accordion Prosesi Adat:
+                  </h6>
+                  <ul className="mb-0 small ps-3" style={{ color: '#2B1E16' }}>
+                    {(selectedTheme.default_config.section_presets.TraditionAccordion.items || []).map((it) => (
+                      <li key={it.id} className="mb-1">
+                        <strong>{it.title}:</strong> {it.description}
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              )}
+
+              <h6 className="fw-bold mt-3 mb-2 text-body">Konfigurasi JSON Preset Bawaan:</h6>
               <pre
                 style={{
                   background: '#242420',
                   color: '#FAF8F5',
                   padding: '12px',
                   borderRadius: '6px',
-                  fontSize: '0.85rem',
+                  fontSize: '0.82rem',
                   maxHeight: '260px',
                   overflowY: 'auto',
                 }}
@@ -236,9 +341,20 @@ const Themes = () => {
           )}
         </CModalBody>
         <CModalFooter>
-          <CButton color="secondary" onClick={() => setModalOpen(false)}>
+          <CButton color="secondary" variant="outline" onClick={() => setModalOpen(false)}>
             Tutup
           </CButton>
+          {selectedTheme && (
+            <CButton
+              style={{ backgroundColor: '#C5A059', borderColor: '#C5A059', color: '#FFFFFF', fontWeight: 600 }}
+              onClick={() => {
+                setModalOpen(false)
+                handleCreateWithTheme(selectedTheme.id)
+              }}
+            >
+              Gunakan Tema Ini
+            </CButton>
+          )}
         </CModalFooter>
       </CModal>
     </div>
@@ -246,4 +362,3 @@ const Themes = () => {
 }
 
 export default Themes
-

@@ -13,11 +13,13 @@ import {
 } from '@coreui/react'
 import CIcon from '@coreui/icons-react'
 import { cilArrowLeft, cilArrowRight, cilCheck, cilPaint, cilDescription } from '@coreui/icons'
-import { useNavigate } from 'react-router-dom'
+import { useNavigate, useSearchParams } from 'react-router-dom'
 import api from '../../services/api'
 import { toastSuccess, toastError } from '../../services/toastService'
+import { GununganEmblem } from './editor/sections/Ornaments'
 
 const CreateInvitation = () => {
+  const [searchParams] = useSearchParams()
   const [step, setStep] = useState(1)
   const [themes, setThemes] = useState([])
   const [loadingThemes, setLoadingThemes] = useState(false)
@@ -42,7 +44,10 @@ const CreateInvitation = () => {
         const res = await api.get('/v1/themes')
         const items = res.data.data || []
         setThemes(items)
-        if (items.length > 0) {
+        const qThemeId = searchParams.get('theme_id')
+        if (qThemeId && items.some((t) => t.id === Number(qThemeId))) {
+          setSelectedThemeId(Number(qThemeId))
+        } else if (items.length > 0) {
           setSelectedThemeId(items[0].id)
         }
       } catch {
@@ -194,37 +199,48 @@ const CreateInvitation = () => {
                 const isSelected = selectedThemeId === theme.id
                 const palette = theme.default_config?.palette || {}
                 const typography = theme.default_config?.typography || {}
+                const presets = theme.default_config?.section_presets || {}
+                const hasGunungan =
+                  theme.slug === 'adat-jawa' ||
+                  theme.default_config?.assets?.ornament === 'gunungan'
 
                 return (
                   <CCol xs={12} sm={6} key={theme.id}>
                     <CCard
                       className="h-100 shadow-sm border-2 rounded-3 overflow-hidden cursor-pointer"
                       style={{
-                        borderColor: isSelected ? '#34342F' : '#E5DFC5',
+                        borderColor: isSelected ? (hasGunungan ? '#C5A059' : '#34342F') : '#E5DFC5',
                         cursor: 'pointer',
                         transition: 'all 0.2s ease',
                         transform: isSelected ? 'scale(1.01)' : 'none',
+                        boxShadow: isSelected ? '0 8px 24px rgba(197, 160, 89, 0.2)' : 'none',
                       }}
                       onClick={() => setSelectedThemeId(theme.id)}
                     >
                       <div
                         style={{
-                          height: '130px',
+                          height: '140px',
                           background: palette.background || '#F1EDE5',
                           display: 'flex',
                           flexDirection: 'column',
                           justifyContent: 'center',
                           alignItems: 'center',
                           position: 'relative',
-                          borderBottom: '1px solid #E5DFC5',
+                          borderBottom: '1px solid rgba(197, 160, 89, 0.3)',
+                          padding: '1rem',
                         }}
                       >
+                        {hasGunungan && (
+                          <div className="mb-2">
+                            <GununganEmblem width={36} height={44} color={palette.primary || '#C5A059'} />
+                          </div>
+                        )}
                         <span
                           style={{
                             fontFamily: typography.heading_font || 'serif',
-                            fontSize: '1.2rem',
+                            fontSize: '1.25rem',
                             fontWeight: 'bold',
-                            color: palette.text || '#34342F',
+                            color: palette.secondary || palette.text || '#34342F',
                           }}
                         >
                           {theme.name}
@@ -232,12 +248,12 @@ const CreateInvitation = () => {
 
                         {isSelected && (
                           <div
-                            className="position-absolute top-0 end-0 m-2 rounded-circle d-flex align-items-center justify-content-center"
+                            className="position-absolute top-0 end-0 m-2 rounded-circle d-flex align-items-center justify-content-center shadow-sm"
                             style={{
                               width: '28px',
                               height: '28px',
-                              backgroundColor: '#34342F',
-                              color: '#F1EDE5',
+                              backgroundColor: hasGunungan ? '#C5A059' : '#34342F',
+                              color: '#FFFFFF',
                             }}
                           >
                             <CIcon icon={cilCheck} size="sm" />
@@ -253,10 +269,56 @@ const CreateInvitation = () => {
                           </CBadge>
                         </div>
                         <p className="small text-muted mb-2">{theme.description}</p>
-                        <div className="d-flex gap-1">
+
+                        {/* Feature Badges */}
+                        <div className="d-flex flex-wrap gap-1 mb-2">
+                          {hasGunungan && (
+                            <span
+                              className="badge"
+                              style={{
+                                backgroundColor: 'rgba(197, 160, 89, 0.15)',
+                                color: '#4A3525',
+                                border: '1px solid rgba(197, 160, 89, 0.35)',
+                                fontSize: '0.7rem',
+                              }}
+                            >
+                              ◈ Gunungan Wayang
+                            </span>
+                          )}
+                          {presets.TraditionAccordion && (
+                            <span
+                              className="badge"
+                              style={{
+                                backgroundColor: 'rgba(197, 160, 89, 0.15)',
+                                color: '#4A3525',
+                                border: '1px solid rgba(197, 160, 89, 0.35)',
+                                fontSize: '0.7rem',
+                              }}
+                            >
+                              ✦ Accordion 5 Prosesi Adat
+                            </span>
+                          )}
+                          <span
+                            className="badge"
+                            style={{
+                              backgroundColor: 'rgba(197, 160, 89, 0.15)',
+                              color: '#4A3525',
+                              border: '1px solid rgba(197, 160, 89, 0.35)',
+                              fontSize: '0.7rem',
+                            }}
+                          >
+                            ✦ Palet Sogan Jawa
+                          </span>
+                        </div>
+
+                        <div className="d-flex gap-1 align-items-center">
+                          <small className="text-muted me-1" style={{ fontSize: '0.75rem' }}>
+                            Palet:
+                          </small>
                           {Object.entries(palette).map(([k, col]) => (
                             <div
                               key={k}
+                              title={`${k}: ${col}`}
                               style={{
                                 width: '18px',
                                 height: '18px',
@@ -276,12 +338,16 @@ const CreateInvitation = () => {
           )}
 
           {themes.length > 0 && (
-            <div className="d-flex justify-content-end">
+            <div className="p-3 mb-4 rounded-3 panel-card d-flex align-items-center justify-content-between flex-wrap gap-2">
+              <div className="small text-body-secondary">
+                ℹ️ <strong>Catatan:</strong> Aset ornamen, font, dan susunan prosesi adat disesuaikan dengan tema.
+                Musik latar dan foto galeri tetap umum serta bebas dipilih/diunggah.
+              </div>
               <CButton
                 color="dark"
                 disabled={!selectedThemeId}
                 onClick={() => setStep(2)}
-                style={{ backgroundColor: '#34342F', borderColor: '#34342F', color: '#F1EDE5' }}
+                style={{ backgroundColor: '#C5A059', borderColor: '#C5A059', color: '#FFFFFF', fontWeight: 600 }}
               >
                 Lanjut: Data Acara <CIcon icon={cilArrowRight} className="ms-1" />
               </CButton>
