@@ -33,3 +33,4 @@ FloatingMusicPlayer.propTypes = {
 }
 
 export default FloatingMusicPlayer
+

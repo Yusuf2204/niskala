@@ -3,6 +3,92 @@
 );
 @use "vendors/simplebar";
 
+// ============================================================
+// Niskala Design System Theme Overrides (docs/design.md)
+// ============================================================
+
+:root,
+[data-coreui-theme="light"] {
+  // Light Theme Variables (60-30-10: Ivory - Charcoal - Muted Gold)
+  --bg-color: #F1EDE5;
+  --surface-color: #FAF8F5;
+  --text-primary: #34342F;
+  --text-muted: rgba(52, 52, 47, 0.65);
+  --primary-color: #34342F;
+  --accent-gold: #A68B65;
+  --border-color: rgba(52, 52, 47, 0.12);
+
+  // CoreUI Semantic Overrides for Light Theme
+  --cui-body-bg: #F1EDE5;
+  --cui-body-color: #34342F;
+  --cui-tertiary-bg: #F1EDE5;
+  --cui-secondary-bg: #EAE5DC;
+  --cui-card-bg: #FAF8F5;
+  --cui-card-color: #34342F;
+  --cui-card-border-color: rgba(52, 52, 47, 0.12);
+  --cui-border-color: rgba(52, 52, 47, 0.15);
+  --cui-border-color-translucent: rgba(52, 52, 47, 0.1);
+  --cui-header-bg: #FAF8F5;
+  --cui-footer-bg: #FAF8F5;
+  --cui-primary: #34342F;
+  --cui-primary-rgb: 52, 52, 47;
+}
+
+[data-coreui-theme="dark"],
+.theme-dark {
+  // Dark Theme Variables (Deep Espresso - Soft Ivory - Champagne Gold)
+  --bg-color: #242420;
+  --surface-color: #2D2D28;
+  --text-primary: #F1EDE5;
+  --text-muted: rgba(241, 237, 229, 0.70);
+  --primary-color: #D8C2A0;
+  --accent-gold: #D8C2A0;
+  --border-color: rgba(216, 194, 160, 0.18);
+
+  // CoreUI Semantic Overrides for Dark Theme
+  --cui-body-bg: #242420;
+  --cui-body-color: #F1EDE5;
+  --cui-tertiary-bg: #242420;
+  --cui-secondary-bg: #2D2D28;
+  --cui-card-bg: #2D2D28;
+  --cui-card-color: #F1EDE5;
+  --cui-card-border-color: rgba(216, 194, 160, 0.18);
+  --cui-border-color: rgba(216, 194, 160, 0.18);
+  --cui-border-color-translucent: rgba(216, 194, 160, 0.12);
+  --cui-header-bg: #2D2D28;
+  --cui-footer-bg: #2D2D28;
+  --cui-primary: #D8C2A0;
+  --cui-primary-rgb: 216, 194, 160;
+}
+
+// Sidebar styling matching Section 3.1: Charcoal background with Muted Gold active item
+.sidebar {
+  --cui-sidebar-bg: #1E1E1B;
+  --cui-sidebar-color: #F1EDE5;
+  --cui-sidebar-border-color: rgba(166, 139, 101, 0.2);
+  --cui-sidebar-header-bg: #181816;
+  --cui-sidebar-footer-bg: #181816;
+
+  .nav-link {
+    color: rgba(241, 237, 229, 0.85);
+
+    &:hover {
+      color: #FFFFFF;
+      background-color: rgba(166, 139, 101, 0.15);
+    }
+
+    &.active {
+      color: #D8C2A0 !important;
+      background-color: rgba(166, 139, 101, 0.25) !important;
+      font-weight: 600;
+
+      .nav-icon {
+        color: #D8C2A0 !important;
+      }
+    }
+  }
+}
+
 body {
   background-color: var(--cui-tertiary-bg);
 }

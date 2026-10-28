@@ -123,3 +123,4 @@ EnvelopeGate.propTypes = {
 }
 
 export default EnvelopeGate
+

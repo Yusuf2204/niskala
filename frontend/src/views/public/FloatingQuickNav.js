@@ -72,3 +72,4 @@ FloatingQuickNav.propTypes = {
 }
 
 export default FloatingQuickNav
+

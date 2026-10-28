@@ -1,8 +1,8 @@
-# PRD 04: Renderer Undangan Publik & Tema
+# PRD 04: Renderer Undangan Publik (Public Invitation Renderer)
 
-**Fase Roadmap:** Fase 3 (Renderer Publik & Tema MVP)  
+**Fase Roadmap:** Fase 3 (Renderer Publik MVP)  
 **Dokumen Acuan:** [project-plan-undangan-digital.md](file:///var/www/html/niskala/docs/project-plan-undangan-digital.md) | [design.md](file:///var/www/html/niskala/docs/design.md) | [rules.md](file:///var/www/html/niskala/docs/rules.md) | [03-visual-editor.md](file:///var/www/html/niskala/docs/prd/03-visual-editor.md)  
-**Status:** Selesai Diimplementasikan (Fase 3 Renderer Publik & Tema MVP)
+**Status:** Selesai Diimplementasikan (Fase 3 Renderer Publik MVP)
 
 ---
 
@@ -56,26 +56,20 @@ flowchart TD
 * **Rangkaian Acara (Sesi):** Rincian Akad, Resepsi, atau Ibadah dengan tombol interaktif *"Simpan ke Kalender"* (Google Calendar / .ics).
 * **Lokasi & Penunjuk Arah:** Peta interaktif atau peta statis dengan tombol *"Buka di Google Maps"* dan *"Buka di Waze"*.
 * **Galeri Foto:** Susunan foto-foto pre-wedding dalam bentuk grid responsif yang dapat diperbesar (*lightbox image viewer*) saat diklik.
-* **Formulir RSVP & Buku Tamu:** Form konfirmasi kehadiran dan kolom ucapan selamat (rincian di PRD 04).
+* **Formulir RSVP & Buku Tamu:** Form konfirmasi kehadiran terpersonalisasi nama tamu dan kolom ucapan selamat.
 * **Footer:** Ucapan terima kasih keluarga dan kredit platform Niskala.
 
 ---
 
-## 4. Tema Bawaan MVP (Theme Presets)
+## 4. Klarifikasi Desain: Tema Aplikasi vs Tema Undangan
 
-Mengacu pada kaidah warna di [design.md](file:///var/www/html/niskala/docs/design.md):
+1. **Tema Aplikasi (CMS Dashboard & Workspace Platform):**
+   * Kaidah warna visual pada [design.md](file:///var/www/html/niskala/docs/design.md) (Mode Terang Ivory/Charcoal/Gold dan Mode Gelap Deep Espresso/Champagne Gold) berlaku untuk **antarmuka aplikasi Niskala** (dashboard, navbar, sidebar, card data, dan property inspector).
+   * Dashboard Niskala mendukung switch instan antara *Light Mode* dan *Dark Mode*.
 
-### 4.1 Tema 1: `classic-ivory` (Light Theme)
-* **Filosofi:** Elegan, klasik, bernuansa kertas undangan mewah, hangat, dan abadi.
-* **60% Ivory (`#F1EDE5`):** Background utama seluruh halaman dan card container.
-* **30% Charcoal (`#34342F`):** Teks judul, teks isi, navbar, dan tombol primer.
-* **10% Muted Gold (`#A68B65`):** Border amplop, divider ornamen floral, tombol buka undangan, angka countdown.
-
-### 4.2 Tema 2: `modern-charcoal` (Dark Theme)
-* **Filosofi:** Dramatis, eksklusif, mewah, dan berkelas tinggi untuk resepsi malam hari.
-* **Background:** `#242420` (Deep Espresso Charcoal).
-* **Teks & Headings:** `#F1EDE5` (Soft Ivory).
-* **Primary & Aksen:** `#D8C2A0` (Champagne Gold).
+2. **Tema Khusus Undangan (Invitation Themes / Presets):**
+   * Tema visual khusus untuk dekorasi undangan pernikahan (misalnya ragam gaya rustic, botanical floral, royal modern, tradisi adat nusantara) merupakan fitur lanjutan yang akan dikembangkan secara terpisah di masa mendatang (*Fase Katalog Tema Undangan*).
+   * Pada tahap MVP PRD 04 ini, tampilan undangan publik difokuskan pada keterbacaan yang abadi (*timeless*), responsif di semua perangkat ponsel, serta terisolasi penuh (`.invitation-canvas-isolated`) dari tema gelap/terang dashboard admin.
 
 ---
 
