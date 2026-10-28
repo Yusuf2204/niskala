@@ -24,7 +24,6 @@ const AppSidebar = () => {
   return (
     <CSidebar
       className="border-end"
-      colorScheme="dark"
       position="fixed"
       unfoldable={unfoldable}
       visible={sidebarShow}
@@ -33,7 +32,7 @@ const AppSidebar = () => {
       }}
     >
       <CSidebarHeader className="border-bottom">
-        <CSidebarBrand to="/" className="fw-bold text-white">
+        <CSidebarBrand to="/" className="fw-bold text-body">
           {company?.comp_logo ? (
             <img
               src={company.comp_logo}
@@ -48,7 +47,6 @@ const AppSidebar = () => {
 
         <CCloseButton
           className="d-lg-none"
-          dark
           onClick={() => dispatch({ type: 'set', sidebarShow: false })}
         />
       </CSidebarHeader>

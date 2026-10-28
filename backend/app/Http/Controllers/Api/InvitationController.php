@@ -64,12 +64,13 @@ class InvitationController extends Controller
             ? $validated['slug']
             : $this->generateUniqueSlug($validated['title']);
 
-        $theme = Theme::findOrFail($validated['theme_id']);
+        $themeId = $validated['theme_id'] ?? null;
+        $theme = $themeId ? Theme::find($themeId) : null;
 
-        $invitation = DB::transaction(function () use ($user, $validated, $slug, $theme) {
+        $invitation = DB::transaction(function () use ($user, $validated, $slug, $theme, $themeId) {
             $invitation = Invitation::create([
                 'user_id' => $user->id,
-                'theme_id' => $theme->id,
+                'theme_id' => $themeId,
                 'title' => $validated['title'],
                 'event_type' => $validated['event_type'] ?? 'wedding',
                 'slug' => $slug,
@@ -78,8 +79,8 @@ class InvitationController extends Controller
                 'meta_description' => $validated['meta_description'] ?? null,
             ]);
 
-            // Initialize default content based on theme configuration
-            $defaultConfig = $theme->default_config ?? [];
+            // Initialize default content based on theme configuration or standard defaults
+            $defaultConfig = $theme?->default_config ?? [];
             $defaultSections = $defaultConfig['default_sections'] ?? [
                 'HeroCover',
                 'CoupleProfile',

@@ -44,7 +44,7 @@ class UpdateInvitationRequest extends FormRequest
 
         return [
             'title' => 'sometimes|required|string|max:255',
-            'theme_id' => 'sometimes|required|integer|exists:ms_themes,id',
+            'theme_id' => 'sometimes|nullable|integer|exists:ms_themes,id',
             'event_type' => 'sometimes|nullable|string|in:wedding,birthday,general',
             'slug' => [
                 'sometimes',

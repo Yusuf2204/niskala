@@ -32,6 +32,21 @@
   --cui-footer-bg: #FAF8F5;
   --cui-primary: #34342F;
   --cui-primary-rgb: 52, 52, 47;
+
+  // Sidebar Light Theme (Matches Ivory / Surface / Charcoal)
+  --cui-sidebar-bg: #FAF8F5;
+  --cui-sidebar-color: #34342F;
+  --cui-sidebar-border-color: rgba(52, 52, 47, 0.12);
+  --cui-sidebar-header-bg: #FAF8F5;
+  --cui-sidebar-footer-bg: #FAF8F5;
+  --cui-sidebar-nav-link-color: #34342F;
+  --cui-sidebar-nav-link-hover-color: #1a1a17;
+  --cui-sidebar-nav-link-hover-bg: rgba(166, 139, 101, 0.12);
+  --cui-sidebar-nav-link-active-color: #A68B65;
+  --cui-sidebar-nav-link-active-bg: rgba(166, 139, 101, 0.18);
+  --cui-sidebar-nav-link-icon-color: #A68B65;
+  --cui-sidebar-toggler-color: #34342F;
+  --cui-sidebar-toggler-bg: rgba(52, 52, 47, 0.08);
 }
 
 [data-coreui-theme="dark"],
@@ -59,33 +74,76 @@
   --cui-footer-bg: #2D2D28;
   --cui-primary: #D8C2A0;
   --cui-primary-rgb: 216, 194, 160;
-}
 
-// Sidebar styling matching Section 3.1: Charcoal background with Muted Gold active item
-.sidebar {
+  // Sidebar Dark Theme (Matches Deep Espresso / Charcoal / Champagne Gold)
   --cui-sidebar-bg: #1E1E1B;
   --cui-sidebar-color: #F1EDE5;
-  --cui-sidebar-border-color: rgba(166, 139, 101, 0.2);
+  --cui-sidebar-border-color: rgba(216, 194, 160, 0.18);
   --cui-sidebar-header-bg: #181816;
   --cui-sidebar-footer-bg: #181816;
+  --cui-sidebar-nav-link-color: rgba(241, 237, 229, 0.85);
+  --cui-sidebar-nav-link-hover-color: #FFFFFF;
+  --cui-sidebar-nav-link-hover-bg: rgba(216, 194, 160, 0.12);
+  --cui-sidebar-nav-link-active-color: #D8C2A0;
+  --cui-sidebar-nav-link-active-bg: rgba(216, 194, 160, 0.22);
+  --cui-sidebar-nav-link-icon-color: #D8C2A0;
+  --cui-sidebar-toggler-color: #D8C2A0;
+  --cui-sidebar-toggler-bg: rgba(216, 194, 160, 0.10);
+}
+
+// Sidebar styling adapting dynamically to the application theme
+.sidebar {
+  border-right: 1px solid var(--cui-sidebar-border-color) !important;
+  background-color: var(--cui-sidebar-bg) !important;
+  color: var(--cui-sidebar-color) !important;
+
+  .sidebar-header,
+  .sidebar-footer {
+    background-color: var(--cui-sidebar-header-bg) !important;
+    border-color: var(--cui-sidebar-border-color) !important;
+  }
+
+  .sidebar-brand {
+    color: var(--cui-sidebar-color) !important;
+  }
 
   .nav-link {
-    color: rgba(241, 237, 229, 0.85);
+    color: var(--cui-sidebar-nav-link-color);
+    transition: all 0.15s ease-in-out;
+
+    .nav-icon {
+      color: inherit;
+      opacity: 0.85;
+    }
 
     &:hover {
-      color: #FFFFFF;
-      background-color: rgba(166, 139, 101, 0.15);
+      color: var(--cui-sidebar-nav-link-hover-color) !important;
+      background-color: var(--cui-sidebar-nav-link-hover-bg) !important;
     }
 
     &.active {
-      color: #D8C2A0 !important;
-      background-color: rgba(166, 139, 101, 0.25) !important;
+      color: var(--cui-sidebar-nav-link-active-color) !important;
+      background-color: var(--cui-sidebar-nav-link-active-bg) !important;
       font-weight: 600;
 
       .nav-icon {
-        color: #D8C2A0 !important;
+        color: var(--cui-sidebar-nav-link-active-color) !important;
+        opacity: 1;
       }
     }
+  }
+
+  .nav-group-toggle {
+    color: var(--cui-sidebar-nav-link-color);
+
+    &:hover {
+      color: var(--cui-sidebar-nav-link-hover-color);
+      background-color: var(--cui-sidebar-nav-link-hover-bg);
+    }
+  }
+
+  .sidebar-toggler {
+    color: var(--cui-sidebar-toggler-color);
   }
 }
 

@@ -74,9 +74,25 @@ const Themes = () => {
           <p className="mt-2 text-muted small">Memuat katalog tema...</p>
         </div>
       ) : themes.length === 0 ? (
-        <CCard className="text-center py-5 border-0 shadow-sm">
-          <CCardBody>
-            <p className="text-muted mb-0">Belum ada tema yang terdaftar dalam katalog.</p>
+        <CCard className="text-center py-5 border-0 shadow-sm rounded-3">
+          <CCardBody className="py-5">
+            <div
+              className="mx-auto mb-3 d-flex align-items-center justify-content-center rounded-circle"
+              style={{
+                width: '64px',
+                height: '64px',
+                backgroundColor: 'rgba(166, 139, 101, 0.15)',
+                color: '#A68B65',
+                fontSize: '1.75rem',
+              }}
+            >
+              ✦
+            </div>
+            <h5 className="fw-bold text-body mb-2">Katalog Tema Sedang Dikonsepkan</h5>
+            <p className="text-muted small mx-auto mb-0" style={{ maxWidth: '480px' }}>
+              Data tema undangan visual khusus (seperti rustic, floral, adat tradisi, dan modern)
+              dikosongkan sementara untuk pematangan konsep dan akan hadir pada fase mendatang.
+            </p>
           </CCardBody>
         </CCard>
       ) : (

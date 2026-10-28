@@ -71,15 +71,15 @@ const CreateInvitation = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault()
-    if (!title || !selectedThemeId) {
-      toastError('Mohon lengkapi judul undangan dan pilih tema.')
+    if (!title) {
+      toastError('Mohon lengkapi judul undangan.')
       return
     }
 
     setSubmitting(true)
     const payload = {
       title,
-      theme_id: selectedThemeId,
+      theme_id: selectedThemeId || undefined,
       event_type: eventType,
       slug: slug || undefined,
       event_title: eventTitle || undefined,
@@ -160,6 +160,34 @@ const CreateInvitation = () => {
               <CSpinner color="secondary" />
               <p className="mt-2 text-muted small">Memuat katalog tema...</p>
             </div>
+          ) : themes.length === 0 ? (
+            <CCard className="mb-4 shadow-sm border-0">
+              <CCardBody className="p-5 text-center">
+                <div
+                  className="mx-auto my-3 d-flex align-items-center justify-content-center rounded-circle"
+                  style={{
+                    width: '64px',
+                    height: '64px',
+                    backgroundColor: 'rgba(166, 139, 101, 0.15)',
+                    color: '#A68B65',
+                    fontSize: '1.75rem',
+                  }}
+                >
+                  ✦
+                </div>
+                <h5 className="fw-bold text-body">Tema Undangan Sedang Dikonsepkan</h5>
+                <p className="text-muted small mx-auto mb-4" style={{ maxWidth: '480px' }}>
+                  Katalog tema undangan visual khusus akan dirancang pada tahap berikutnya.
+                  Anda dapat langsung melanjutkan membuat draf undangan dengan tata letak standar Niskala.
+                </p>
+                <CButton
+                  onClick={() => setStep(2)}
+                  style={{ backgroundColor: '#A68B65', color: '#FFFFFF', fontWeight: 600 }}
+                >
+                  Lanjut: Data Acara <CIcon icon={cilArrowRight} className="ms-1" />
+                </CButton>
+              </CCardBody>
+            </CCard>
           ) : (
             <CRow className="g-4 mb-4">
               {themes.map((theme) => {
@@ -247,16 +275,18 @@ const CreateInvitation = () => {
             </CRow>
           )}
 
-          <div className="d-flex justify-content-end">
-            <CButton
-              color="dark"
-              disabled={!selectedThemeId}
-              onClick={() => setStep(2)}
-              style={{ backgroundColor: '#34342F', borderColor: '#34342F', color: '#F1EDE5' }}
-            >
-              Lanjut: Data Acara <CIcon icon={cilArrowRight} className="ms-1" />
-            </CButton>
-          </div>
+          {themes.length > 0 && (
+            <div className="d-flex justify-content-end">
+              <CButton
+                color="dark"
+                disabled={!selectedThemeId}
+                onClick={() => setStep(2)}
+                style={{ backgroundColor: '#34342F', borderColor: '#34342F', color: '#F1EDE5' }}
+              >
+                Lanjut: Data Acara <CIcon icon={cilArrowRight} className="ms-1" />
+              </CButton>
+            </div>
+          )}
         </div>
       )}
 

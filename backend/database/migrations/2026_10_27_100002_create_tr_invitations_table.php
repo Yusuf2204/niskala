@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('tr_invitations', function (Blueprint $table) {
             $table->id();
             $table->foreignId('user_id')->constrained('users')->cascadeOnDelete();
-            $table->foreignId('theme_id')->constrained('ms_themes')->restrictOnDelete();
+            $table->foreignId('theme_id')->nullable()->constrained('ms_themes')->nullOnDelete();
             $table->string('title', 255);
             $table->enum('event_type', ['wedding', 'birthday', 'general'])->default('wedding');
             $table->string('slug', 100)->unique();

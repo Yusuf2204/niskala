@@ -39,7 +39,7 @@ class StoreInvitationRequest extends FormRequest
     {
         return [
             'title' => 'required|string|max:255',
-            'theme_id' => 'required|integer|exists:ms_themes,id',
+            'theme_id' => 'nullable|integer|exists:ms_themes,id',
             'event_type' => 'nullable|string|in:wedding,birthday,general',
             'slug' => [
                 'nullable',
