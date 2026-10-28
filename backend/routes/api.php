@@ -29,6 +29,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/me', [AuthController::class, 'me']);
     Route::post('/logout', [AuthController::class, 'logout']);
     Route::get('/dashboard-summary', [DashboardController::class, 'summary']);
+    Route::put('profile', [UserController::class, 'updateProfile']);
     Route::post('change-password', [UserController::class, 'changePassword']);
 
     // Invitations & Master Management (PRD 01 & PRD 02)

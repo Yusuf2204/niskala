@@ -39,6 +39,8 @@ class AuthController extends Controller
 
         $accessToken = $user->createToken('cms-token', ['cms:access'], $expiresAt);
 
+        $user->load('role');
+
         return response()->json([
             'data' => [
                 'token' => $accessToken->plainTextToken,
@@ -53,10 +55,12 @@ class AuthController extends Controller
 
     public function me(Request $request)
     {
+        $user = $request->user()->load('role');
+
         $data = [
-            'user' => $request->user(),
+            'user' => $user,
             'company' => Company::first(),
-            'navigation' => $this->navigation->forRole($request->user()->role_id),
+            'navigation' => $this->navigation->forRole($user->role_id),
         ];
 
         return response()->json([

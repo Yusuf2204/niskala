@@ -229,6 +229,45 @@ class CmsStressTest extends TestCase
         ])->assertStatus(200);
     }
 
+    public function test_user_profile_update_and_avatar_flow(): void
+    {
+        $this->seed(DatabaseSeeder::class);
+
+        $loginRes = $this->postJson('/api/login', [
+            'email' => 'admin@example.com',
+            'password' => 'adminpassword123',
+        ]);
+        $headers = ['Authorization' => 'Bearer '.$loginRes->json('data.token')];
+
+        // 1. Update profile with name, email, and avatar
+        $fakeAvatar = 'data:image/webp;base64,UklGRhoAAABXRUJQVlA4TA0AAAAvAAAAEAcQERGIiP4HAA==';
+        $updateRes = $this->withHeaders($headers)->putJson('/api/profile', [
+            'name' => 'Administrator Niskala',
+            'email' => 'admin.new@example.com',
+            'avatar' => $fakeAvatar,
+        ]);
+
+        $updateRes->assertStatus(200);
+        $this->assertEquals('Administrator Niskala', $updateRes->json('data.name'));
+        $this->assertEquals('admin.new@example.com', $updateRes->json('data.email'));
+        $this->assertEquals($fakeAvatar, $updateRes->json('data.avatar'));
+
+        // 2. Verify via /me endpoint
+        $meRes = $this->withHeaders($headers)->getJson('/api/me');
+        $meRes->assertStatus(200);
+        $this->assertEquals('Administrator Niskala', $meRes->json('data.user.name'));
+        $this->assertEquals($fakeAvatar, $meRes->json('data.user.avatar'));
+
+        // 3. Remove avatar
+        $removeRes = $this->withHeaders($headers)->putJson('/api/profile', [
+            'name' => 'Administrator Niskala',
+            'email' => 'admin.new@example.com',
+            'avatar' => null,
+        ]);
+        $removeRes->assertStatus(200);
+        $this->assertNull($removeRes->json('data.avatar'));
+    }
+
     public function test_user_crud_and_validation_edge_cases(): void
     {
         $this->seed(DatabaseSeeder::class);
