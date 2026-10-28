@@ -193,7 +193,11 @@ const PublicInvitation = () => {
 
           return (
             <div key={sec.id} id={anchorId}>
-              <Component props={sec.props || {}} isWeb={false} />
+              <Component
+                props={{ ...(sec.props || {}), guestName }}
+                isWeb={false}
+                onImageClick={(url) => setActiveLightboxImg(url)}
+              />
             </div>
           )
         })}

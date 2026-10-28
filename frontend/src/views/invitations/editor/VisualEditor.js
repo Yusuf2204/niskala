@@ -171,10 +171,10 @@ const VisualEditor = () => {
       }
       setAutosaveStatus('idle')
       debounceTimer.current = setTimeout(() => {
-        saveContentToServer(newSections, musicUrl)
+        saveContentToServer(newSections, musicUrlRef.current)
       }, DEBOUNCE_DELAY)
     },
-    [pushHistory, saveContentToServer, musicUrl],
+    [pushHistory, saveContentToServer],
   )
 
   // Undo handler
@@ -186,9 +186,9 @@ const VisualEditor = () => {
       setSections(parsed)
       setHistoryIndex(prevIndex)
       if (debounceTimer.current) clearTimeout(debounceTimer.current)
-      saveContentToServer(parsed, musicUrl)
+      saveContentToServer(parsed, musicUrlRef.current)
     }
-  }, [history, historyIndex, musicUrl, saveContentToServer])
+  }, [history, historyIndex, saveContentToServer])
 
   // Redo handler
   const handleRedo = useCallback(() => {
@@ -199,9 +199,9 @@ const VisualEditor = () => {
       setSections(parsed)
       setHistoryIndex(nextIndex)
       if (debounceTimer.current) clearTimeout(debounceTimer.current)
-      saveContentToServer(parsed, musicUrl)
+      saveContentToServer(parsed, musicUrlRef.current)
     }
-  }, [history, historyIndex, musicUrl, saveContentToServer])
+  }, [history, historyIndex, saveContentToServer])
 
   // Keyboard shortcut listener for Ctrl+Z and Ctrl+Y
   useEffect(() => {
@@ -279,17 +279,17 @@ const VisualEditor = () => {
     setMusicUrl(newUrl)
     if (debounceTimer.current) clearTimeout(debounceTimer.current)
     debounceTimer.current = setTimeout(() => {
-      saveContentToServer(sections, newUrl)
+      saveContentToServer(sectionsRef.current, newUrl)
     }, DEBOUNCE_DELAY)
   }
 
   const handleManualSave = () => {
     if (debounceTimer.current) clearTimeout(debounceTimer.current)
-    saveContentToServer(sections, musicUrl)
+    saveContentToServer(sectionsRef.current, musicUrlRef.current)
   }
 
   const handlePublish = async () => {
-    if (sections.length === 0) {
+    if (sectionsRef.current.length === 0) {
       toastError('Tidak dapat mempublikasikan undangan tanpa section konten.')
       return
     }
@@ -298,8 +298,8 @@ const VisualEditor = () => {
     try {
       // First save current content
       await api.put(`/v1/invitations/${id}/content`, {
-        sections_data: sections,
-        music_url: musicUrl || null,
+        sections_data: sectionsRef.current,
+        music_url: musicUrlRef.current || null,
         settings: invitation?.content?.settings || {},
       })
       // Then publish

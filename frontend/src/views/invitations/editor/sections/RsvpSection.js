@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import PropTypes from 'prop-types'
 
 const RsvpSection = ({ props = {}, isWeb = true }) => {
@@ -6,15 +6,22 @@ const RsvpSection = ({ props = {}, isWeb = true }) => {
     title = 'Konfirmasi Kehadiran & Doa',
     subtitle = 'Merupakan kehormatan bagi kami atas kehadiran dan doa restu Anda',
     note = 'Mohon berkenan mengisi konfirmasi sebelum tanggal 1 Desember 2026 demi kelancaran penyambutan tamu.',
+    guestName = '',
   } = props
 
   const [formSubmitted, setFormSubmitted] = useState(false)
   const [formData, setFormData] = useState({
-    name: '',
+    name: guestName || '',
     attendance: 'hadir',
     pax: '1',
     message: '',
   })
+
+  useEffect(() => {
+    if (guestName && !formData.name) {
+      setFormData((prev) => ({ ...prev, name: guestName }))
+    }
+  }, [guestName])
 
   const handleSubmit = (e) => {
     e.preventDefault()

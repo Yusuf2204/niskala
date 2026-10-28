@@ -1,7 +1,7 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 
-const PhotoGallerySection = ({ props = {}, isWeb = true }) => {
+const PhotoGallerySection = ({ props = {}, isWeb = true, onImageClick }) => {
   const {
     title = 'Momen Bahagia',
     subtitle = 'Galeri Foto Kenangan & Prewedding',
@@ -51,11 +51,15 @@ const PhotoGallerySection = ({ props = {}, isWeb = true }) => {
               style={{
                 height: isWeb ? '220px' : '160px',
                 border: '2px solid rgba(166, 139, 101, 0.25)',
+                cursor: onImageClick ? 'pointer' : 'default',
               }}
+              onClick={() => onImageClick && onImageClick(imgUrl)}
+              title={onImageClick ? 'Klik untuk memperbesar' : undefined}
             >
               <img
                 src={imgUrl}
                 alt={`Galeri ${idx + 1}`}
+                loading="lazy"
                 style={{
                   width: '100%',
                   height: '100%',
@@ -74,6 +78,7 @@ const PhotoGallerySection = ({ props = {}, isWeb = true }) => {
 PhotoGallerySection.propTypes = {
   props: PropTypes.object,
   isWeb: PropTypes.bool,
+  onImageClick: PropTypes.func,
 }
 
 export default PhotoGallerySection
