@@ -25,12 +25,13 @@ class UpdateInvitationContentRequest extends FormRequest
     {
         return [
             'schema_version' => 'nullable|string|max:20',
-            'sections_data' => 'required|array',
+            'sections_data' => 'present|array',
             'sections_data.*.id' => 'required|string',
             'sections_data.*.type' => 'required|string',
             'sections_data.*.props' => 'nullable|array',
             'sections_data.*.order' => 'nullable|integer',
-            'music_url' => 'nullable|string|max:255',
+            'sections_data.*.is_active' => 'nullable|boolean',
+            'music_url' => 'nullable|string|max:1000',
             'settings' => 'nullable|array',
         ];
     }

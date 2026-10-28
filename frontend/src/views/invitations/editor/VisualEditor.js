@@ -38,6 +38,16 @@ const VisualEditor = () => {
   const [historyIndex, setHistoryIndex] = useState(-1)
   const isHistoryAction = useRef(false)
   const debounceTimer = useRef(null)
+  const sectionsRef = useRef([])
+  const musicUrlRef = useRef('')
+
+  useEffect(() => {
+    sectionsRef.current = sections
+  }, [sections])
+
+  useEffect(() => {
+    musicUrlRef.current = musicUrl
+  }, [musicUrl])
 
   // Initial load
   const loadInvitationData = async () => {
@@ -138,7 +148,8 @@ const VisualEditor = () => {
         setLastSavedAt(
           now.toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit', second: '2-digit' }),
         )
-      } catch {
+      } catch (err) {
+        console.error('Autosave error details:', err.response?.data || err.message)
         setAutosaveStatus('error')
       }
     },
@@ -223,23 +234,25 @@ const VisualEditor = () => {
   }
 
   const handleMoveSection = (fromIndex, toIndex) => {
-    if (toIndex < 0 || toIndex >= sections.length) return
-    const updated = [...sections]
+    const current = sectionsRef.current
+    if (toIndex < 0 || toIndex >= current.length) return
+    const updated = [...current]
     const [moved] = updated.splice(fromIndex, 1)
     updated.splice(toIndex, 0, moved)
     updateSectionsState(updated)
   }
 
   const handleDuplicateSection = (sectionId) => {
-    const idx = sections.findIndex((s) => s.id === sectionId)
+    const current = sectionsRef.current
+    const idx = current.findIndex((s) => s.id === sectionId)
     if (idx === -1) return
-    const original = sections[idx]
+    const original = current[idx]
     const duplicated = {
       ...original,
       id: `sec-${original.type.toLowerCase()}-${Date.now().toString(36)}`,
       props: JSON.parse(JSON.stringify(original.props)),
     }
-    const updated = [...sections]
+    const updated = [...current]
     updated.splice(idx + 1, 0, duplicated)
     updateSectionsState(updated)
     setSelectedSectionId(duplicated.id)
@@ -247,7 +260,8 @@ const VisualEditor = () => {
   }
 
   const handleDeleteSection = (sectionId) => {
-    const updated = sections.filter((s) => s.id !== sectionId)
+    const current = sectionsRef.current
+    const updated = current.filter((s) => s.id !== sectionId)
     updateSectionsState(updated)
     if (selectedSectionId === sectionId) {
       setSelectedSectionId(updated[0]?.id || null)
@@ -256,7 +270,8 @@ const VisualEditor = () => {
   }
 
   const handleUpdateProps = (sectionId, newProps) => {
-    const updated = sections.map((s) => (s.id === sectionId ? { ...s, props: newProps } : s))
+    const current = sectionsRef.current
+    const updated = current.map((s) => (s.id === sectionId ? { ...s, props: newProps } : s))
     updateSectionsState(updated)
   }
 
