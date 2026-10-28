@@ -2,7 +2,7 @@
 
 **Fase Roadmap:** Fase 2 (Editor Visual Undangan)  
 **Dokumen Acuan:** [project-plan-undangan-digital.md](file:///var/www/html/niskala/docs/project-plan-undangan-digital.md) | [design.md](file:///var/www/html/niskala/docs/design.md) | [rules.md](file:///var/www/html/niskala/docs/rules.md) | [02-navigasi-menu-dan-master-data.md](file:///var/www/html/niskala/docs/prd/02-navigasi-menu-dan-master-data.md)  
-**Status:** Draf Spesifikasi Lengkap
+**Status:** Selesai Diimplementasikan (Fase 2 Editor Visual - Default Web View)
 
 ---
 
@@ -133,9 +133,10 @@ sequenceDiagram
 
 ## 5. Kriteria Penerimaan & Verifikasi (Acceptance Criteria)
 
-1. [ ] **Manipulasi Section:** Pengguna dapat menambah, menggeser urutan, menduplikasi, dan menghapus section di kanvas tanpa reload halaman.
-2. [ ] **Pratinjau Instan:** Setiap perubahan pada panel kanan langsung ter-render di kanvas preview dalam waktu `< 50ms`.
-3. [ ] **Undo / Redo Berfungsi:** Tombol Undo mengembalikan kanvas ke state sebelumnya dengan tepat, dan tombol Redo memajukan kembali state.
-4. [ ] **Autosave Berjalan:** Indikator status berubah dari *Idle* → *Menyimpan...* → *Tersimpan*, dan data draft tetap utuh saat halaman di-refresh.
-5. [ ] **Keamanan Konten:** Input teks tersanitasi; tag `<script>` atau injeksi HTML tidak dieksekusi di kanvas preview.
+1. [x] **Manipulasi Section:** Pengguna dapat menambah, menggeser urutan, menduplikasi, dan menghapus section di kanvas tanpa reload halaman.
+2. [x] **Pratinjau Instan:** Setiap perubahan pada panel kanan langsung ter-render di kanvas preview dalam waktu `< 50ms`.
+3. [x] **Undo / Redo Berfungsi:** Tombol Undo mengembalikan kanvas ke state sebelumnya dengan tepat, dan tombol Redo memajukan kembali state (didukung shortcut Ctrl+Z & Ctrl+Y).
+4. [x] **Autosave Berjalan:** Indikator status berubah dari *Idle* → *Menyimpan...* → *Tersimpan*, dan data draft tetap utuh saat halaman di-refresh.
+5. [x] **Keamanan Konten:** Input teks tersanitasi; tag `<script>` atau injeksi HTML tidak dieksekusi di kanvas preview, serta proteksi Anti-IDOR pada endpoint media upload dan update content.
+6. [x] **Default Tampilan Versi Web:** Sesuai instruksi pengguna, viewport kanvas default saat pertama dibuka adalah **Web / Desktop Version**, dengan opsi switcher ke frame mobile 390px.
 

@@ -21,7 +21,7 @@ class CmsStressTest extends TestCase
 
         config([
             'auth.admin.email' => 'admin@example.com',
-            'auth.admin.password' => 'secret12345678',
+            'auth.admin.password' => 'adminpassword123',
             'auth.admin.name' => 'Super Admin',
         ]);
     }
@@ -59,7 +59,7 @@ class CmsStressTest extends TestCase
         // Valid credentials
         $loginRes = $this->postJson('/api/login', [
             'email' => 'admin@example.com',
-            'password' => 'secret12345678',
+            'password' => 'adminpassword123',
         ]);
         $loginRes->assertStatus(200)
             ->assertJsonStructure([
@@ -143,7 +143,7 @@ class CmsStressTest extends TestCase
         $admin = User::where('email', 'admin@example.com')->first();
         $loginRes = $this->postJson('/api/login', [
             'email' => 'admin@example.com',
-            'password' => 'secret12345678',
+            'password' => 'adminpassword123',
         ]);
         $headers = ['Authorization' => 'Bearer '.$loginRes->json('data.token')];
 
@@ -166,7 +166,7 @@ class CmsStressTest extends TestCase
         $admin = User::where('email', 'admin@example.com')->first();
         $loginRes = $this->postJson('/api/login', [
             'email' => 'admin@example.com',
-            'password' => 'secret12345678',
+            'password' => 'adminpassword123',
         ]);
         $headers = ['Authorization' => 'Bearer '.$loginRes->json('data.token')];
 
@@ -188,7 +188,7 @@ class CmsStressTest extends TestCase
 
         $loginRes = $this->postJson('/api/login', [
             'email' => 'admin@example.com',
-            'password' => 'secret12345678',
+            'password' => 'adminpassword123',
         ]);
         $headers = ['Authorization' => 'Bearer '.$loginRes->json('data.token')];
 
@@ -202,7 +202,7 @@ class CmsStressTest extends TestCase
 
         // Mismatched confirmation
         $mismatchRes = $this->withHeaders($headers)->postJson('/api/change-password', [
-            'current_password' => 'secret12345678',
+            'current_password' => 'adminpassword123',
             'new_password' => 'brandnewpassword123',
             'confirm_password' => 'differentpassword',
         ]);
@@ -210,7 +210,7 @@ class CmsStressTest extends TestCase
 
         // Successful password change
         $successRes = $this->withHeaders($headers)->postJson('/api/change-password', [
-            'current_password' => 'secret12345678',
+            'current_password' => 'adminpassword123',
             'new_password' => 'brandnewpassword123',
             'confirm_password' => 'brandnewpassword123',
         ]);
@@ -219,7 +219,7 @@ class CmsStressTest extends TestCase
         // Login with old password fails
         $this->postJson('/api/login', [
             'email' => 'admin@example.com',
-            'password' => 'secret12345678',
+            'password' => 'adminpassword123',
         ])->assertStatus(401);
 
         // Login with new password succeeds
@@ -235,7 +235,7 @@ class CmsStressTest extends TestCase
 
         $loginRes = $this->postJson('/api/login', [
             'email' => 'admin@example.com',
-            'password' => 'secret12345678',
+            'password' => 'adminpassword123',
         ]);
         $headers = ['Authorization' => 'Bearer '.$loginRes->json('data.token')];
         $userRole = Roles::where('role_name', 'user')->first();
@@ -299,7 +299,7 @@ class CmsStressTest extends TestCase
 
         $loginRes = $this->postJson('/api/login', [
             'email' => 'admin@example.com',
-            'password' => 'secret12345678',
+            'password' => 'adminpassword123',
         ]);
         $headers = ['Authorization' => 'Bearer '.$loginRes->json('data.token')];
 
@@ -337,7 +337,7 @@ class CmsStressTest extends TestCase
 
         $loginRes = $this->postJson('/api/login', [
             'email' => 'admin@example.com',
-            'password' => 'secret12345678',
+            'password' => 'adminpassword123',
         ]);
         $headers = ['Authorization' => 'Bearer '.$loginRes->json('data.token')];
 
@@ -369,7 +369,7 @@ class CmsStressTest extends TestCase
         // Admin update
         $loginRes = $this->postJson('/api/login', [
             'email' => 'admin@example.com',
-            'password' => 'secret12345678',
+            'password' => 'adminpassword123',
         ]);
         $headers = ['Authorization' => 'Bearer '.$loginRes->json('data.token')];
 

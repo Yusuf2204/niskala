@@ -8,6 +8,8 @@ use App\Models\Theme;
 use App\Models\User;
 use Database\Seeders\ThemeSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Http\UploadedFile;
+use Illuminate\Support\Facades\Storage;
 use Laravel\Sanctum\Sanctum;
 use Tests\TestCase;
 
@@ -302,5 +304,40 @@ class InvitationApiTest extends TestCase
         $invitation = Invitation::with('content')->find($invitationId);
         $this->assertCount(2, $invitation->content->sections_data);
         $this->assertEquals('#A68B65', $invitation->content->settings['primary_color']);
+    }
+
+    public function test_upload_media_and_idor_protection(): void
+    {
+        Storage::fake('public');
+
+        Sanctum::actingAs($this->userA);
+
+        $createResponse = $this->postJson('/api/v1/invitations', [
+            'title' => 'Media Test Invitation',
+            'theme_id' => $this->theme->id,
+            'slug' => 'media-test-slug',
+        ]);
+        $invitationId = $createResponse->json('data.id');
+
+        $fakeImage = UploadedFile::fake()->image('couple.jpg', 600, 600);
+
+        // User A uploads to User A's invitation -> Success
+        $uploadResponse = $this->postJson("/api/v1/invitations/{$invitationId}/media", [
+            'file' => $fakeImage,
+            'type' => 'photo',
+        ]);
+
+        $uploadResponse->assertStatus(201)
+            ->assertJsonPath('message', 'Media uploaded successfully.')
+            ->assertJsonStructure(['data' => ['file_path', 'filename', 'size', 'mime_type']]);
+
+        // User B tries to upload to User A's invitation -> 403 IDOR blocked
+        Sanctum::actingAs($this->userB);
+        $unauthorizedResponse = $this->postJson("/api/v1/invitations/{$invitationId}/media", [
+            'file' => UploadedFile::fake()->image('hacker.jpg', 600, 600),
+            'type' => 'photo',
+        ]);
+
+        $unauthorizedResponse->assertStatus(403);
     }
 }

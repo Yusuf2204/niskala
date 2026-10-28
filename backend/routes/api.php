@@ -34,6 +34,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::prefix('v1')->group(function () {
         Route::apiResource('invitations', InvitationController::class);
         Route::put('invitations/{id}/content', [InvitationController::class, 'updateContent']);
+        Route::post('invitations/{id}/media', [InvitationController::class, 'uploadMedia']);
         Route::post('invitations/{id}/publish', [InvitationController::class, 'publish']);
         Route::post('invitations/{id}/archive', [InvitationController::class, 'archive']);
         Route::post('music', [MusicController::class, 'store']);

@@ -11,6 +11,7 @@ use App\Models\Theme;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 
 class InvitationController extends Controller
@@ -213,6 +214,41 @@ class InvitationController extends Controller
             'message' => 'Invitation content updated successfully.',
             'errors' => null,
         ]);
+    }
+
+    /**
+     * Upload media file for an invitation.
+     */
+    public function uploadMedia(Request $request, int $id): JsonResponse
+    {
+        $invitation = Invitation::findOrFail($id);
+
+        if ($request->user()->cannot('update', $invitation)) {
+            return response()->json([
+                'data' => null,
+                'message' => 'This action is unauthorized.',
+                'errors' => ['authorization' => ['You do not have permission to upload media for this invitation.']],
+            ], 403);
+        }
+
+        $validated = $request->validate([
+            'file' => ['required', 'file', 'image', 'mimes:jpeg,png,jpg,webp,gif', 'max:5120'],
+            'type' => ['nullable', 'string', 'in:cover,photo,gallery,general'],
+        ]);
+
+        $folder = 'invitations/' . $invitation->id . '/' . ($validated['type'] ?? 'general');
+        $path = $request->file('file')->store($folder, 'public');
+
+        return response()->json([
+            'data' => [
+                'file_path' => '/storage/' . $path,
+                'filename' => $request->file('file')->getClientOriginalName(),
+                'size' => $request->file('file')->getSize(),
+                'mime_type' => $request->file('file')->getMimeType(),
+            ],
+            'message' => 'Media uploaded successfully.',
+            'errors' => null,
+        ], 201);
     }
 
     /**

@@ -7,9 +7,10 @@ const Dashboard = React.lazy(() => import('./views/dashboard/Dashboard'))
 const Themes = React.lazy(() => import('./views/master/themes/Themes'))
 const Music = React.lazy(() => import('./views/master/music/Music'))
 
-// Undangan (PRD 02)
+// Undangan (PRD 02 & PRD 03)
 const Invitations = React.lazy(() => import('./views/invitations/Invitations'))
 const CreateInvitation = React.lazy(() => import('./views/invitations/CreateInvitation'))
+const VisualEditor = React.lazy(() => import('./views/invitations/editor/VisualEditor'))
 
 // Tamu & RSVP (PRD 05)
 const GuestBook = React.lazy(() => import('./views/guests/GuestBook'))
@@ -35,10 +36,11 @@ const routes = [
   { path: '/master/themes', name: 'Tema Desain', element: Themes },
   { path: '/master/music', name: 'Musik Latar', element: Music },
 
-  // Undangan (PRD 02)
+  // Undangan (PRD 02 & PRD 03)
   { path: '/invitations', exact: true, name: 'Undangan', element: Invitations },
   { path: '/invitations/list', name: 'Daftar Undangan', element: Invitations },
   { path: '/invitations/create', name: 'Buat Undangan Baru', element: CreateInvitation },
+  { path: '/invitations/:id/editor', name: 'Visual Editor', element: VisualEditor },
 
   // Tamu & RSVP (PRD 05)
   { path: '/guests', exact: true, name: 'Tamu & RSVP', element: GuestBook },
