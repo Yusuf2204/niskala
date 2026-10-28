@@ -183,14 +183,44 @@ body {
   color: #34342F !important;
   border-right: 1px solid rgba(52, 52, 47, 0.12) !important;
 
-  .sidebar-header,
+  .sidebar-header {
+    background-color: #FAF8F5 !important;
+    border-bottom: 1px solid rgba(52, 52, 47, 0.12) !important;
+  }
+
   .sidebar-footer {
     background-color: #FAF8F5 !important;
-    border-color: rgba(52, 52, 47, 0.12) !important;
+    border-top: 1px solid rgba(52, 52, 47, 0.12) !important;
   }
 
   .sidebar-brand {
     color: #34342F !important;
+    text-decoration: none;
+
+    .sidebar-brand-wordmark {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .sidebar-brand-mark {
+      color: #A68B65;
+      font-size: 1.25rem;
+      line-height: 1;
+    }
+
+    .sidebar-brand-text {
+      font-family: 'Playfair Display', Georgia, serif;
+      font-size: 1.25rem;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      color: #34342F;
+    }
+
+    .sidebar-brand-img {
+      max-height: 32px;
+      object-fit: contain;
+    }
   }
 
   .sidebar-nav {
@@ -252,14 +282,49 @@ body {
   color: #F1EDE5 !important;
   border-right: 1px solid rgba(216, 194, 160, 0.18) !important;
 
-  .sidebar-header,
+  .sidebar-header {
+    background-color: #1E1E1B !important;
+    border-bottom: 1px solid rgba(216, 194, 160, 0.18) !important;
+
+    .btn-close {
+      filter: invert(1) grayscale(100%);
+    }
+  }
+
   .sidebar-footer {
-    background-color: #181816 !important;
-    border-color: rgba(216, 194, 160, 0.18) !important;
+    background-color: #1E1E1B !important;
+    border-top: 1px solid rgba(216, 194, 160, 0.18) !important;
   }
 
   .sidebar-brand {
     color: #F1EDE5 !important;
+    text-decoration: none;
+
+    .sidebar-brand-wordmark {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .sidebar-brand-mark {
+      color: #D8C2A0;
+      font-size: 1.25rem;
+      line-height: 1;
+    }
+
+    .sidebar-brand-text {
+      font-family: 'Playfair Display', Georgia, serif;
+      font-size: 1.25rem;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      color: #F1EDE5;
+    }
+
+    .sidebar-brand-img {
+      max-height: 32px;
+      object-fit: contain;
+      filter: brightness(0) invert(1);
+    }
   }
 
   .sidebar-nav {
