@@ -158,6 +158,30 @@ class InvitationController extends Controller
     }
 
     /**
+     * Display the published invitation for public view by slug.
+     */
+    public function showPublic(string $slug): JsonResponse
+    {
+        $invitation = Invitation::with(['theme', 'content', 'events'])
+            ->where('slug', $slug)
+            ->first();
+
+        if (! $invitation || $invitation->status !== 'published') {
+            return response()->json([
+                'data' => null,
+                'message' => 'Undangan tidak ditemukan atau belum dipublikasikan.',
+                'errors' => ['slug' => ['This invitation is private, draft, or does not exist.']],
+            ], 404);
+        }
+
+        return response()->json([
+            'data' => $invitation,
+            'message' => 'Public invitation retrieved successfully.',
+            'errors' => null,
+        ]);
+    }
+
+    /**
      * Update the specified invitation basic info.
      */
     public function update(UpdateInvitationRequest $request, int $id): JsonResponse

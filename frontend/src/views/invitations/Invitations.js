@@ -369,9 +369,9 @@ const Invitations = () => {
                             size="sm"
                             variant="outline"
                             title="Buka Undangan Web Publik"
-                            onClick={() => window.open(`/${inv.slug}`, '_blank')}
+                            onClick={() => window.open(`/#/p/${inv.slug}`, '_blank')}
                           >
-                            <CIcon icon={cilExternalLink} size="sm" />
+                            <CIcon icon={cilExternalLink} size="sm" /> Publik
                           </CButton>
                         )}
 

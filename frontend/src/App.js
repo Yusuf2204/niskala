@@ -18,6 +18,7 @@ const Register = React.lazy(() => import('./views/pages/register/Register'))
 const Page404 = React.lazy(() => import('./views/pages/page404/Page404'))
 const Page403 = React.lazy(() => import('./views/pages/page403/Page403'))
 const Page500 = React.lazy(() => import('./views/pages/page500/Page500'))
+const PublicInvitation = React.lazy(() => import('./views/public/PublicInvitation'))
 
 const App = () => {
   const { isColorModeSet, setColorMode } = useColorModes('coreui-free-react-admin-template-theme')
@@ -66,6 +67,10 @@ const App = () => {
         }
       >
         <Routes>
+          {/* Public Invitation Renderer (PRD 04) */}
+          <Route path="/p/:slug" name="Public Invitation" element={<PublicInvitation />} />
+          <Route path="/invitation/:slug" name="Public Invitation" element={<PublicInvitation />} />
+
           <Route exact path="/login" name="Login Page" element={<Login />} />
           <Route exact path="/register" name="Register Page" element={<Register />} />
           <Route exact path="/403" name="Page 403" element={<Page403 />} />

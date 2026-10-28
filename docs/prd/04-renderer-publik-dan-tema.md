@@ -2,7 +2,7 @@
 
 **Fase Roadmap:** Fase 3 (Renderer Publik & Tema MVP)  
 **Dokumen Acuan:** [project-plan-undangan-digital.md](file:///var/www/html/niskala/docs/project-plan-undangan-digital.md) | [design.md](file:///var/www/html/niskala/docs/design.md) | [rules.md](file:///var/www/html/niskala/docs/rules.md) | [03-visual-editor.md](file:///var/www/html/niskala/docs/prd/03-visual-editor.md)  
-**Status:** Draf Spesifikasi Lengkap
+**Status:** Selesai Diimplementasikan (Fase 3 Renderer Publik & Tema MVP)
 
 ---
 
@@ -94,9 +94,9 @@ Setiap halaman publik memuat tag OpenGraph lengkap untuk tampilan pratinjau taut
 
 ## 6. Kriteria Penerimaan & Verifikasi (Acceptance Criteria)
 
-1. [ ] **Routing Slug Publik:** Mengakses `http://localhost:8031/{slug}` pada undangan berstatus `published` berhasil memuat undangan dengan benar.
-2. [ ] **Isolasi Draft:** Mengakses slug undangan yang masih berstatus `draft` mengembalikan respons `404 Not Found`.
-3. [ ] **Interaksi Amplop & Audio:** Mengklik tombol *"Buka Undangan"* membuka tirai dengan mulus dan memutar audio latar tanpa terblokir browser.
-4. [ ] **Responsif Mobile:** Tampilan diuji pada resolusi 360px, 375px, dan 414px tanpa horizontal scroll overflow (`overflow-x: hidden`).
-5. [ ] **Performa Cepat:** Lazy-loading gambar aktif, halaman publik dapat dimuat secara instan di jaringan 4G mobile.
+1. [x] **Routing Slug Publik:** Mengakses `http://localhost:8031/#/p/{slug}` pada undangan berstatus `published` berhasil memuat undangan dengan benar.
+2. [x] **Isolasi Draft:** Mengakses slug undangan yang masih berstatus `draft` mengembalikan respons `404 Not Found`.
+3. [x] **Interaksi Amplop & Audio:** Mengklik tombol *"Buka Undangan"* membuka tirai dengan mulus dan memutar audio latar tanpa terblokir browser.
+4. [x] **Responsif Mobile:** Tampilan diuji pada resolusi 360px, 375px, dan 414px tanpa horizontal scroll overflow (`overflow-x: hidden`).
+5. [x] **Performa Cepat:** Lazy-loading gambar aktif, halaman publik dapat dimuat secara instan di jaringan 4G mobile.
 

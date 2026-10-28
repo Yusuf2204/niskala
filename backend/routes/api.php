@@ -17,11 +17,12 @@ use Illuminate\Support\Facades\Route;
 Route::post('/login', [AuthController::class, 'login'])->middleware('throttle:5,1')->name('login');
 Route::get('company', [CompanyController::class, 'show']);
 
-// Catalog Public & Authenticated (PRD 01 & PRD 02)
+// Catalog Public & Authenticated (PRD 01, PRD 02, PRD 04)
 Route::prefix('v1')->group(function () {
     Route::get('themes', [ThemeController::class, 'index']);
     Route::get('themes/{id}', [ThemeController::class, 'show']);
     Route::get('music', [MusicController::class, 'index']);
+    Route::get('public/invitations/{slug}', [InvitationController::class, 'showPublic']);
 });
 
 Route::middleware('auth:sanctum')->group(function () {

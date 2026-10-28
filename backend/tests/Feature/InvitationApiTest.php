@@ -340,4 +340,57 @@ class InvitationApiTest extends TestCase
 
         $unauthorizedResponse->assertStatus(403);
     }
+
+    public function test_show_public_returns_404_when_invitation_is_draft_or_unknown(): void
+    {
+        Sanctum::actingAs($this->userA);
+
+        $createResponse = $this->postJson('/api/v1/invitations', [
+            'title' => 'Draft Public Test',
+            'theme_id' => $this->theme->id,
+            'slug' => 'draft-public-test',
+        ]);
+        $invitationId = $createResponse->json('data.id');
+
+        // Unauthenticated request to draft slug -> 404
+        $publicRes = $this->getJson('/api/v1/public/invitations/draft-public-test');
+        $publicRes->assertStatus(404)
+            ->assertJsonPath('message', 'Undangan tidak ditemukan atau belum dipublikasikan.');
+
+        // Unknown slug -> 404
+        $notFoundRes = $this->getJson('/api/v1/public/invitations/non-existent-slug-xyz');
+        $notFoundRes->assertStatus(404);
+    }
+
+    public function test_show_public_returns_200_when_invitation_is_published(): void
+    {
+        Sanctum::actingAs($this->userA);
+
+        $createResponse = $this->postJson('/api/v1/invitations', [
+            'title' => 'Published Public Test',
+            'theme_id' => $this->theme->id,
+            'slug' => 'published-public-test',
+        ]);
+        $invitationId = $createResponse->json('data.id');
+
+        // Publish the invitation
+        $this->postJson("/api/v1/invitations/{$invitationId}/publish")->assertStatus(200);
+
+        // Guest accesses public slug unauthenticated -> 200 OK
+        $publicRes = $this->getJson('/api/v1/public/invitations/published-public-test');
+        $publicRes->assertStatus(200)
+            ->assertJsonPath('data.slug', 'published-public-test')
+            ->assertJsonPath('data.status', 'published')
+            ->assertJsonStructure([
+                'data' => [
+                    'id',
+                    'title',
+                    'slug',
+                    'status',
+                    'theme',
+                    'content',
+                    'events',
+                ],
+            ]);
+    }
 }
