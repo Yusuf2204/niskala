@@ -181,8 +181,6 @@ services:
     environment:
       MINIO_ROOT_USER: "${MINIO_ROOT_USER:-niskala}"
       MINIO_ROOT_PASSWORD: "${MINIO_ROOT_PASSWORD:-niskala_secret123}"
-      MINIO_SERVER_URL: "${MINIO_SERVER_URL:-http://localhost:9005}"
-      MINIO_BROWSER_REDIRECT_URL: "${MINIO_BROWSER_REDIRECT_URL:-http://localhost:9006}"
     command: server /data --console-address ":9001"
     volumes:
       - niskala-minio-data:/data
