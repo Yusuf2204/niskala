@@ -325,3 +325,4 @@ AvatarCropModal.propTypes = {
 }
 
 export default AvatarCropModal
+

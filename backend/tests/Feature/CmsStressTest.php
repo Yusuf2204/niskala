@@ -239,7 +239,16 @@ class CmsStressTest extends TestCase
         ]);
         $headers = ['Authorization' => 'Bearer '.$loginRes->json('data.token')];
 
-        // 1. Update profile with name, email, and avatar
+        // 1. Verify GET /api/profile and GET /api/v1/profile
+        $getProfileRes = $this->withHeaders($headers)->getJson('/api/profile');
+        $getProfileRes->assertStatus(200)
+            ->assertJsonPath('data.email', 'admin@example.com');
+
+        $getV1ProfileRes = $this->withHeaders($headers)->getJson('/api/v1/profile');
+        $getV1ProfileRes->assertStatus(200)
+            ->assertJsonPath('data.email', 'admin@example.com');
+
+        // 2. Update profile with name, email, and avatar
         $fakeAvatar = 'data:image/webp;base64,UklGRhoAAABXRUJQVlA4TA0AAAAvAAAAEAcQERGIiP4HAA==';
         $updateRes = $this->withHeaders($headers)->putJson('/api/profile', [
             'name' => 'Administrator Niskala',
@@ -252,13 +261,23 @@ class CmsStressTest extends TestCase
         $this->assertEquals('admin.new@example.com', $updateRes->json('data.email'));
         $this->assertEquals($fakeAvatar, $updateRes->json('data.avatar'));
 
-        // 2. Verify via /me endpoint
+        // 3. Verify via /me endpoint
         $meRes = $this->withHeaders($headers)->getJson('/api/me');
         $meRes->assertStatus(200);
         $this->assertEquals('Administrator Niskala', $meRes->json('data.user.name'));
         $this->assertEquals($fakeAvatar, $meRes->json('data.user.avatar'));
 
-        // 3. Remove avatar
+        // 4. Test POST /api/profile/avatar file upload
+        \Illuminate\Support\Facades\Storage::fake('public');
+        $file = \Illuminate\Http\UploadedFile::fake()->image('avatar.jpg');
+        $uploadFileRes = $this->withHeaders($headers)->postJson('/api/profile/avatar', [
+            'avatar' => $file,
+        ]);
+        $uploadFileRes->assertStatus(200)
+            ->assertJsonStructure(['data' => ['user', 'avatar']]);
+        $this->assertNotNull($uploadFileRes->json('data.avatar'));
+
+        // 5. Remove avatar
         $removeRes = $this->withHeaders($headers)->putJson('/api/profile', [
             'name' => 'Administrator Niskala',
             'email' => 'admin.new@example.com',

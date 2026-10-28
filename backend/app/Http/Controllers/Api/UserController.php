@@ -88,6 +88,15 @@ class UserController extends Controller
         ]);
     }
 
+    public function profile(Request $request)
+    {
+        return response()->json([
+            'data' => $request->user()->load('role'),
+            'message' => 'OK',
+            'errors' => null,
+        ]);
+    }
+
     public function updateProfile(Request $request)
     {
         /** @var User $user */
@@ -108,6 +117,43 @@ class UserController extends Controller
         return response()->json([
             'data' => $user->fresh(['role']),
             'message' => 'Profil berhasil diperbarui',
+            'errors' => null,
+        ]);
+    }
+
+    public function uploadAvatar(Request $request)
+    {
+        /** @var User $user */
+        $user = $request->user();
+
+        if ($request->hasFile('avatar')) {
+            $request->validate([
+                'avatar' => ['required', 'file', 'image', 'mimes:jpeg,png,jpg,webp,gif', 'max:5120'],
+            ]);
+
+            $path = $request->file('avatar')->store('avatars/' . $user->id, 'public');
+            $avatarUrl = '/storage/' . $path;
+            $user->update(['avatar' => $avatarUrl]);
+        } elseif ($request->filled('avatar')) {
+            $data = $request->validate([
+                'avatar' => ['required', 'string'],
+            ]);
+            $user->update(['avatar' => $data['avatar']]);
+            $avatarUrl = $user->avatar;
+        } else {
+            return response()->json([
+                'data' => null,
+                'message' => 'File atau data avatar wajib disertakan.',
+                'errors' => ['avatar' => ['File atau data avatar wajib disertakan.']],
+            ], 422);
+        }
+
+        return response()->json([
+            'data' => [
+                'user' => $user->fresh(['role']),
+                'avatar' => $avatarUrl,
+            ],
+            'message' => 'Foto profil berhasil diperbarui.',
             'errors' => null,
         ]);
     }
