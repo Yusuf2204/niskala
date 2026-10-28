@@ -121,8 +121,7 @@ const PublicInvitation = () => {
         <button
           type="button"
           onClick={() => navigate('/')}
-          className="btn btn-sm px-4 py-2 rounded-pill"
-          style={{ backgroundColor: '#A68B65', color: '#FFFFFF', fontWeight: 600 }}
+          className="btn btn-sm btn-niskala-gold px-4 py-2 rounded-pill"
         >
           Kembali ke Beranda
         </button>

@@ -141,7 +141,7 @@ const EditorTopBar = ({
             className="d-flex align-items-center gap-1"
             style={
               viewportMode === 'web'
-                ? { backgroundColor: '#A68B65', borderColor: '#A68B65', color: '#FFFFFF', fontWeight: 600 }
+                ? { backgroundColor: '#C5A059', borderColor: '#C5A059', color: '#242420', fontWeight: 'bold' }
                 : {}
             }
           >
@@ -156,7 +156,7 @@ const EditorTopBar = ({
             className="d-flex align-items-center gap-1"
             style={
               viewportMode === 'mobile'
-                ? { backgroundColor: '#A68B65', borderColor: '#A68B65', color: '#FFFFFF', fontWeight: 600 }
+                ? { backgroundColor: '#C5A059', borderColor: '#C5A059', color: '#242420', fontWeight: 'bold' }
                 : {}
             }
           >

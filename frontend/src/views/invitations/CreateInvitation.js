@@ -177,7 +177,7 @@ const CreateInvitation = () => {
                 </p>
                 <CButton
                   onClick={() => setStep(2)}
-                  style={{ backgroundColor: '#A68B65', color: '#FFFFFF', fontWeight: 600 }}
+                  className="btn-niskala-gold"
                 >
                   Lanjut: Data Acara <CIcon icon={cilArrowRight} className="ms-1" />
                 </CButton>

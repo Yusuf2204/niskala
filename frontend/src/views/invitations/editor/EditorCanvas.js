@@ -110,9 +110,8 @@ const EditorCanvas = ({
               </p>
               <button
                 type="button"
-                className="btn btn-sm px-4 py-2 rounded-pill shadow-sm"
+                className="btn btn-sm btn-niskala-gold px-4 py-2 rounded-pill shadow-sm"
                 onClick={() => onAddSection()}
-                style={{ backgroundColor: '#A68B65', color: '#FFFFFF', fontWeight: 600 }}
               >
                 <CIcon icon={cilPlus} size="sm" className="me-1" /> Tambah Hero Cover Standar
               </button>
