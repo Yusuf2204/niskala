@@ -10,27 +10,26 @@ const RsvpList = () => {
   return (
     <div className="rsvp-list-container">
       <div className="mb-4">
-        <h4 className="fw-bold text-dark mb-1 d-flex align-items-center gap-2">
+        <h4 className="fw-bold text-body mb-1 d-flex align-items-center gap-2">
           <CIcon icon={cilChatBubble} className="text-secondary" /> Rekapitulasi RSVP & Doa Restu
         </h4>
-        <p className="text-muted small mb-0">
+        <p className="text-body-secondary small mb-0">
           Pantau status konfirmasi kehadiran tamu (Hadir, Ragu, Tidak Hadir) serta moderasi ucapan doa restu tamu.
         </p>
       </div>
 
       <CCard className="border-0 shadow-sm rounded-3 py-5 text-center">
         <CCardBody>
-          <CIcon icon={cilChatBubble} size="xxl" className="text-muted opacity-50 mb-3" />
-          <h5 className="fw-bold text-dark">Rekapitulasi RSVP & Moderasi Ucapan (PRD 05)</h5>
-          <p className="text-muted small mx-auto" style={{ maxWidth: '500px' }}>
+          <CIcon icon={cilChatBubble} size="xxl" className="text-body-secondary opacity-50 mb-3" />
+          <h5 className="fw-bold text-body">Rekapitulasi RSVP & Moderasi Ucapan (PRD 05)</h5>
+          <p className="text-body-secondary small mx-auto" style={{ maxWidth: '500px' }}>
             Data konfirmasi kehadiran dan ucapan doa dari tamu yang mengisi formulir publik akan
             terekap otomatis secara real-time di halaman ini.
           </p>
           <CButton
-            color="dark"
             size="sm"
             onClick={() => navigate('/invitations/list')}
-            style={{ backgroundColor: '#34342F' }}
+            className="btn-niskala-gold"
           >
             Lihat Daftar Undangan <CIcon icon={cilArrowRight} className="ms-1" />
           </CButton>
