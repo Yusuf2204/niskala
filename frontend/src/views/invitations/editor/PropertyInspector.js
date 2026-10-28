@@ -61,7 +61,7 @@ const PropertyInspector = ({
               <span className="badge" style={{ backgroundColor: '#34342F', color: '#F1EDE5' }}>
                 Charcoal 30%
               </span>
-              <span className="badge" style={{ backgroundColor: '#A68B65', color: '#FFFFFF' }}>
+              <span className="badge" style={{ backgroundColor: '#C5A059', color: '#242420', fontWeight: 'bold' }}>
                 Gold 10%
               </span>
             </div>
@@ -158,9 +158,9 @@ const PropertyInspector = ({
           <h6 className="fw-bold mb-0 text-body">{meta.name || section.type}</h6>
           <small className="text-body-secondary font-monospace">{section.id}</small>
         </div>
-        <CBadge color="dark" style={{ backgroundColor: '#A68B65' }}>
+        <span className="badge rounded-pill theme-category-badge px-2 py-1 small">
           {meta.category || 'Section'}
-        </CBadge>
+        </span>
       </div>
 
       {/* Konten Form Dinamis */}

@@ -86,8 +86,8 @@ const HeroCoverSection = ({ props = {}, isWeb = true }) => {
           }}
         >
           <small
-            className="d-block text-muted text-uppercase"
-            style={{ color: '#D8C2A0', fontSize: '0.75rem' }}
+            className="d-block text-uppercase fw-semibold"
+            style={{ color: '#D8C2A0', fontSize: '0.75rem', letterSpacing: '1px' }}
           >
             {guest_greeting_prefix}
           </small>

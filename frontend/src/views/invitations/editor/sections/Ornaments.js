@@ -143,3 +143,4 @@ JavaneseDivider.propTypes = {
   className: PropTypes.string,
   style: PropTypes.object,
 }
+

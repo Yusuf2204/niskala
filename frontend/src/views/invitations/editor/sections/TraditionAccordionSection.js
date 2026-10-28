@@ -61,6 +61,7 @@ const TraditionAccordionSection = ({ props = {}, isWeb = true }) => {
   }
 
   const primaryGold = '#C5A059'
+  const bronzeGold = '#7D5B20' // Accessible high-contrast warm bronze gold (> 5.5:1 on light cream)
   const deepSogan = '#4A3525'
   const softBg = '#FAF6EE'
   const cardBg = '#FFFDF9'
@@ -99,10 +100,10 @@ const TraditionAccordionSection = ({ props = {}, isWeb = true }) => {
           <p
             className="small text-uppercase tracking-wider mb-2"
             style={{
-              color: primaryGold,
+              color: bronzeGold,
               letterSpacing: '2px',
               fontSize: '0.8rem',
-              fontWeight: 600,
+              fontWeight: 700,
             }}
           >
             {subtitle}
@@ -151,7 +152,7 @@ const TraditionAccordionSection = ({ props = {}, isWeb = true }) => {
                         height: '32px',
                         fontSize: '0.85rem',
                         backgroundColor: isExpanded ? primaryGold : 'rgba(197, 160, 89, 0.15)',
-                        color: isExpanded ? '#FFFFFF' : deepSogan,
+                        color: isExpanded ? '#242420' : deepSogan,
                         border: `1px solid ${primaryGold}`,
                         transition: 'all 0.2s ease',
                       }}
@@ -173,9 +174,9 @@ const TraditionAccordionSection = ({ props = {}, isWeb = true }) => {
                         <small
                           className="d-block mt-0"
                           style={{
-                            color: primaryGold,
+                            color: bronzeGold,
                             fontSize: '0.75rem',
-                            fontWeight: 600,
+                            fontWeight: 700,
                           }}
                         >
                           {item.time_info}
@@ -191,8 +192,8 @@ const TraditionAccordionSection = ({ props = {}, isWeb = true }) => {
                       width: '26px',
                       height: '26px',
                       borderRadius: '50%',
-                      backgroundColor: 'rgba(197, 160, 89, 0.12)',
-                      color: primaryGold,
+                      backgroundColor: 'rgba(197, 160, 89, 0.15)',
+                      color: bronzeGold,
                       display: 'flex',
                       alignItems: 'center',
                       justifyContent: 'center',
@@ -261,3 +262,4 @@ TraditionAccordionSection.propTypes = {
 }
 
 export default TraditionAccordionSection
+

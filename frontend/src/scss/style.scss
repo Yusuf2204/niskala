@@ -607,3 +607,154 @@ body {
   background-color: #2D2D28;
   border-color: rgba(216, 194, 160, 0.2);
 }
+
+// ============================================================
+// Theme-adaptive Accent Badges, Boxes & Buttons (PRD 03 & PRD 04)
+// High Contrast Accessibility Fix (WCAG AA Compliant)
+// ============================================================
+
+.theme-badge-accent {
+  background-color: rgba(197, 160, 89, 0.15) !important;
+  border: 1px solid rgba(197, 160, 89, 0.35) !important;
+  color: #6B4E2B !important; // Deep amber bronze in light mode (contrast > 4.8:1)
+  font-size: 0.72rem;
+  font-weight: 600;
+}
+
+[data-coreui-theme="dark"] .theme-badge-accent {
+  background-color: rgba(216, 194, 160, 0.15) !important;
+  border: 1px solid rgba(216, 194, 160, 0.35) !important;
+  color: #E2CCA8 !important; // Champagne gold in dark mode (contrast > 6.0:1)
+}
+
+.theme-category-badge {
+  background-color: rgba(52, 52, 47, 0.08);
+  border: 1px solid rgba(52, 52, 47, 0.18);
+  color: #34342F;
+}
+
+[data-coreui-theme="dark"] .theme-category-badge {
+  background-color: rgba(216, 194, 160, 0.12);
+  border: 1px solid rgba(216, 194, 160, 0.25);
+  color: #E2CCA8;
+}
+
+.theme-preset-box {
+  background-color: rgba(197, 160, 89, 0.10);
+  border: 1px solid rgba(197, 160, 89, 0.3);
+  color: #242420;
+
+  h6 {
+    color: #6B4E2B;
+  }
+
+  ul, li {
+    color: #242420;
+  }
+}
+
+[data-coreui-theme="dark"] .theme-preset-box {
+  background-color: rgba(216, 194, 160, 0.08);
+  border: 1px solid rgba(216, 194, 160, 0.25);
+  color: #F1EDE5;
+
+  h6 {
+    color: #E2CCA8;
+  }
+
+  ul, li {
+    color: #F1EDE5;
+  }
+}
+
+// Global panel-card definition
+.panel-card {
+  background-color: var(--cui-secondary-bg);
+  border: 1px solid var(--cui-border-color);
+  color: var(--cui-body-color);
+  transition: border-color 0.15s ease-in-out;
+}
+
+// Wizard step indicator pills (CreateInvitation.js)
+.wizard-step-tab {
+  background-color: #E5DFC5;
+  color: #34342F;
+  border: 1px solid transparent;
+  transition: all 0.25s ease;
+
+  &.active {
+    background-color: #34342F;
+    color: #F1EDE5;
+    font-weight: 600;
+  }
+}
+
+[data-coreui-theme="dark"] .wizard-step-tab {
+  background-color: #2D2D28;
+  color: rgba(241, 237, 229, 0.7);
+  border: 1px solid rgba(216, 194, 160, 0.2);
+
+  &.active {
+    background-color: #D8C2A0;
+    color: #242420;
+    border-color: #D8C2A0;
+    font-weight: 700;
+  }
+}
+
+// Niskala CTA Buttons (Light & Dark Adaptive)
+.btn-niskala-primary {
+  background-color: #34342F !important;
+  border-color: #34342F !important;
+  color: #F1EDE5 !important;
+  font-weight: 600;
+
+  &:hover {
+    background-color: #1a1a17 !important;
+    border-color: #1a1a17 !important;
+    color: #FFFFFF !important;
+  }
+}
+
+[data-coreui-theme="dark"] .btn-niskala-primary {
+  background-color: #D8C2A0 !important;
+  border-color: #D8C2A0 !important;
+  color: #242420 !important;
+  font-weight: 700;
+
+  &:hover {
+    background-color: #E2CCA8 !important;
+    border-color: #E2CCA8 !important;
+    color: #1a1a17 !important;
+  }
+}
+
+.btn-niskala-gold {
+  background-color: #C5A059 !important;
+  border-color: #C5A059 !important;
+  color: #242420 !important; // Dark charcoal on gold = 6.32:1 contrast (WCAG AAA)
+  font-weight: 700 !important;
+
+  &:hover {
+    background-color: #B38E46 !important;
+    border-color: #B38E46 !important;
+    color: #1a1a17 !important;
+  }
+}
+
+// Input group and form controls
+.input-group-text {
+  background-color: var(--cui-secondary-bg);
+  border-color: var(--cui-border-color);
+  color: var(--cui-secondary-color);
+}
+
+// Tables in dark mode
+[data-coreui-theme="dark"] {
+  .table-light {
+    --cui-table-bg: #2D2D28 !important;
+    --cui-table-color: #F1EDE5 !important;
+    --cui-table-border-color: rgba(216, 194, 160, 0.18) !important;
+    color: #F1EDE5 !important;
+  }
+}

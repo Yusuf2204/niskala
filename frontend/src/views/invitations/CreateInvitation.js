@@ -136,24 +136,14 @@ const CreateInvitation = () => {
 
       <div className="d-flex mb-4 gap-2">
         <div
-          className="flex-fill text-center py-2 rounded-2 fw-semibold small"
-          style={{
-            backgroundColor: step === 1 ? '#34342F' : '#E5DFC5',
-            color: step === 1 ? '#F1EDE5' : '#34342F',
-            transition: 'all 0.3s ease',
-          }}
+          className={`flex-fill text-center py-2 rounded-2 small wizard-step-tab ${step === 1 ? 'active' : ''}`}
         >
           1. Pilih Tema Desain
         </div>
         <div
-          className="flex-fill text-center py-2 rounded-2 fw-semibold small"
-          style={{
-            backgroundColor: step === 2 ? '#34342F' : '#E5DFC5',
-            color: step === 2 ? '#F1EDE5' : '#34342F',
-            transition: 'all 0.3s ease',
-          }}
+          className={`flex-fill text-center py-2 rounded-2 small wizard-step-tab ${step === 2 ? 'active' : ''}`}
         >
-          2. Informasi & Acara
+          2. Informasi &amp; Acara
         </div>
       </div>
 
@@ -209,7 +199,7 @@ const CreateInvitation = () => {
                     <CCard
                       className="h-100 shadow-sm border-2 rounded-3 overflow-hidden cursor-pointer"
                       style={{
-                        borderColor: isSelected ? (hasGunungan ? '#C5A059' : '#34342F') : '#E5DFC5',
+                        borderColor: isSelected ? '#C5A059' : 'var(--cui-border-color)',
                         cursor: 'pointer',
                         transition: 'all 0.2s ease',
                         transform: isSelected ? 'scale(1.01)' : 'none',
@@ -252,8 +242,8 @@ const CreateInvitation = () => {
                             style={{
                               width: '28px',
                               height: '28px',
-                              backgroundColor: hasGunungan ? '#C5A059' : '#34342F',
-                              color: '#FFFFFF',
+                              backgroundColor: '#C5A059',
+                              color: '#242420',
                             }}
                           >
                             <CIcon icon={cilCheck} size="sm" />
@@ -264,55 +254,31 @@ const CreateInvitation = () => {
                       <CCardBody className="p-3">
                         <div className="d-flex justify-content-between align-items-center mb-1">
                           <h6 className="fw-bold mb-0 text-body">{theme.name}</h6>
-                          <CBadge color="secondary" className="border small text-body">
+                          <span className="badge rounded-pill theme-category-badge px-2 py-1 small">
                             {theme.category}
-                          </CBadge>
+                          </span>
                         </div>
-                        <p className="small text-muted mb-2">{theme.description}</p>
+                        <p className="small text-body-secondary mb-2">{theme.description}</p>
 
                         {/* Feature Badges */}
                         <div className="d-flex flex-wrap gap-1 mb-2">
                           {hasGunungan && (
-                            <span
-                              className="badge"
-                              style={{
-                                backgroundColor: 'rgba(197, 160, 89, 0.15)',
-                                color: '#4A3525',
-                                border: '1px solid rgba(197, 160, 89, 0.35)',
-                                fontSize: '0.7rem',
-                              }}
-                            >
+                            <span className="badge theme-badge-accent">
                               ◈ Gunungan Wayang
                             </span>
                           )}
                           {presets.TraditionAccordion && (
-                            <span
-                              className="badge"
-                              style={{
-                                backgroundColor: 'rgba(197, 160, 89, 0.15)',
-                                color: '#4A3525',
-                                border: '1px solid rgba(197, 160, 89, 0.35)',
-                                fontSize: '0.7rem',
-                              }}
-                            >
+                            <span className="badge theme-badge-accent">
                               ✦ Accordion 5 Prosesi Adat
                             </span>
                           )}
-                          <span
-                            className="badge"
-                            style={{
-                              backgroundColor: 'rgba(197, 160, 89, 0.15)',
-                              color: '#4A3525',
-                              border: '1px solid rgba(197, 160, 89, 0.35)',
-                              fontSize: '0.7rem',
-                            }}
-                          >
+                          <span className="badge theme-badge-accent">
                             ✦ Palet Sogan Jawa
                           </span>
                         </div>
 
                         <div className="d-flex gap-1 align-items-center">
-                          <small className="text-muted me-1" style={{ fontSize: '0.75rem' }}>
+                          <small className="text-body-secondary me-1" style={{ fontSize: '0.75rem' }}>
                             Palet:
                           </small>
                           {Object.entries(palette).map(([k, col]) => (
@@ -344,10 +310,9 @@ const CreateInvitation = () => {
                 Musik latar dan foto galeri tetap umum serta bebas dipilih/diunggah.
               </div>
               <CButton
-                color="dark"
                 disabled={!selectedThemeId}
                 onClick={() => setStep(2)}
-                style={{ backgroundColor: '#C5A059', borderColor: '#C5A059', color: '#FFFFFF', fontWeight: 600 }}
+                className="btn-niskala-gold"
               >
                 Lanjut: Data Acara <CIcon icon={cilArrowRight} className="ms-1" />
               </CButton>
@@ -389,7 +354,7 @@ const CreateInvitation = () => {
                 <CCol xs={12}>
                   <label className="form-label small fw-semibold">Slug Tautan Undangan</label>
                   <div className="input-group">
-                    <span className="input-group-text small bg-light text-muted">
+                    <span className="input-group-text small font-monospace">
                       https://niskala.id/
                     </span>
                     <CFormInput
@@ -398,7 +363,7 @@ const CreateInvitation = () => {
                       placeholder="rama-shinta"
                     />
                   </div>
-                  <small className="text-muted">
+                  <small className="text-body-secondary">
                     Hanya gunakan huruf kecil, angka, dan tanda strip (-).
                   </small>
                 </CCol>
@@ -467,14 +432,8 @@ const CreateInvitation = () => {
 
                 <CButton
                   type="submit"
-                  color="dark"
                   disabled={submitting}
-                  style={{
-                    backgroundColor: '#34342F',
-                    borderColor: '#34342F',
-                    color: '#F1EDE5',
-                    fontWeight: '600',
-                  }}
+                  className="btn-niskala-primary"
                 >
                   {submitting ? 'Menyimpan...' : 'Simpan & Selesaikan'}
                 </CButton>

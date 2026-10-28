@@ -174,10 +174,9 @@ const Music = () => {
           </CButton>
           {isAdmin && (
             <CButton
-              color="dark"
               size="sm"
               onClick={() => setUploadModal(true)}
-              style={{ backgroundColor: '#34342F', borderColor: '#34342F', color: '#FAF8F5' }}
+              className="btn-niskala-gold"
             >
               <CIcon icon={cilPlus} className="me-1" /> Tambah Lagu
             </CButton>
@@ -323,9 +322,8 @@ const Music = () => {
             </CButton>
             <CButton
               type="submit"
-              color="dark"
               disabled={submitting}
-              style={{ backgroundColor: '#34342F', borderColor: '#34342F' }}
+              className="btn-niskala-primary"
             >
               {submitting ? 'Mengunggah...' : 'Unggah Lagu'}
             </CButton>

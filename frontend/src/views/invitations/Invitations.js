@@ -174,15 +174,9 @@ const Invitations = () => {
             <CIcon icon={cilReload} className="me-1" /> Refresh
           </CButton>
           <CButton
-            color="dark"
             size="sm"
             onClick={() => navigate('/invitations/create')}
-            style={{
-              backgroundColor: '#34342F',
-              borderColor: '#34342F',
-              color: '#F1EDE5',
-              fontWeight: '500',
-            }}
+            className="btn-niskala-gold"
           >
             <CIcon icon={cilPlus} className="me-1" /> + Buat Undangan Baru
           </CButton>
@@ -285,10 +279,9 @@ const Invitations = () => {
                 Mulai buat undangan digital pertama Anda dengan memilih tema pilihan.
               </p>
               <CButton
-                color="dark"
                 size="sm"
                 onClick={() => navigate('/invitations/create')}
-                style={{ backgroundColor: '#34342F' }}
+                className="btn-niskala-gold"
               >
                 + Buat Undangan Sekarang
               </CButton>

@@ -135,12 +135,8 @@ const SectionPalette = ({
                     <CButton
                       size="sm"
                       onClick={() => onAddSection(createNewSection(item.type))}
-                      className="py-0 px-2 fw-semibold d-flex align-items-center gap-1 text-white"
-                      style={{
-                        backgroundColor: '#A68B65',
-                        borderColor: '#A68B65',
-                        fontSize: '0.75rem',
-                      }}
+                      className="btn-niskala-gold py-0 px-2 d-flex align-items-center gap-1"
+                      style={{ fontSize: '0.75rem' }}
                     >
                       <CIcon icon={cilPlus} size="sm" /> Tambah
                     </CButton>
@@ -185,9 +181,11 @@ const SectionPalette = ({
                   >
                     <div className="d-flex align-items-center gap-2 overflow-hidden">
                       <span
-                        className="badge rounded-circle p-1 d-flex align-items-center justify-content-center text-white"
+                        className="badge rounded-circle p-1 d-flex align-items-center justify-content-center"
                         style={{
-                          backgroundColor: isSelected ? '#A68B65' : '#4B5563',
+                          backgroundColor: isSelected ? '#C5A059' : '#4B5563',
+                          color: isSelected ? '#242420' : '#FFFFFF',
+                          fontWeight: 'bold',
                           width: '20px',
                           height: '20px',
                           fontSize: '0.7rem',

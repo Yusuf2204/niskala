@@ -164,7 +164,7 @@ const Themes = () => {
                     {theme.is_active && (
                       <span
                         className="badge position-absolute top-0 end-0 m-2"
-                        style={{ backgroundColor: '#A68B65', color: '#fff' }}
+                        style={{ backgroundColor: '#C5A059', color: '#242420', fontWeight: 'bold' }}
                       >
                         <CIcon icon={cilCheckAlt} size="sm" className="me-1" /> Aktif
                       </span>
@@ -174,53 +174,29 @@ const Themes = () => {
                   <CCardBody className="d-flex flex-column justify-content-between p-3">
                     <div>
                       <div className="d-flex justify-content-between align-items-center mb-2">
-                        <CBadge color="dark" shape="rounded-pill" className="px-2 py-1 small">
+                        <span className="badge rounded-pill theme-category-badge px-2 py-1 small">
                           {theme.category.toUpperCase()}
-                        </CBadge>
-                        <small className="text-muted">v{theme.version}</small>
+                        </span>
+                        <small className="text-body-secondary">v{theme.version}</small>
                       </div>
 
-                      <p className="text-muted small mb-3" style={{ minHeight: '38px' }}>
+                      <p className="text-body-secondary small mb-3" style={{ minHeight: '38px' }}>
                         {theme.description || 'Tidak ada deskripsi tema.'}
                       </p>
 
                       {/* Feature Pills */}
                       <div className="d-flex flex-wrap gap-1 mb-3">
                         {hasGunungan && (
-                          <span
-                            className="badge"
-                            style={{
-                              backgroundColor: 'rgba(197, 160, 89, 0.15)',
-                              color: '#4A3525',
-                              border: '1px solid rgba(197, 160, 89, 0.35)',
-                              fontSize: '0.72rem',
-                            }}
-                          >
+                          <span className="badge theme-badge-accent">
                             ◈ Ornamen Gunungan
                           </span>
                         )}
                         {presets.TraditionAccordion && (
-                          <span
-                            className="badge"
-                            style={{
-                              backgroundColor: 'rgba(197, 160, 89, 0.15)',
-                              color: '#4A3525',
-                              border: '1px solid rgba(197, 160, 89, 0.35)',
-                              fontSize: '0.72rem',
-                            }}
-                          >
+                          <span className="badge theme-badge-accent">
                             ✦ Accordion 5 Prosesi Adat
                           </span>
                         )}
-                        <span
-                          className="badge"
-                          style={{
-                            backgroundColor: 'rgba(197, 160, 89, 0.15)',
-                            color: '#4A3525',
-                            border: '1px solid rgba(197, 160, 89, 0.35)',
-                            fontSize: '0.72rem',
-                          }}
-                        >
+                        <span className="badge theme-badge-accent">
                           ✦ Palet Sogan Jawa
                         </span>
                       </div>
@@ -273,12 +249,7 @@ const Themes = () => {
                       </CButton>
                       <CButton
                         size="sm"
-                        className="w-100 fw-bold d-flex align-items-center justify-content-center gap-1"
-                        style={{
-                          backgroundColor: '#C5A059',
-                          borderColor: '#C5A059',
-                          color: '#FFFFFF',
-                        }}
+                        className="btn-niskala-gold w-100 d-flex align-items-center justify-content-center gap-1"
                         onClick={() => handleCreateWithTheme(theme.id)}
                       >
                         <CIcon icon={cilPlus} size="sm" /> Buat Undangan dengan Tema Ini
@@ -305,15 +276,15 @@ const Themes = () => {
         <CModalBody>
           {selectedTheme && (
             <div>
-              <p className="text-muted mb-3">{selectedTheme.description}</p>
+              <p className="text-body-secondary mb-3">{selectedTheme.description}</p>
 
               {/* Rincian Accordion Adat jika ada */}
               {selectedTheme.default_config?.section_presets?.TraditionAccordion && (
-                <div className="p-3 rounded mb-3" style={{ backgroundColor: 'rgba(197, 160, 89, 0.08)', border: '1px solid rgba(197, 160, 89, 0.3)' }}>
-                  <h6 className="fw-bold mb-2" style={{ color: '#4A3525' }}>
+                <div className="p-3 rounded mb-3 theme-preset-box">
+                  <h6 className="fw-bold mb-2">
                     ✦ Bawaan Accordion Prosesi Adat:
                   </h6>
-                  <ul className="mb-0 small ps-3" style={{ color: '#2B1E16' }}>
+                  <ul className="mb-0 small ps-3">
                     {(selectedTheme.default_config.section_presets.TraditionAccordion.items || []).map((it) => (
                       <li key={it.id} className="mb-1">
                         <strong>{it.title}:</strong> {it.description}
@@ -346,7 +317,7 @@ const Themes = () => {
           </CButton>
           {selectedTheme && (
             <CButton
-              style={{ backgroundColor: '#C5A059', borderColor: '#C5A059', color: '#FFFFFF', fontWeight: 600 }}
+              className="btn-niskala-gold"
               onClick={() => {
                 setModalOpen(false)
                 handleCreateWithTheme(selectedTheme.id)
