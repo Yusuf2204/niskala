@@ -65,10 +65,11 @@ const RsvpSection = ({ props = {}, isWeb = true }) => {
           ) : (
             <form onSubmit={handleSubmit}>
               <div className="mb-3">
-                <label className="form-label small fw-bold text-dark">Nama Lengkap</label>
+                <label className="form-label small fw-bold" style={{ color: '#34342F' }}>Nama Lengkap</label>
                 <input
                   type="text"
                   className="form-control"
+                  style={{ backgroundColor: '#FFFFFF', color: '#34342F', borderColor: 'rgba(166, 139, 101, 0.4)' }}
                   placeholder="Contoh: Budi Santoso"
                   value={formData.name}
                   onChange={(e) => setFormData({ ...formData, name: e.target.value })}
@@ -78,9 +79,10 @@ const RsvpSection = ({ props = {}, isWeb = true }) => {
 
               <div className="row g-2 mb-3">
                 <div className="col-12 col-md-6">
-                  <label className="form-label small fw-bold text-dark">Konfirmasi Kehadiran</label>
+                  <label className="form-label small fw-bold" style={{ color: '#34342F' }}>Konfirmasi Kehadiran</label>
                   <select
                     className="form-select"
+                    style={{ backgroundColor: '#FFFFFF', color: '#34342F', borderColor: 'rgba(166, 139, 101, 0.4)' }}
                     value={formData.attendance}
                     onChange={(e) => setFormData({ ...formData, attendance: e.target.value })}
                   >
@@ -90,9 +92,10 @@ const RsvpSection = ({ props = {}, isWeb = true }) => {
                   </select>
                 </div>
                 <div className="col-12 col-md-6">
-                  <label className="form-label small fw-bold text-dark">Jumlah Tamu</label>
+                  <label className="form-label small fw-bold" style={{ color: '#34342F' }}>Jumlah Tamu</label>
                   <select
                     className="form-select"
+                    style={{ backgroundColor: '#FFFFFF', color: '#34342F', borderColor: 'rgba(166, 139, 101, 0.4)' }}
                     value={formData.pax}
                     onChange={(e) => setFormData({ ...formData, pax: e.target.value })}
                   >
@@ -105,10 +108,11 @@ const RsvpSection = ({ props = {}, isWeb = true }) => {
               </div>
 
               <div className="mb-3">
-                <label className="form-label small fw-bold text-dark">Ucapan &amp; Doa Restu</label>
+                <label className="form-label small fw-bold" style={{ color: '#34342F' }}>Ucapan &amp; Doa Restu</label>
                 <textarea
                   className="form-control"
                   rows="3"
+                  style={{ backgroundColor: '#FFFFFF', color: '#34342F', borderColor: 'rgba(166, 139, 101, 0.4)' }}
                   placeholder="Tuliskan ucapan selamat dan doa terbaik untuk kedua mempelai..."
                   value={formData.message}
                   onChange={(e) => setFormData({ ...formData, message: e.target.value })}
@@ -144,3 +148,4 @@ RsvpSection.propTypes = {
 }
 
 export default RsvpSection
+

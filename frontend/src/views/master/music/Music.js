@@ -154,7 +154,7 @@ const Music = () => {
     <div className="music-container">
       <div className="d-flex justify-content-between align-items-center mb-4">
         <div>
-          <h4 className="fw-bold text-dark mb-1 d-flex align-items-center gap-2">
+          <h4 className="fw-bold text-body mb-1 d-flex align-items-center gap-2">
             <CIcon icon={cilMusicNote} className="text-secondary" /> Master Musik Latar
           </h4>
           <p className="text-muted mb-0 small">
@@ -232,7 +232,7 @@ const Music = () => {
                         </CButton>
                       </CTableDataCell>
                       <CTableDataCell>
-                        <div className="fw-semibold text-dark">{track.title}</div>
+                        <div className="fw-semibold text-body">{track.title}</div>
                         <small className="text-muted">{track.artist || 'Artis Tidak Diketahui'}</small>
                       </CTableDataCell>
                       <CTableDataCell>

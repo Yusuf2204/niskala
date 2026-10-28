@@ -36,8 +36,8 @@ const LocationMapSection = ({ props = {}, isWeb = true }) => {
         >
           {title}
         </h2>
-        <h5 className="fw-bold text-dark mb-1">{venue_name}</h5>
-        <p className="text-muted small mb-4">{address}</p>
+        <h5 className="fw-bold mb-1" style={{ color: '#34342F' }}>{venue_name}</h5>
+        <p className="small mb-4" style={{ color: 'rgba(52, 52, 47, 0.7)' }}>{address}</p>
 
         {/* Embedded Map Frame */}
         <div
@@ -88,3 +88,4 @@ LocationMapSection.propTypes = {
 }
 
 export default LocationMapSection
+

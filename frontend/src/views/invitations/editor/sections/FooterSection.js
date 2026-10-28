@@ -59,3 +59,4 @@ FooterSection.propTypes = {
 }
 
 export default FooterSection
+

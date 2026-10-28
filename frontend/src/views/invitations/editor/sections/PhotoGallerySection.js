@@ -77,3 +77,4 @@ PhotoGallerySection.propTypes = {
 }
 
 export default PhotoGallerySection
+

@@ -113,7 +113,7 @@ const CreateInvitation = () => {
       {/* Step Indicator */}
       <div className="d-flex justify-content-between align-items-center mb-4">
         <div>
-          <h4 className="fw-bold text-dark mb-1">Buat Undangan Digital Baru</h4>
+          <h4 className="fw-bold text-body mb-1">Buat Undangan Digital Baru</h4>
           <p className="text-muted small mb-0">
             Langkah {step} dari 2:{' '}
             {step === 1 ? 'Pilih Tema Desain Awal' : 'Informasi Dasar Acara & Slug URL'}
@@ -219,8 +219,8 @@ const CreateInvitation = () => {
 
                       <CCardBody className="p-3">
                         <div className="d-flex justify-content-between align-items-center mb-1">
-                          <h6 className="fw-bold mb-0 text-dark">{theme.name}</h6>
-                          <CBadge color="light" className="text-dark border small">
+                          <h6 className="fw-bold mb-0 text-body">{theme.name}</h6>
+                          <CBadge color="secondary" className="border small text-body">
                             {theme.category}
                           </CBadge>
                         </div>
@@ -265,7 +265,7 @@ const CreateInvitation = () => {
         <CCard className="border-0 shadow-sm rounded-3">
           <CCardBody className="p-4">
             <CForm onSubmit={handleSubmit}>
-              <h6 className="fw-bold text-dark border-bottom pb-2 mb-3">Informasi Pokok</h6>
+              <h6 className="fw-bold text-body border-bottom pb-2 mb-3">Informasi Pokok</h6>
 
               <CRow className="g-3 mb-4">
                 <CCol xs={12} md={8}>
@@ -308,7 +308,7 @@ const CreateInvitation = () => {
                 </CCol>
               </CRow>
 
-              <h6 className="fw-bold text-dark border-bottom pb-2 mb-3">
+              <h6 className="fw-bold text-body border-bottom pb-2 mb-3">
                 Sesi Acara Perdana (Opsional)
               </h6>
 

@@ -74,9 +74,9 @@ const EventScheduleSection = ({ props = {}, isWeb = true }) => {
               <p className="fw-semibold mb-1" style={{ color: '#A68B65', fontSize: '0.9rem' }}>
                 {evt.date}
               </p>
-              <p className="text-dark small fw-medium mb-3">{evt.time}</p>
-              <h6 className="fw-bold mb-1 text-dark">{evt.location}</h6>
-              <p className="text-muted small mb-0">{evt.address}</p>
+              <p className="small fw-medium mb-3" style={{ color: '#34342F' }}>{evt.time}</p>
+              <h6 className="fw-bold mb-1" style={{ color: '#34342F' }}>{evt.location}</h6>
+              <p className="small mb-0" style={{ color: 'rgba(52, 52, 47, 0.7)' }}>{evt.address}</p>
             </div>
           ))}
         </div>
@@ -91,3 +91,4 @@ EventScheduleSection.propTypes = {
 }
 
 export default EventScheduleSection
+

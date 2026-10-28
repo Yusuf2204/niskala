@@ -107,3 +107,4 @@ CountdownSection.propTypes = {
 }
 
 export default CountdownSection
+

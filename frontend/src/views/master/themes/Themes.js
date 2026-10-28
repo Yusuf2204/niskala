@@ -49,7 +49,7 @@ const Themes = () => {
     <div className="themes-container">
       <div className="d-flex justify-content-between align-items-center mb-4">
         <div>
-          <h4 className="fw-bold text-dark mb-1 d-flex align-items-center gap-2">
+          <h4 className="fw-bold text-body mb-1 d-flex align-items-center gap-2">
             <CIcon icon={cilPaint} className="text-secondary" /> Master Tema Desain
           </h4>
           <p className="text-muted mb-0 small">

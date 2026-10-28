@@ -24,13 +24,7 @@ const EditorCanvas = ({
   const isWeb = viewportMode === 'web'
 
   return (
-    <div
-      className="flex-grow-1 overflow-y-auto p-3 p-md-4 d-flex flex-column align-items-center"
-      style={{
-        backgroundColor: '#EBE7DF', // Subtle warm canvas workspace background
-        minHeight: '100%',
-      }}
-    >
+    <div className="flex-grow-1 overflow-y-auto p-3 p-md-4 d-flex flex-column align-items-center editor-workspace">
       {/* Viewport Info Pill */}
       <div className="mb-3 d-flex align-items-center gap-2">
         <span
@@ -46,7 +40,7 @@ const EditorCanvas = ({
             ? '🖥 Tampilan Versi Web / Desktop (Default)'
             : '📱 Tampilan Versi Mobile (390px Phone Frame)'}
         </span>
-        <span className="badge bg-light text-dark border small">
+        <span className="badge bg-body-secondary text-body border small">
           {sections.length} Section Terpasang
         </span>
       </div>
@@ -60,13 +54,14 @@ const EditorCanvas = ({
         }}
       >
         <div
-          className="shadow-lg overflow-hidden position-relative"
+          className="invitation-canvas-isolated shadow-lg overflow-hidden position-relative"
           style={{
             backgroundColor: '#FAF8F5',
             borderRadius: isWeb ? '16px' : '36px',
             border: isWeb ? '1px solid rgba(52, 52, 47, 0.15)' : '10px solid #242420',
             minHeight: '600px',
-            boxShadow: '0 20px 45px rgba(0, 0, 0, 0.12)',
+            boxShadow: '0 20px 45px rgba(0, 0, 0, 0.15)',
+            color: '#34342F',
           }}
         >
           {/* Simulated Mobile Camera Notch (only shown in mobile mode) */}
@@ -90,7 +85,7 @@ const EditorCanvas = ({
 
           {/* Render All Sections in Order */}
           {sections.length === 0 ? (
-            <div className="py-5 text-center px-4">
+            <div className="py-5 text-center px-4" style={{ color: '#34342F' }}>
               <div
                 className="mx-auto my-4 d-flex align-items-center justify-content-center rounded-circle"
                 style={{
@@ -104,12 +99,12 @@ const EditorCanvas = ({
                 ✦
               </div>
               <h4
-                className="font-serif fw-bold text-dark"
-                style={{ fontFamily: "'Playfair Display', Georgia, serif" }}
+                className="font-serif fw-bold"
+                style={{ fontFamily: "'Playfair Display', Georgia, serif", color: '#34342F' }}
               >
                 Kanvas Undangan Masih Kosong
               </h4>
-              <p className="text-muted small mx-auto mb-4" style={{ maxWidth: '420px' }}>
+              <p className="small mx-auto mb-4" style={{ maxWidth: '420px', color: 'rgba(52, 52, 47, 0.7)' }}>
                 Pilih dan tambahkan komponen dari panel kiri (Hero Cover, Profil Mempelai, Rangkaian
                 Acara, Countdown, dan lainnya) untuk mulai menyusun undangan.
               </p>

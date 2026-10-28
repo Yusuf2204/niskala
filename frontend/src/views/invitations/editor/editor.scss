@@ -1,0 +1,131 @@
+// ============================================================
+// Niskala Visual Editor — Dark / Light Mode Adaptive Styles
+// ============================================================
+
+.visual-editor-container {
+  display: flex;
+  flex-direction: column;
+  height: calc(100vh - 110px);
+  min-height: 680px;
+  margin: -1rem -1rem 0 -1rem;
+  background-color: var(--cui-body-bg);
+  color: var(--cui-body-color);
+}
+
+// ── TopBar ──────────────────────────────────────────────────
+.editor-topbar {
+  background-color: var(--cui-body-bg);
+  border-color: var(--cui-border-color) !important;
+  color: var(--cui-body-color);
+  min-height: 60px;
+}
+
+// ── Side Panels (Palette & Inspector) ───────────────────────
+.editor-sidebar-panel {
+  background-color: var(--cui-body-bg);
+  border-color: var(--cui-border-color) !important;
+  color: var(--cui-body-color);
+
+  .panel-header {
+    background-color: var(--cui-tertiary-bg);
+    border-color: var(--cui-border-color) !important;
+  }
+
+  .panel-card {
+    background-color: var(--cui-secondary-bg);
+    border: 1px solid var(--cui-border-color);
+    color: var(--cui-body-color);
+
+    &:hover {
+      border-color: #A68B65;
+    }
+  }
+
+  .layer-item {
+    background-color: var(--cui-secondary-bg);
+    border: 1px solid var(--cui-border-color);
+    color: var(--cui-body-color);
+
+    &.selected {
+      background-color: rgba(166, 139, 101, 0.18) !important;
+      border-color: #A68B65 !important;
+      box-shadow: 0 0 0 1px #A68B65;
+    }
+  }
+
+  .form-label {
+    color: var(--cui-body-color);
+    font-weight: 600;
+  }
+
+  .form-control,
+  .form-select {
+    background-color: var(--cui-body-bg);
+    color: var(--cui-body-color);
+    border-color: var(--cui-border-color);
+
+    &:focus {
+      border-color: #A68B65;
+      box-shadow: 0 0 0 0.2rem rgba(166, 139, 101, 0.25);
+    }
+  }
+}
+
+// ── Workspace Canvas ─────────────────────────────────────────
+.editor-workspace {
+  background-color: #E2DDD4; // Light mode warm studio canvas
+  min-height: 100%;
+  transition: background-color 0.2s ease;
+}
+
+[data-coreui-theme="dark"] .editor-workspace {
+  background-color: #171a21; // Dark mode deep workspace
+}
+
+// ── Isolated Invitation Canvas (The Wedding Paper) ──────────
+// Ensures the preview inside the sheet ALWAYS preserves the intended
+// luxury wedding design palette (Ivory / Charcoal / Gold), independent
+// of whether the admin dashboard is in Dark or Light mode.
+.invitation-canvas-isolated {
+  // Reset CoreUI dark variables inside the wedding preview
+  --cui-body-bg: #FAF8F5;
+  --cui-body-color: #34342F;
+  --cui-secondary-color: rgba(52, 52, 47, 0.7);
+  --cui-tertiary-color: rgba(52, 52, 47, 0.5);
+
+  background-color: #FAF8F5;
+  color: #34342F;
+
+  h1, h2, h3, h4, h5, h6 {
+    color: inherit;
+  }
+
+  p, span, div, small {
+    &.text-dark {
+      color: #34342F !important;
+    }
+    &.text-muted {
+      color: rgba(52, 52, 47, 0.65) !important;
+    }
+  }
+
+  .form-label {
+    color: #34342F !important;
+  }
+
+  .form-control,
+  .form-select {
+    background-color: #FFFFFF !important;
+    color: #34342F !important;
+    border-color: rgba(166, 139, 101, 0.4) !important;
+
+    &::placeholder {
+      color: rgba(52, 52, 47, 0.45) !important;
+    }
+
+    &:focus {
+      border-color: #A68B65 !important;
+      box-shadow: 0 0 0 0.2rem rgba(166, 139, 101, 0.2) !important;
+    }
+  }
+}

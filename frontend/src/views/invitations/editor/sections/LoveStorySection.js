@@ -81,3 +81,4 @@ LoveStorySection.propTypes = {
 }
 
 export default LoveStorySection
+

@@ -99,8 +99,8 @@ const GiftRegistrySection = ({ props = {}, isWeb = true }) => {
               maxWidth: '680px',
             }}
           >
-            <h6 className="fw-bold mb-1 text-dark">📦 Kirim Kado Fisik</h6>
-            <p className="text-muted small mb-0">{physical_gift_address}</p>
+            <h6 className="fw-bold mb-1" style={{ color: '#34342F' }}>📦 Kirim Kado Fisik</h6>
+            <p className="small mb-0" style={{ color: 'rgba(52, 52, 47, 0.7)' }}>{physical_gift_address}</p>
           </div>
         )}
       </div>
@@ -114,3 +114,4 @@ GiftRegistrySection.propTypes = {
 }
 
 export default GiftRegistrySection
+

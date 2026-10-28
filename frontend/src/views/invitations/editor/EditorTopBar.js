@@ -32,36 +32,26 @@ const EditorTopBar = ({
   const navigate = useNavigate()
 
   return (
-    <div
-      className="d-flex flex-wrap justify-content-between align-items-center px-3 py-2 border-bottom shadow-sm"
-      style={{
-        backgroundColor: '#FFFFFF',
-        borderColor: 'rgba(52, 52, 47, 0.12)',
-        position: 'sticky',
-        top: 0,
-        zIndex: 1020,
-        minHeight: '60px',
-      }}
-    >
+    <div className="d-flex flex-wrap justify-content-between align-items-center px-3 py-2 border-bottom shadow-sm editor-topbar position-sticky top-0 z-3">
       {/* Zona Kiri: Back button, Title & Autosave status */}
       <div className="d-flex align-items-center gap-2">
         <CButton
-          color="light"
+          color="secondary"
           size="sm"
           variant="ghost"
           onClick={() => navigate('/invitations/list')}
-          className="d-flex align-items-center gap-1 text-dark fw-semibold"
+          className="d-flex align-items-center gap-1 text-body fw-semibold"
           title="Kembali ke Daftar Undangan"
         >
           <CIcon icon={cilArrowLeft} size="sm" />
           <span className="d-none d-md-inline">Daftar Undangan</span>
         </CButton>
 
-        <div className="vr my-1 text-muted" style={{ height: '24px' }} />
+        <div className="vr my-1 text-body-secondary" style={{ height: '24px' }} />
 
         <div>
           <div className="d-flex align-items-center gap-2">
-            <span className="fw-bold text-dark" style={{ fontSize: '0.95rem' }}>
+            <span className="fw-bold text-body" style={{ fontSize: '0.95rem' }}>
               {invitation?.title || 'Memuat Undangan...'}
             </span>
             <CBadge
@@ -78,7 +68,7 @@ const EditorTopBar = ({
               {invitation?.status || 'draft'}
             </CBadge>
           </div>
-          <small className="text-muted d-block" style={{ fontSize: '0.75rem' }}>
+          <small className="text-body-secondary d-block" style={{ fontSize: '0.75rem' }}>
             /{invitation?.slug || ''}
           </small>
         </div>
@@ -86,7 +76,7 @@ const EditorTopBar = ({
         {/* Indikator Autosave */}
         <div className="ms-3 d-none d-lg-flex align-items-center gap-1">
           {autosaveStatus === 'saving' && (
-            <span className="badge bg-light text-dark border d-flex align-items-center gap-1">
+            <span className="badge bg-body-secondary text-body border d-flex align-items-center gap-1">
               <CSpinner size="sm" style={{ width: '0.8rem', height: '0.8rem' }} />
               Menyimpan...
             </span>
@@ -108,7 +98,7 @@ const EditorTopBar = ({
             </span>
           )}
           {autosaveStatus === 'idle' && (
-            <span className="badge bg-light text-secondary border">
+            <span className="badge bg-body-secondary text-body-secondary border">
               ● Tersimpan
             </span>
           )}
@@ -120,37 +110,38 @@ const EditorTopBar = ({
         {/* Undo / Redo buttons */}
         <CButtonGroup size="sm" role="group">
           <CButton
-            color="light"
+            color="secondary"
+            variant="outline"
             onClick={onUndo}
             disabled={!canUndo}
             title="Undo (Ctrl+Z)"
-            className="border"
           >
             <CIcon icon={cilActionUndo} size="sm" />
           </CButton>
           <CButton
-            color="light"
+            color="secondary"
+            variant="outline"
             onClick={onRedo}
             disabled={!canRedo}
             title="Redo (Ctrl+Y)"
-            className="border"
           >
             <CIcon icon={cilActionRedo} size="sm" />
           </CButton>
         </CButtonGroup>
 
-        <div className="vr my-1 text-muted" style={{ height: '24px' }} />
+        <div className="vr my-1 text-body-secondary" style={{ height: '24px' }} />
 
         {/* Viewport Mode Switcher: Desktop Web is Default! */}
         <CButtonGroup size="sm" role="group">
           <CButton
-            color={viewportMode === 'web' ? 'dark' : 'light'}
+            color="secondary"
+            variant={viewportMode === 'web' ? undefined : 'outline'}
             onClick={() => onToggleViewport('web')}
             title="Tampilan Versi Web / Desktop (Default)"
-            className="d-flex align-items-center gap-1 border"
+            className="d-flex align-items-center gap-1"
             style={
               viewportMode === 'web'
-                ? { backgroundColor: '#34342F', borderColor: '#34342F', color: '#F1EDE5' }
+                ? { backgroundColor: '#A68B65', borderColor: '#A68B65', color: '#FFFFFF', fontWeight: 600 }
                 : {}
             }
           >
@@ -158,13 +149,14 @@ const EditorTopBar = ({
             <span className="d-none d-sm-inline">Web Desktop</span>
           </CButton>
           <CButton
-            color={viewportMode === 'mobile' ? 'dark' : 'light'}
+            color="secondary"
+            variant={viewportMode === 'mobile' ? undefined : 'outline'}
             onClick={() => onToggleViewport('mobile')}
             title="Tampilan Versi Mobile (390px)"
-            className="d-flex align-items-center gap-1 border"
+            className="d-flex align-items-center gap-1"
             style={
               viewportMode === 'mobile'
-                ? { backgroundColor: '#34342F', borderColor: '#34342F', color: '#F1EDE5' }
+                ? { backgroundColor: '#A68B65', borderColor: '#A68B65', color: '#FFFFFF', fontWeight: 600 }
                 : {}
             }
           >
@@ -177,11 +169,11 @@ const EditorTopBar = ({
       {/* Zona Kanan: Pratinjau & Publikasi */}
       <div className="d-flex align-items-center gap-2">
         <CButton
-          color="light"
+          color="secondary"
           size="sm"
           variant="outline"
           onClick={onOpenPreview}
-          className="d-flex align-items-center gap-1 border text-dark"
+          className="d-flex align-items-center gap-1 text-body"
           title="Pratinjau Layar Penuh"
         >
           <CIcon icon={cilExternalLink} size="sm" />
@@ -189,10 +181,11 @@ const EditorTopBar = ({
         </CButton>
 
         <CButton
-          color="light"
+          color="secondary"
           size="sm"
+          variant="outline"
           onClick={onManualSave}
-          className="d-flex align-items-center gap-1 border text-dark"
+          className="d-flex align-items-center gap-1 text-body"
           title="Simpan Perubahan Sekarang"
         >
           <CIcon icon={cilCloudUpload} size="sm" />

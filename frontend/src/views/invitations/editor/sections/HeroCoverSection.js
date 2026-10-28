@@ -121,3 +121,4 @@ HeroCoverSection.propTypes = {
 }
 
 export default HeroCoverSection
+

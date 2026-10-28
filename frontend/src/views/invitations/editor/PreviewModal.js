@@ -63,10 +63,11 @@ const PreviewModal = ({ visible, onClose, sections = [], title = 'Pratinjau Unda
         style={{ backgroundColor: '#242420' }}
       >
         <div
-          className="w-100 my-md-4 shadow-lg overflow-hidden transition-all"
+          className="w-100 my-md-4 shadow-lg overflow-hidden transition-all invitation-canvas-isolated"
           style={{
             maxWidth: isWeb ? '1080px' : '390px',
             backgroundColor: '#FAF8F5',
+            color: '#34342F',
             borderRadius: isWeb ? '12px' : '32px',
             border: isWeb ? 'none' : '8px solid #111111',
             minHeight: '100%',
@@ -91,3 +92,4 @@ PreviewModal.propTypes = {
 }
 
 export default PreviewModal
+

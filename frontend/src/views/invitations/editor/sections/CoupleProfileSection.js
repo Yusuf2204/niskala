@@ -156,3 +156,4 @@ CoupleProfileSection.propTypes = {
 }
 
 export default CoupleProfileSection
+

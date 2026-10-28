@@ -9,6 +9,7 @@ import PreviewModal from './PreviewModal'
 import { COMPONENT_REGISTRY, createNewSection } from './registry'
 import api from '../../../services/api'
 import { toastSuccess, toastError } from '../../../services/toastService'
+import './editor.scss'
 
 const MAX_HISTORY = 30
 const DEBOUNCE_DELAY = 1500
@@ -309,14 +310,7 @@ const VisualEditor = () => {
   const activeSection = sections.find((s) => s.id === selectedSectionId)
 
   return (
-    <div
-      className="d-flex flex-column"
-      style={{
-        height: 'calc(100vh - 110px)',
-        minHeight: '680px',
-        margin: '-1rem -1rem 0 -1rem',
-      }}
-    >
+    <div className="visual-editor-container">
       {/* 1. TOP BAR */}
       <EditorTopBar
         invitation={invitation}

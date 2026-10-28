@@ -156,10 +156,10 @@ const Invitations = () => {
       {/* Header */}
       <div className="d-flex flex-wrap justify-content-between align-items-center gap-3 mb-4">
         <div>
-          <h4 className="fw-bold text-dark mb-1 d-flex align-items-center gap-2">
+          <h4 className="fw-bold text-body mb-1 d-flex align-items-center gap-2">
             <CIcon icon={cilEnvelopeClosed} className="text-secondary" /> Daftar Undangan Digital
           </h4>
-          <p className="text-muted mb-0 small">
+          <p className="text-body-secondary mb-0 small">
             Kelola seluruh undangan pernikahan, ulang tahun, dan acara spesial Anda dalam satu panel.
           </p>
         </div>
@@ -194,8 +194,8 @@ const Invitations = () => {
         <CCol xs={6} md={3}>
           <CCard className="border-0 shadow-sm rounded-3">
             <CCardBody className="p-3 text-center">
-              <span className="small text-muted d-block mb-1">Total Undangan</span>
-              <h3 className="fw-bold mb-0 text-dark">{counts.all}</h3>
+              <span className="small text-body-secondary d-block mb-1">Total Undangan</span>
+              <h3 className="fw-bold mb-0 text-body">{counts.all}</h3>
             </CCardBody>
           </CCard>
         </CCol>
@@ -279,9 +279,9 @@ const Invitations = () => {
             </div>
           ) : filteredInvitations.length === 0 ? (
             <div className="text-center py-5">
-              <CIcon icon={cilFolder} size="xxl" className="text-muted opacity-50 mb-3" />
-              <h6 className="fw-bold text-dark">Belum Ada Undangan</h6>
-              <p className="text-muted small mb-3">
+              <CIcon icon={cilFolder} size="xxl" className="text-body-secondary opacity-50 mb-3" />
+              <h6 className="fw-bold text-body">Belum Ada Undangan</h6>
+              <p className="text-body-secondary small mb-3">
                 Mulai buat undangan digital pertama Anda dengan memilih tema pilihan.
               </p>
               <CButton
@@ -311,23 +311,23 @@ const Invitations = () => {
                 {filteredInvitations.map((inv) => (
                   <CTableRow key={inv.id}>
                     <CTableDataCell>
-                      <div className="fw-bold text-dark">{inv.title}</div>
-                      <small className="text-muted d-flex align-items-center gap-1 font-monospace">
+                      <div className="fw-bold text-body">{inv.title}</div>
+                      <small className="text-body-secondary d-flex align-items-center gap-1 font-monospace">
                         /{inv.slug}
                       </small>
                     </CTableDataCell>
                     <CTableDataCell>
-                      <span className="fw-semibold text-secondary">
+                      <span className="fw-semibold text-body-secondary">
                         {inv.theme?.name || 'Tema Standar'}
                       </span>
                     </CTableDataCell>
                     <CTableDataCell>
-                      <CBadge color="light" className="text-dark border">
+                      <CBadge color="secondary" className="border text-body">
                         {inv.event_type || 'wedding'}
                       </CBadge>
                     </CTableDataCell>
                     <CTableDataCell>{getStatusBadge(inv.status)}</CTableDataCell>
-                    <CTableDataCell className="small text-muted">
+                    <CTableDataCell className="small text-body-secondary">
                       {new Date(inv.created_at).toLocaleDateString('id-ID', {
                         day: 'numeric',
                         month: 'short',
@@ -338,11 +338,12 @@ const Invitations = () => {
                       <div className="d-flex justify-content-end gap-1">
                         {/* Buka Editor Visual */}
                         <CButton
-                          color="dark"
+                          color="secondary"
                           size="sm"
                           variant="outline"
                           title="Buka Visual Editor"
                           onClick={() => navigate(`/invitations/${inv.id}/editor`)}
+                          className="text-body"
                         >
                           <CIcon icon={cilPencil} size="sm" /> Editor
                         </CButton>

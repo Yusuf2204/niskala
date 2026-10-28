@@ -43,15 +43,14 @@ const SectionPalette = ({
 
   return (
     <div
-      className="d-flex flex-column h-100 bg-white border-end shadow-sm"
+      className="d-flex flex-column h-100 editor-sidebar-panel border-end shadow-sm"
       style={{
         width: '320px',
         minWidth: '300px',
-        borderColor: 'rgba(52, 52, 47, 0.12)',
       }}
     >
       {/* Tab Navigasi Panel Kiri */}
-      <div className="p-2 border-bottom bg-light">
+      <div className="p-2 border-bottom panel-header">
         <CNav variant="pills" layout="fill" className="nav-sm">
           <CNavItem>
             <CNavLink
@@ -59,8 +58,8 @@ const SectionPalette = ({
               onClick={() => setActiveTab('library')}
               className="py-1 px-2 small cursor-pointer fw-semibold text-center"
               style={{
-                backgroundColor: activeTab === 'library' ? '#34342F' : 'transparent',
-                color: activeTab === 'library' ? '#F1EDE5' : '#34342F',
+                backgroundColor: activeTab === 'library' ? '#A68B65' : 'transparent',
+                color: activeTab === 'library' ? '#FFFFFF' : 'var(--cui-body-color)',
                 cursor: 'pointer',
               }}
             >
@@ -73,8 +72,8 @@ const SectionPalette = ({
               onClick={() => setActiveTab('layers')}
               className="py-1 px-2 small cursor-pointer fw-semibold text-center"
               style={{
-                backgroundColor: activeTab === 'layers' ? '#34342F' : 'transparent',
-                color: activeTab === 'layers' ? '#F1EDE5' : '#34342F',
+                backgroundColor: activeTab === 'layers' ? '#A68B65' : 'transparent',
+                color: activeTab === 'layers' ? '#FFFFFF' : 'var(--cui-body-color)',
                 cursor: 'pointer',
               }}
             >
@@ -99,14 +98,14 @@ const SectionPalette = ({
               <CIcon
                 icon={cilSearch}
                 size="sm"
-                className="position-absolute text-muted"
+                className="position-absolute text-body-secondary"
                 style={{ right: '10px', top: '50%', transform: 'translateY(-50%)' }}
               />
             </div>
           </div>
 
           <div className="flex-grow-1 overflow-y-auto p-2">
-            <small className="text-muted text-uppercase fw-bold px-1 mb-2 d-block" style={{ fontSize: '0.7rem' }}>
+            <small className="text-body-secondary text-uppercase fw-bold px-1 mb-2 d-block" style={{ fontSize: '0.7rem' }}>
               Pilih Section Untuk Ditambahkan
             </small>
 
@@ -114,34 +113,32 @@ const SectionPalette = ({
               {registryItems.map((item) => (
                 <div
                   key={item.type}
-                  className="p-2 rounded border bg-light d-flex flex-column gap-1 transition-all"
+                  className="p-2 rounded panel-card d-flex flex-column gap-1 transition-all"
                   style={{
-                    borderColor: 'rgba(52, 52, 47, 0.1)',
                     transition: 'all 0.2s ease',
                   }}
                 >
                   <div className="d-flex justify-content-between align-items-center">
-                    <span className="fw-bold text-dark small">{item.name}</span>
+                    <span className="fw-bold text-body small">{item.name}</span>
                     <CBadge
-                      color="light"
-                      className="text-secondary border"
+                      color="secondary"
+                      className="border"
                       style={{ fontSize: '0.65rem' }}
                     >
                       {item.category}
                     </CBadge>
                   </div>
-                  <p className="text-muted mb-2" style={{ fontSize: '0.75rem', lineHeight: '1.3' }}>
+                  <p className="text-body-secondary mb-2" style={{ fontSize: '0.75rem', lineHeight: '1.3' }}>
                     {item.description}
                   </p>
                   <div className="d-flex justify-content-end">
                     <CButton
                       size="sm"
                       onClick={() => onAddSection(createNewSection(item.type))}
-                      className="py-0 px-2 fw-semibold d-flex align-items-center gap-1"
+                      className="py-0 px-2 fw-semibold d-flex align-items-center gap-1 text-white"
                       style={{
                         backgroundColor: '#A68B65',
                         borderColor: '#A68B65',
-                        color: '#FFFFFF',
                         fontSize: '0.75rem',
                       }}
                     >
@@ -152,7 +149,7 @@ const SectionPalette = ({
               ))}
 
               {registryItems.length === 0 && (
-                <div className="text-center py-4 text-muted small">
+                <div className="text-center py-4 text-body-secondary small">
                   Tidak ada komponen yang cocok dengan kata kunci &quot;{searchQuery}&quot;.
                 </div>
               )}
@@ -164,12 +161,12 @@ const SectionPalette = ({
       {/* Konten Tab 2: Struktur Layer & Urutan Section */}
       {activeTab === 'layers' && (
         <div className="flex-grow-1 overflow-y-auto p-2">
-          <small className="text-muted text-uppercase fw-bold px-1 mb-2 d-block" style={{ fontSize: '0.7rem' }}>
+          <small className="text-body-secondary text-uppercase fw-bold px-1 mb-2 d-block" style={{ fontSize: '0.7rem' }}>
             Urutan Section Pada Kanvas ({sections.length})
           </small>
 
           {sections.length === 0 ? (
-            <div className="text-center py-4 text-muted small">
+            <div className="text-center py-4 text-body-secondary small">
               Belum ada section di kanvas. Silakan tambahkan dari tab Katalog Komponen.
             </div>
           ) : (
@@ -182,19 +179,15 @@ const SectionPalette = ({
                   <div
                     key={sec.id}
                     onClick={() => onSelectSection(sec.id)}
-                    className="p-2 rounded border cursor-pointer d-flex align-items-center justify-content-between"
-                    style={{
-                      backgroundColor: isSelected ? 'rgba(166, 139, 101, 0.12)' : '#FFFFFF',
-                      borderColor: isSelected ? '#A68B65' : 'rgba(52, 52, 47, 0.15)',
-                      boxShadow: isSelected ? '0 0 0 1px #A68B65' : 'none',
-                      cursor: 'pointer',
-                    }}
+                    className={`p-2 rounded layer-item cursor-pointer d-flex align-items-center justify-content-between ${
+                      isSelected ? 'selected' : ''
+                    }`}
                   >
                     <div className="d-flex align-items-center gap-2 overflow-hidden">
                       <span
                         className="badge rounded-circle p-1 d-flex align-items-center justify-content-center text-white"
                         style={{
-                          backgroundColor: isSelected ? '#A68B65' : '#34342F',
+                          backgroundColor: isSelected ? '#A68B65' : '#4B5563',
                           width: '20px',
                           height: '20px',
                           fontSize: '0.7rem',
@@ -203,10 +196,10 @@ const SectionPalette = ({
                         {idx + 1}
                       </span>
                       <div className="text-truncate">
-                        <div className="fw-semibold text-dark small text-truncate">
+                        <div className="fw-semibold text-body small text-truncate">
                           {meta.name || sec.type}
                         </div>
-                        <small className="text-muted d-block font-monospace" style={{ fontSize: '0.65rem' }}>
+                        <small className="text-body-secondary d-block font-monospace" style={{ fontSize: '0.65rem' }}>
                           {sec.id}
                         </small>
                       </div>
@@ -216,7 +209,7 @@ const SectionPalette = ({
                     <div className="d-flex align-items-center gap-1" onClick={(e) => e.stopPropagation()}>
                       <button
                         type="button"
-                        className="btn btn-sm btn-link p-0 text-muted"
+                        className="btn btn-sm btn-link p-0 text-body-secondary"
                         disabled={idx === 0}
                         onClick={() => onMoveSection(idx, idx - 1)}
                         title="Geser ke Atas"
@@ -225,7 +218,7 @@ const SectionPalette = ({
                       </button>
                       <button
                         type="button"
-                        className="btn btn-sm btn-link p-0 text-muted"
+                        className="btn btn-sm btn-link p-0 text-body-secondary"
                         disabled={idx === sections.length - 1}
                         onClick={() => onMoveSection(idx, idx + 1)}
                         title="Geser ke Bawah"
@@ -234,7 +227,7 @@ const SectionPalette = ({
                       </button>
                       <button
                         type="button"
-                        className="btn btn-sm btn-link p-0 text-muted"
+                        className="btn btn-sm btn-link p-0 text-warning"
                         onClick={() => onDuplicateSection(sec.id)}
                         title="Duplikat Section"
                       >

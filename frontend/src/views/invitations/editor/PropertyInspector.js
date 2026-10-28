@@ -35,25 +35,24 @@ const PropertyInspector = ({
   if (!section) {
     return (
       <div
-        className="d-flex flex-column h-100 bg-white border-start shadow-sm"
+        className="d-flex flex-column h-100 editor-sidebar-panel border-start shadow-sm"
         style={{
           width: '350px',
           minWidth: '320px',
-          borderColor: 'rgba(52, 52, 47, 0.12)',
         }}
       >
-        <div className="p-3 border-bottom bg-light">
-          <h6 className="fw-bold mb-0 text-dark">Pengaturan Undangan</h6>
-          <small className="text-muted">Konfigurasi umum &amp; musik latar</small>
+        <div className="p-3 border-bottom panel-header">
+          <h6 className="fw-bold mb-0 text-body">Pengaturan Undangan</h6>
+          <small className="text-body-secondary">Konfigurasi umum &amp; musik latar</small>
         </div>
 
         <div className="flex-grow-1 overflow-y-auto p-3">
           {/* Info Tema */}
-          <div className="p-3 rounded border mb-3 bg-light">
-            <small className="text-muted text-uppercase fw-bold d-block mb-1" style={{ fontSize: '0.7rem' }}>
+          <div className="p-3 rounded panel-card mb-3">
+            <small className="text-body-secondary text-uppercase fw-bold d-block mb-1" style={{ fontSize: '0.7rem' }}>
               Tema Aktif
             </small>
-            <div className="fw-bold text-dark">{invitation?.theme?.name || 'Tema Standar'}</div>
+            <div className="fw-bold text-body">{invitation?.theme?.name || 'Tema Standar'}</div>
             <div className="d-flex align-items-center gap-1 mt-2">
               <span className="badge" style={{ backgroundColor: '#F1EDE5', color: '#34342F', border: '1px solid #ccc' }}>
                 Ivory 60%
@@ -69,7 +68,7 @@ const PropertyInspector = ({
 
           {/* Pengaturan Musik Latar */}
           <div className="mb-4">
-            <CFormLabel className="fw-bold small text-dark">Musik Latar Undangan</CFormLabel>
+            <CFormLabel className="fw-bold small text-body">Musik Latar Undangan</CFormLabel>
             <select
               className="form-select form-select-sm mb-2"
               value={selectedMusic}
@@ -86,7 +85,7 @@ const PropertyInspector = ({
               ))}
             </select>
 
-            <small className="text-muted d-block mb-2">Atau masukkan URL audio mp3 eksternal:</small>
+            <small className="text-body-secondary d-block mb-2">Atau masukkan URL audio mp3 eksternal:</small>
             <CFormInput
               size="sm"
               placeholder="https://domain.com/audio.mp3"
@@ -98,8 +97,8 @@ const PropertyInspector = ({
             />
           </div>
 
-          <div className="p-3 rounded-3 bg-light text-center border">
-            <p className="text-muted small mb-0">
+          <div className="p-3 rounded-3 panel-card text-center">
+            <p className="text-body-secondary small mb-0">
               💡 <strong>Tips:</strong> Klik salah satu section di kanvas tengah atau tab urutan
               section di panel kiri untuk membuka form pengeditan konten teks dan foto.
             </p>
@@ -146,18 +145,17 @@ const PropertyInspector = ({
 
   return (
     <div
-      className="d-flex flex-column h-100 bg-white border-start shadow-sm"
+      className="d-flex flex-column h-100 editor-sidebar-panel border-start shadow-sm"
       style={{
         width: '350px',
         minWidth: '320px',
-        borderColor: 'rgba(52, 52, 47, 0.12)',
       }}
     >
       {/* Header Inspector */}
-      <div className="p-3 border-bottom bg-light d-flex justify-content-between align-items-center">
+      <div className="p-3 border-bottom panel-header d-flex justify-content-between align-items-center">
         <div>
-          <h6 className="fw-bold mb-0 text-dark">{meta.name || section.type}</h6>
-          <small className="text-muted font-monospace">{section.id}</small>
+          <h6 className="fw-bold mb-0 text-body">{meta.name || section.type}</h6>
+          <small className="text-body-secondary font-monospace">{section.id}</small>
         </div>
         <CBadge color="dark" style={{ backgroundColor: '#A68B65' }}>
           {meta.category || 'Section'}
@@ -170,7 +168,7 @@ const PropertyInspector = ({
         {section.type === 'HeroCover' && (
           <div className="d-flex flex-column gap-3">
             <div>
-              <CFormLabel className="fw-bold small">Judul Atas</CFormLabel>
+              <CFormLabel className="fw-bold small text-body">Judul Atas</CFormLabel>
               <CFormInput
                 size="sm"
                 value={props.title || ''}
@@ -178,7 +176,7 @@ const PropertyInspector = ({
               />
             </div>
             <div>
-              <CFormLabel className="fw-bold small">Nama Pasangan</CFormLabel>
+              <CFormLabel className="fw-bold small text-body">Nama Pasangan</CFormLabel>
               <CFormInput
                 size="sm"
                 value={props.primary_names || ''}
@@ -186,7 +184,7 @@ const PropertyInspector = ({
               />
             </div>
             <div>
-              <CFormLabel className="fw-bold small">Tanggal Acara</CFormLabel>
+              <CFormLabel className="fw-bold small text-body">Tanggal Acara</CFormLabel>
               <CFormInput
                 size="sm"
                 value={props.date_text || ''}
@@ -194,7 +192,7 @@ const PropertyInspector = ({
               />
             </div>
             <div>
-              <CFormLabel className="fw-bold small">Kutipan / Doa</CFormLabel>
+              <CFormLabel className="fw-bold small text-body">Kutipan / Doa</CFormLabel>
               <CFormTextarea
                 rows={2}
                 value={props.quote || ''}
@@ -202,7 +200,7 @@ const PropertyInspector = ({
               />
             </div>
             <div>
-              <CFormLabel className="fw-bold small">Foto Latar Belakang</CFormLabel>
+              <CFormLabel className="fw-bold small text-body">Foto Latar Belakang</CFormLabel>
               <CFormInput
                 size="sm"
                 className="mb-1"
@@ -219,9 +217,10 @@ const PropertyInspector = ({
                   onChange={(e) => handleFileUpload('bg_image_url', e.target.files[0], 'cover')}
                 />
                 <CButton
-                  color="light"
+                  color="secondary"
+                  variant="outline"
                   size="sm"
-                  className="border w-100 d-flex align-items-center justify-content-center gap-1"
+                  className="w-100 d-flex align-items-center justify-content-center gap-1 text-body"
                   disabled={uploadingField === 'bg_image_url'}
                   onClick={() => document.getElementById('cover-upload').click()}
                 >
@@ -235,7 +234,7 @@ const PropertyInspector = ({
               </div>
             </div>
             <div>
-              <CFormLabel className="fw-bold small">Teks Tombol Buka</CFormLabel>
+              <CFormLabel className="fw-bold small text-body">Teks Tombol Buka</CFormLabel>
               <CFormInput
                 size="sm"
                 value={props.open_button_text || ''}
@@ -249,7 +248,7 @@ const PropertyInspector = ({
         {section.type === 'CoupleProfile' && (
           <div className="d-flex flex-column gap-3">
             <div>
-              <CFormLabel className="fw-bold small">Judul Bagian</CFormLabel>
+              <CFormLabel className="fw-bold small text-body">Judul Bagian</CFormLabel>
               <CFormInput
                 size="sm"
                 value={props.section_title || ''}
@@ -257,7 +256,7 @@ const PropertyInspector = ({
               />
             </div>
             <div>
-              <CFormLabel className="fw-bold small">Kutipan Pembuka</CFormLabel>
+              <CFormLabel className="fw-bold small text-body">Kutipan Pembuka</CFormLabel>
               <CFormTextarea
                 rows={2}
                 value={props.quote || ''}
@@ -266,10 +265,10 @@ const PropertyInspector = ({
             </div>
 
             {/* Profil Pria */}
-            <div className="p-2 rounded border bg-light">
-              <h6 className="fw-bold small text-dark mb-2">Mempelai Pria</h6>
+            <div className="p-2 rounded panel-card">
+              <h6 className="fw-bold small text-body mb-2">Mempelai Pria</h6>
               <div className="mb-2">
-                <CFormLabel className="small mb-1">Nama Lengkap</CFormLabel>
+                <CFormLabel className="small mb-1 text-body">Nama Lengkap</CFormLabel>
                 <CFormInput
                   size="sm"
                   value={props.groom_name || ''}
@@ -277,7 +276,7 @@ const PropertyInspector = ({
                 />
               </div>
               <div className="mb-2">
-                <CFormLabel className="small mb-1">Keterangan Orang Tua</CFormLabel>
+                <CFormLabel className="small mb-1 text-body">Keterangan Orang Tua</CFormLabel>
                 <CFormInput
                   size="sm"
                   value={props.groom_parents || ''}
@@ -285,7 +284,7 @@ const PropertyInspector = ({
                 />
               </div>
               <div className="mb-2">
-                <CFormLabel className="small mb-1">Foto Pria</CFormLabel>
+                <CFormLabel className="small mb-1 text-body">Foto Pria</CFormLabel>
                 <CFormInput
                   size="sm"
                   className="mb-1"
@@ -300,9 +299,10 @@ const PropertyInspector = ({
                   onChange={(e) => handleFileUpload('groom_photo', e.target.files[0], 'photo')}
                 />
                 <CButton
-                  color="light"
+                  color="secondary"
+                  variant="outline"
                   size="sm"
-                  className="border w-100 d-flex align-items-center justify-content-center gap-1"
+                  className="w-100 d-flex align-items-center justify-content-center gap-1 text-body"
                   disabled={uploadingField === 'groom_photo'}
                   onClick={() => document.getElementById('groom-upload').click()}
                 >
@@ -315,7 +315,7 @@ const PropertyInspector = ({
                 </CButton>
               </div>
               <div>
-                <CFormLabel className="small mb-1">Instagram</CFormLabel>
+                <CFormLabel className="small mb-1 text-body">Instagram</CFormLabel>
                 <CFormInput
                   size="sm"
                   value={props.groom_instagram || ''}
@@ -325,10 +325,10 @@ const PropertyInspector = ({
             </div>
 
             {/* Profil Wanita */}
-            <div className="p-2 rounded border bg-light">
-              <h6 className="fw-bold small text-dark mb-2">Mempelai Wanita</h6>
+            <div className="p-2 rounded panel-card">
+              <h6 className="fw-bold small text-body mb-2">Mempelai Wanita</h6>
               <div className="mb-2">
-                <CFormLabel className="small mb-1">Nama Lengkap</CFormLabel>
+                <CFormLabel className="small mb-1 text-body">Nama Lengkap</CFormLabel>
                 <CFormInput
                   size="sm"
                   value={props.bride_name || ''}
@@ -336,7 +336,7 @@ const PropertyInspector = ({
                 />
               </div>
               <div className="mb-2">
-                <CFormLabel className="small mb-1">Keterangan Orang Tua</CFormLabel>
+                <CFormLabel className="small mb-1 text-body">Keterangan Orang Tua</CFormLabel>
                 <CFormInput
                   size="sm"
                   value={props.bride_parents || ''}
@@ -344,7 +344,7 @@ const PropertyInspector = ({
                 />
               </div>
               <div className="mb-2">
-                <CFormLabel className="small mb-1">Foto Wanita</CFormLabel>
+                <CFormLabel className="small mb-1 text-body">Foto Wanita</CFormLabel>
                 <CFormInput
                   size="sm"
                   className="mb-1"
@@ -359,9 +359,10 @@ const PropertyInspector = ({
                   onChange={(e) => handleFileUpload('bride_photo', e.target.files[0], 'photo')}
                 />
                 <CButton
-                  color="light"
+                  color="secondary"
+                  variant="outline"
                   size="sm"
-                  className="border w-100 d-flex align-items-center justify-content-center gap-1"
+                  className="w-100 d-flex align-items-center justify-content-center gap-1 text-body"
                   disabled={uploadingField === 'bride_photo'}
                   onClick={() => document.getElementById('bride-upload').click()}
                 >
@@ -374,7 +375,7 @@ const PropertyInspector = ({
                 </CButton>
               </div>
               <div>
-                <CFormLabel className="small mb-1">Instagram</CFormLabel>
+                <CFormLabel className="small mb-1 text-body">Instagram</CFormLabel>
                 <CFormInput
                   size="sm"
                   value={props.bride_instagram || ''}
@@ -389,7 +390,7 @@ const PropertyInspector = ({
         {section.type === 'CountdownTimer' && (
           <div className="d-flex flex-column gap-3">
             <div>
-              <CFormLabel className="fw-bold small">Judul Countdown</CFormLabel>
+              <CFormLabel className="fw-bold small text-body">Judul Countdown</CFormLabel>
               <CFormInput
                 size="sm"
                 value={props.title || ''}
@@ -397,7 +398,7 @@ const PropertyInspector = ({
               />
             </div>
             <div>
-              <CFormLabel className="fw-bold small">Target Tanggal &amp; Waktu</CFormLabel>
+              <CFormLabel className="fw-bold small text-body">Target Tanggal &amp; Waktu</CFormLabel>
               <CFormInput
                 type="datetime-local"
                 size="sm"
@@ -406,7 +407,7 @@ const PropertyInspector = ({
               />
             </div>
             <div>
-              <CFormLabel className="fw-bold small">Deskripsi Catatan</CFormLabel>
+              <CFormLabel className="fw-bold small text-body">Deskripsi Catatan</CFormLabel>
               <CFormTextarea
                 rows={2}
                 value={props.description || ''}
@@ -420,7 +421,7 @@ const PropertyInspector = ({
         {section.type === 'EventSchedule' && (
           <div className="d-flex flex-column gap-3">
             <div>
-              <CFormLabel className="fw-bold small">Judul Rangkaian Acara</CFormLabel>
+              <CFormLabel className="fw-bold small text-body">Judul Rangkaian Acara</CFormLabel>
               <CFormInput
                 size="sm"
                 value={props.title || ''}
@@ -428,7 +429,7 @@ const PropertyInspector = ({
               />
             </div>
             <div>
-              <CFormLabel className="fw-bold small">Subjudul</CFormLabel>
+              <CFormLabel className="fw-bold small text-body">Subjudul</CFormLabel>
               <CFormInput
                 size="sm"
                 value={props.subtitle || ''}
@@ -438,11 +439,12 @@ const PropertyInspector = ({
 
             <div>
               <div className="d-flex justify-content-between align-items-center mb-2">
-                <CFormLabel className="fw-bold small mb-0">Daftar Sesi Acara</CFormLabel>
+                <CFormLabel className="fw-bold small text-body mb-0">Daftar Sesi Acara</CFormLabel>
                 <CButton
                   size="sm"
-                  color="light"
-                  className="py-0 px-2 border"
+                  color="secondary"
+                  variant="outline"
+                  className="py-0 px-2"
                   onClick={() => {
                     const newEvents = [
                       ...(props.events || []),
@@ -463,9 +465,9 @@ const PropertyInspector = ({
               </div>
 
               {(props.events || []).map((evt, idx) => (
-                <div key={evt.id || idx} className="p-2 rounded border bg-light mb-2">
+                <div key={evt.id || idx} className="p-2 rounded panel-card mb-2">
                   <div className="d-flex justify-content-between align-items-center mb-1">
-                    <span className="fw-bold small">Sesi #{idx + 1}</span>
+                    <span className="fw-bold small text-body">Sesi #{idx + 1}</span>
                     <button
                       type="button"
                       className="btn btn-sm btn-link text-danger p-0"
@@ -530,7 +532,7 @@ const PropertyInspector = ({
         {section.type === 'LocationMap' && (
           <div className="d-flex flex-column gap-3">
             <div>
-              <CFormLabel className="fw-bold small">Judul Bagian</CFormLabel>
+              <CFormLabel className="fw-bold small text-body">Judul Bagian</CFormLabel>
               <CFormInput
                 size="sm"
                 value={props.title || ''}
@@ -538,7 +540,7 @@ const PropertyInspector = ({
               />
             </div>
             <div>
-              <CFormLabel className="fw-bold small">Nama Gedung / Tempat</CFormLabel>
+              <CFormLabel className="fw-bold small text-body">Nama Gedung / Tempat</CFormLabel>
               <CFormInput
                 size="sm"
                 value={props.venue_name || ''}
@@ -546,7 +548,7 @@ const PropertyInspector = ({
               />
             </div>
             <div>
-              <CFormLabel className="fw-bold small">Alamat Lengkap</CFormLabel>
+              <CFormLabel className="fw-bold small text-body">Alamat Lengkap</CFormLabel>
               <CFormTextarea
                 rows={2}
                 value={props.address || ''}
@@ -554,18 +556,18 @@ const PropertyInspector = ({
               />
             </div>
             <div>
-              <CFormLabel className="fw-bold small">Google Maps Embed URL</CFormLabel>
+              <CFormLabel className="fw-bold small text-body">Google Maps Embed URL</CFormLabel>
               <CFormInput
                 size="sm"
                 value={props.maps_embed_url || ''}
                 onChange={(e) => handlePropChange('maps_embed_url', e.target.value)}
               />
-              <small className="text-muted" style={{ fontSize: '0.7rem' }}>
+              <small className="text-body-secondary" style={{ fontSize: '0.7rem' }}>
                 URL iframe src Google Maps embed
               </small>
             </div>
             <div>
-              <CFormLabel className="fw-bold small">Google Maps Link Langsung</CFormLabel>
+              <CFormLabel className="fw-bold small text-body">Google Maps Link Langsung</CFormLabel>
               <CFormInput
                 size="sm"
                 value={props.maps_direction_url || ''}
@@ -579,7 +581,7 @@ const PropertyInspector = ({
         {section.type === 'PhotoGallery' && (
           <div className="d-flex flex-column gap-3">
             <div>
-              <CFormLabel className="fw-bold small">Judul Galeri</CFormLabel>
+              <CFormLabel className="fw-bold small text-body">Judul Galeri</CFormLabel>
               <CFormInput
                 size="sm"
                 value={props.title || ''}
@@ -587,7 +589,7 @@ const PropertyInspector = ({
               />
             </div>
             <div>
-              <CFormLabel className="fw-bold small">Subjudul</CFormLabel>
+              <CFormLabel className="fw-bold small text-body">Subjudul</CFormLabel>
               <CFormInput
                 size="sm"
                 value={props.subtitle || ''}
@@ -597,7 +599,7 @@ const PropertyInspector = ({
 
             <div>
               <div className="d-flex justify-content-between align-items-center mb-2">
-                <CFormLabel className="fw-bold small mb-0">Foto Galeri ({props.images?.length || 0})</CFormLabel>
+                <CFormLabel className="fw-bold small text-body mb-0">Foto Galeri ({props.images?.length || 0})</CFormLabel>
                 <div>
                   <input
                     type="file"
@@ -629,8 +631,9 @@ const PropertyInspector = ({
                   />
                   <CButton
                     size="sm"
-                    color="light"
-                    className="py-0 px-2 border d-flex align-items-center gap-1"
+                    color="secondary"
+                    variant="outline"
+                    className="py-0 px-2 d-flex align-items-center gap-1 text-body"
                     disabled={uploadingField === 'gallery'}
                     onClick={() => document.getElementById('gallery-upload').click()}
                   >
@@ -646,7 +649,7 @@ const PropertyInspector = ({
 
               <div className="d-flex flex-column gap-2">
                 {(props.images || []).map((img, idx) => (
-                  <div key={idx} className="p-2 border rounded bg-light d-flex align-items-center gap-2">
+                  <div key={idx} className="p-2 panel-card rounded d-flex align-items-center gap-2">
                     <img
                       src={img}
                       alt=""
@@ -684,7 +687,7 @@ const PropertyInspector = ({
         {section.type === 'LoveStory' && (
           <div className="d-flex flex-column gap-3">
             <div>
-              <CFormLabel className="fw-bold small">Judul</CFormLabel>
+              <CFormLabel className="fw-bold small text-body">Judul</CFormLabel>
               <CFormInput
                 size="sm"
                 value={props.title || ''}
@@ -692,7 +695,7 @@ const PropertyInspector = ({
               />
             </div>
             <div>
-              <CFormLabel className="fw-bold small">Subjudul</CFormLabel>
+              <CFormLabel className="fw-bold small text-body">Subjudul</CFormLabel>
               <CFormInput
                 size="sm"
                 value={props.subtitle || ''}
@@ -701,11 +704,12 @@ const PropertyInspector = ({
             </div>
             <div>
               <div className="d-flex justify-content-between align-items-center mb-2">
-                <CFormLabel className="fw-bold small mb-0">Linimasa Cerita</CFormLabel>
+                <CFormLabel className="fw-bold small text-body mb-0">Linimasa Cerita</CFormLabel>
                 <CButton
                   size="sm"
-                  color="light"
-                  className="py-0 px-2 border"
+                  color="secondary"
+                  variant="outline"
+                  className="py-0 px-2"
                   onClick={() => {
                     const newStories = [
                       ...(props.stories || []),
@@ -719,9 +723,9 @@ const PropertyInspector = ({
               </div>
 
               {(props.stories || []).map((s, idx) => (
-                <div key={idx} className="p-2 border rounded bg-light mb-2">
+                <div key={idx} className="p-2 panel-card rounded mb-2">
                   <div className="d-flex justify-content-between align-items-center mb-1">
-                    <span className="fw-bold small">Kisah #{idx + 1}</span>
+                    <span className="fw-bold small text-body">Kisah #{idx + 1}</span>
                     <button
                       type="button"
                       className="btn btn-sm btn-link text-danger p-0"
@@ -775,7 +779,7 @@ const PropertyInspector = ({
         {section.type === 'GiftRegistry' && (
           <div className="d-flex flex-column gap-3">
             <div>
-              <CFormLabel className="fw-bold small">Judul</CFormLabel>
+              <CFormLabel className="fw-bold small text-body">Judul</CFormLabel>
               <CFormInput
                 size="sm"
                 value={props.title || ''}
@@ -783,7 +787,7 @@ const PropertyInspector = ({
               />
             </div>
             <div>
-              <CFormLabel className="fw-bold small">Catatan Pengantar</CFormLabel>
+              <CFormLabel className="fw-bold small text-body">Catatan Pengantar</CFormLabel>
               <CFormTextarea
                 rows={2}
                 value={props.note || ''}
@@ -793,11 +797,12 @@ const PropertyInspector = ({
 
             <div>
               <div className="d-flex justify-content-between align-items-center mb-2">
-                <CFormLabel className="fw-bold small mb-0">Daftar Rekening / Dompet Digital</CFormLabel>
+                <CFormLabel className="fw-bold small text-body mb-0">Daftar Rekening / Dompet Digital</CFormLabel>
                 <CButton
                   size="sm"
-                  color="light"
-                  className="py-0 px-2 border"
+                  color="secondary"
+                  variant="outline"
+                  className="py-0 px-2"
                   onClick={() => {
                     const newAccounts = [
                       ...(props.accounts || []),
@@ -811,9 +816,9 @@ const PropertyInspector = ({
               </div>
 
               {(props.accounts || []).map((acc, idx) => (
-                <div key={idx} className="p-2 border rounded bg-light mb-2">
+                <div key={idx} className="p-2 panel-card rounded mb-2">
                   <div className="d-flex justify-content-between align-items-center mb-1">
-                    <span className="fw-bold small">Rekening #{idx + 1}</span>
+                    <span className="fw-bold small text-body">Rekening #{idx + 1}</span>
                     <button
                       type="button"
                       className="btn btn-sm btn-link text-danger p-0"
@@ -862,7 +867,7 @@ const PropertyInspector = ({
             </div>
 
             <div>
-              <CFormLabel className="fw-bold small">Alamat Kirim Kado Fisik</CFormLabel>
+              <CFormLabel className="fw-bold small text-body">Alamat Kirim Kado Fisik</CFormLabel>
               <CFormTextarea
                 rows={2}
                 placeholder="Alamat lengkap penerima hadiah fisik..."
@@ -877,7 +882,7 @@ const PropertyInspector = ({
         {(section.type === 'RsvpSection' || section.type === 'RsvpForm') && (
           <div className="d-flex flex-column gap-3">
             <div>
-              <CFormLabel className="fw-bold small">Judul Formulir RSVP</CFormLabel>
+              <CFormLabel className="fw-bold small text-body">Judul Formulir RSVP</CFormLabel>
               <CFormInput
                 size="sm"
                 value={props.title || ''}
@@ -885,7 +890,7 @@ const PropertyInspector = ({
               />
             </div>
             <div>
-              <CFormLabel className="fw-bold small">Subjudul</CFormLabel>
+              <CFormLabel className="fw-bold small text-body">Subjudul</CFormLabel>
               <CFormInput
                 size="sm"
                 value={props.subtitle || ''}
@@ -893,7 +898,7 @@ const PropertyInspector = ({
               />
             </div>
             <div>
-              <CFormLabel className="fw-bold small">Catatan Batas Konfirmasi</CFormLabel>
+              <CFormLabel className="fw-bold small text-body">Catatan Batas Konfirmasi</CFormLabel>
               <CFormTextarea
                 rows={2}
                 value={props.note || ''}
@@ -907,7 +912,7 @@ const PropertyInspector = ({
         {section.type === 'FooterSection' && (
           <div className="d-flex flex-column gap-3">
             <div>
-              <CFormLabel className="fw-bold small">Kalimat Penutup</CFormLabel>
+              <CFormLabel className="fw-bold small text-body">Kalimat Penutup</CFormLabel>
               <CFormTextarea
                 rows={2}
                 value={props.closing_quote || ''}
@@ -915,7 +920,7 @@ const PropertyInspector = ({
               />
             </div>
             <div>
-              <CFormLabel className="fw-bold small">Tanda Tangan Keluarga</CFormLabel>
+              <CFormLabel className="fw-bold small text-body">Tanda Tangan Keluarga</CFormLabel>
               <CFormInput
                 size="sm"
                 value={props.family_signatures || ''}
@@ -923,7 +928,7 @@ const PropertyInspector = ({
               />
             </div>
             <div>
-              <CFormLabel className="fw-bold small">Watermark / Kredit Brand</CFormLabel>
+              <CFormLabel className="fw-bold small text-body">Watermark / Kredit Brand</CFormLabel>
               <CFormInput
                 size="sm"
                 value={props.brand_credit || ''}
