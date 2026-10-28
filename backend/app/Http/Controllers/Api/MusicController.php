@@ -56,8 +56,9 @@ class MusicController extends Controller
             'file' => 'required|file|mimes:mp3,wav,ogg,audio/mpeg|max:10240',
         ]);
 
-        $path = $request->file('file')->store('music', 'public');
-        $publicUrl = '/storage/'.$path;
+        $disk = config('filesystems.default') === 's3' ? 's3' : 'public';
+        $path = $request->file('file')->store('music', $disk);
+        $publicUrl = Storage::disk($disk)->url($path);
 
         $music = Music::create([
             'title' => $validated['title'],

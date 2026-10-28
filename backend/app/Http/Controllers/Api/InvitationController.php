@@ -267,11 +267,12 @@ class InvitationController extends Controller
         ]);
 
         $folder = 'invitations/' . $invitation->id . '/' . ($validated['type'] ?? 'general');
-        $path = $request->file('file')->store($folder, 'public');
+        $disk = config('filesystems.default') === 's3' ? 's3' : 'public';
+        $path = $request->file('file')->store($folder, $disk);
 
         return response()->json([
             'data' => [
-                'file_path' => '/storage/' . $path,
+                'file_path' => Storage::disk($disk)->url($path),
                 'filename' => $request->file('file')->getClientOriginalName(),
                 'size' => $request->file('file')->getSize(),
                 'mime_type' => $request->file('file')->getMimeType(),

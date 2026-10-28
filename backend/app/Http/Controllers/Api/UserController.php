@@ -7,6 +7,7 @@ use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Storage;
 
 class UserController extends Controller
 {
@@ -131,8 +132,9 @@ class UserController extends Controller
                 'avatar' => ['required', 'file', 'image', 'mimes:jpeg,png,jpg,webp,gif', 'max:5120'],
             ]);
 
-            $path = $request->file('avatar')->store('avatars/' . $user->id, 'public');
-            $avatarUrl = '/storage/' . $path;
+            $disk = config('filesystems.default') === 's3' ? 's3' : 'public';
+            $path = $request->file('avatar')->store('avatars/' . $user->id, $disk);
+            $avatarUrl = Storage::disk($disk)->url($path);
             $user->update(['avatar' => $avatarUrl]);
         } elseif ($request->filled('avatar')) {
             $data = $request->validate([
