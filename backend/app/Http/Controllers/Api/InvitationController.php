@@ -108,7 +108,7 @@ class InvitationController extends Controller
             $invitation->content()->create([
                 'schema_version' => '1.0.0',
                 'sections_data' => $sectionsData,
-                'music_url' => null,
+                'music_url' => $defaultConfig['default_music_url'] ?? null,
                 'settings' => [
                     'palette' => $defaultConfig['palette'] ?? null,
                     'typography' => $defaultConfig['typography'] ?? null,
@@ -261,10 +261,17 @@ class InvitationController extends Controller
             ], 403);
         }
 
-        $validated = $request->validate([
-            'file' => ['required', 'file', 'image', 'mimes:jpeg,png,jpg,webp,gif', 'max:5120'],
-            'type' => ['nullable', 'string', 'in:cover,photo,gallery,general'],
-        ]);
+        $type = $request->input('type', 'general');
+        $isAudio = $type === 'music';
+
+        $rules = [
+            'file' => $isAudio
+                ? ['required', 'file', 'mimes:mp3,wav,ogg,audio/mpeg', 'max:10240']
+                : ['required', 'file', 'image', 'mimes:jpeg,png,jpg,webp,gif', 'max:5120'],
+            'type' => ['nullable', 'string', 'in:cover,photo,gallery,music,general'],
+        ];
+
+        $validated = $request->validate($rules);
 
         $folder = 'invitations/' . $invitation->id . '/' . ($validated['type'] ?? 'general');
         $disk = config('filesystems.default') === 's3' ? 's3' : 'public';

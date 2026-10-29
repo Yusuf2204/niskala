@@ -86,7 +86,46 @@ const PropertyInspector = ({
               ))}
             </select>
 
-            <small className="text-body-secondary d-block mb-2">Atau masukkan URL audio mp3 eksternal:</small>
+            <div className="mb-2">
+              <label className="btn btn-outline-secondary btn-sm w-100 d-flex align-items-center justify-content-center gap-2 cursor-pointer">
+                <span>📁 Upload Audio Sendiri (MP3)</span>
+                <input
+                  type="file"
+                  accept="audio/mp3,audio/mpeg,audio/wav,audio/ogg"
+                  className="d-none"
+                  disabled={uploadingField === 'music'}
+                  onChange={async (e) => {
+                    const file = e.target.files?.[0]
+                    if (!file || !invitation?.id) return
+                    setUploadingField('music')
+                    try {
+                      const formData = new FormData()
+                      formData.append('file', file)
+                      formData.append('type', 'music')
+                      const res = await api.post(`/v1/invitations/${invitation.id}/media`, formData, {
+                        headers: { 'Content-Type': 'multipart/form-data' },
+                      })
+                      const newUrl = res.data?.data?.file_path
+                      if (newUrl) {
+                        setSelectedMusic(newUrl)
+                        onUpdateMusicUrl(newUrl)
+                        toastSuccess('Musik kustom berhasil diunggah.')
+                      }
+                    } catch (err) {
+                      toastError('Gagal mengunggah file musik.')
+                    } finally {
+                      setUploadingField(null)
+                      e.target.value = ''
+                    }
+                  }}
+                />
+              </label>
+              {uploadingField === 'music' && (
+                <small className="text-warning d-block mt-1">Mengunggah file audio ke MinIO...</small>
+              )}
+            </div>
+
+            <small className="text-body-secondary d-block mb-1">Atau masukkan URL audio mp3 eksternal:</small>
             <CFormInput
               size="sm"
               placeholder="https://domain.com/audio.mp3"

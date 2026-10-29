@@ -388,6 +388,15 @@ class InvitationApiTest extends TestCase
             ->assertJsonPath('message', 'Media uploaded successfully.')
             ->assertJsonStructure(['data' => ['file_path', 'filename', 'size', 'mime_type']]);
 
+        // User A uploads audio to User A's invitation -> Success
+        $fakeAudio = UploadedFile::fake()->create('custom-wedding.mp3', 3000, 'audio/mpeg');
+        $audioResponse = $this->postJson("/api/v1/invitations/{$invitationId}/media", [
+            'file' => $fakeAudio,
+            'type' => 'music',
+        ]);
+        $audioResponse->assertStatus(201)
+            ->assertJsonPath('data.mime_type', 'audio/mpeg');
+
         // User B tries to upload to User A's invitation -> 403 IDOR blocked
         Sanctum::actingAs($this->userB);
         $unauthorizedResponse = $this->postJson("/api/v1/invitations/{$invitationId}/media", [

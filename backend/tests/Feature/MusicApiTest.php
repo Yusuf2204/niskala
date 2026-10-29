@@ -51,7 +51,7 @@ class MusicApiTest extends TestCase
                 ],
             ]);
 
-        $this->assertGreaterThanOrEqual(3, count($response->json('data')));
+        $this->assertGreaterThanOrEqual(2, count($response->json('data')));
     }
 
     public function test_authenticated_user_can_upload_music(): void

@@ -36,6 +36,7 @@ class ThemeSeeder extends Seeder
                         'body_font' => "'Plus Jakarta Sans', sans-serif",
                     ],
                     'theme_style' => 'jawa',
+                    'default_music_url' => 'http://localhost:9005/niskala/music/master/canon-in-d.mp3',
                     'assets' => [
                         'gunungan_url' => 'http://localhost:9005/niskala/themes/adat-jawa/ornaments/gunungan-gold.svg',
                         'divider_url' => 'http://localhost:9005/niskala/themes/adat-jawa/ornaments/divider-keraton.svg',
