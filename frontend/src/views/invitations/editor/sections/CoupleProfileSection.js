@@ -31,7 +31,7 @@ const CoupleProfileSection = ({ props = {}, isWeb = true }) => {
           Pasangan Mempelai
         </p>
         <h2
-          className="font-serif mb-3"
+          className="font-serif mb-2"
           style={{
             fontFamily: "'Playfair Display', Georgia, serif",
             color: '#34342F',
@@ -40,6 +40,11 @@ const CoupleProfileSection = ({ props = {}, isWeb = true }) => {
         >
           {section_title}
         </h2>
+        {props.divider_url && (
+          <div className="mx-auto my-3" style={{ maxWidth: isWeb ? '220px' : '160px' }}>
+            <img src={props.divider_url} alt="" style={{ width: '100%', height: 'auto' }} />
+          </div>
+        )}
         <p
           className="mx-auto mb-5 text-muted"
           style={{ maxWidth: '620px', fontSize: isWeb ? '0.95rem' : '0.85rem' }}

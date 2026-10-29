@@ -28,9 +28,21 @@ const HeroCoverSection = ({ props = {}, isWeb = true }) => {
       }}
     >
       <div style={{ maxWidth: isWeb ? '720px' : '100%', zIndex: 2 }}>
-        {ornament_type === 'gunungan' && (
+        {(ornament_type === 'gunungan' || props.ornament_url) && (
           <div className="mb-3 animate-fade-in">
-            <GununganEmblem width={isWeb ? 54 : 44} height={isWeb ? 64 : 54} color="#D4AF37" />
+            {props.ornament_url ? (
+              <img
+                src={props.ornament_url}
+                alt="Gunungan Wayang"
+                style={{
+                  width: isWeb ? '68px' : '52px',
+                  height: 'auto',
+                  filter: 'drop-shadow(0 4px 8px rgba(0,0,0,0.6))',
+                }}
+              />
+            ) : (
+              <GununganEmblem width={isWeb ? 54 : 44} height={isWeb ? 64 : 54} color="#D4AF37" />
+            )}
           </div>
         )}
         <p
@@ -56,14 +68,20 @@ const HeroCoverSection = ({ props = {}, isWeb = true }) => {
         >
           {primary_names}
         </h1>
-        <div
-          className="mx-auto my-3"
-          style={{
-            width: '80px',
-            height: '2px',
-            backgroundColor: '#A68B65',
-          }}
-        />
+        {props.divider_url ? (
+          <div className="mx-auto my-3" style={{ maxWidth: isWeb ? '240px' : '180px' }}>
+            <img src={props.divider_url} alt="" style={{ width: '100%', height: 'auto' }} />
+          </div>
+        ) : (
+          <div
+            className="mx-auto my-3"
+            style={{
+              width: '80px',
+              height: '2px',
+              backgroundColor: '#A68B65',
+            }}
+          />
+        )}
         <p
           className="mb-3 fst-italic"
           style={{

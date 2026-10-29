@@ -37,8 +37,15 @@ class ThemeSeeder extends Seeder
                     ],
                     'theme_style' => 'jawa',
                     'assets' => [
-                        'ornament' => 'gunungan',
-                        'border_ornament' => 'ukiran_emas',
+                        'gunungan_url' => 'http://localhost:9005/niskala/themes/adat-jawa/ornaments/gunungan-gold.svg',
+                        'divider_url' => 'http://localhost:9005/niskala/themes/adat-jawa/ornaments/divider-keraton.svg',
+                        'corner_url' => 'http://localhost:9005/niskala/themes/adat-jawa/ornaments/corner-ornament.svg',
+                        'frame_url' => 'http://localhost:9005/niskala/themes/adat-jawa/ornaments/frame-joglo.svg',
+                        'pattern_url' => 'http://localhost:9005/niskala/themes/adat-jawa/patterns/batik-kawung-subtle.svg',
+                        'icon_siraman_url' => 'http://localhost:9005/niskala/themes/adat-jawa/icons/icon-siraman.svg',
+                        'icon_midodareni_url' => 'http://localhost:9005/niskala/themes/adat-jawa/icons/icon-midodareni.svg',
+                        'icon_akad_url' => 'http://localhost:9005/niskala/themes/adat-jawa/icons/icon-akad.svg',
+                        'icon_panggih_url' => 'http://localhost:9005/niskala/themes/adat-jawa/icons/icon-panggih.svg',
                     ],
                     'default_sections' => [
                         'HeroCover',
@@ -60,6 +67,9 @@ class ThemeSeeder extends Seeder
                             'date_text' => 'Sabtu Pahing, 12 Desember 2026',
                             'quote' => 'Mugi Gusti Ingkang Maha Agung tansah paring berkah lan karaharjan ing gesang bebrayan kito.',
                             'bg_image_url' => 'https://images.unsplash.com/photo-1583939003579-730e3918a45a?auto=format&fit=crop&w=1200&q=80',
+                            'bg_pattern_url' => 'http://localhost:9005/niskala/themes/adat-jawa/patterns/batik-kawung-subtle.svg',
+                            'ornament_url' => 'http://localhost:9005/niskala/themes/adat-jawa/ornaments/gunungan-gold.svg',
+                            'divider_url' => 'http://localhost:9005/niskala/themes/adat-jawa/ornaments/divider-keraton.svg',
                             'open_button_text' => 'Buka Serat Undangan',
                             'guest_greeting_prefix' => 'Katur Dhumateng Panjenenganipun Bapak/Ibu/Sedherek:',
                             'ornament_type' => 'gunungan',
@@ -68,6 +78,8 @@ class ThemeSeeder extends Seeder
                         'CoupleProfile' => [
                             'section_title' => 'Sri Penganten Kakung & Putri',
                             'quote' => 'Kanthi nyenyuwun berkah dalah pangestu dhumateng Gusti Ingkang Maha Kuwaos, keparenga kulo sakeluarga ngaturi rawuh panjenengan sedaya ing pahargyan dhaup suci putra-putri kito:',
+                            'frame_url' => 'http://localhost:9005/niskala/themes/adat-jawa/ornaments/frame-joglo.svg',
+                            'divider_url' => 'http://localhost:9005/niskala/themes/adat-jawa/ornaments/divider-keraton.svg',
                             'groom_name' => 'Raden Rama Wijaya, S.Kom.',
                             'groom_parents' => 'Putra kakung kapisan Bpk. Danu Wijaya & Ibu Maya Kartika',
                             'groom_photo' => 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=600&q=80',
@@ -108,10 +120,12 @@ class ThemeSeeder extends Seeder
                             'title' => 'Tata Upacara & Prosesi Adat Jawa',
                             'subtitle' => 'Rangkaian Ritual Suci Sakral Penganten Jawa',
                             'ornament' => 'gunungan',
+                            'divider_url' => 'http://localhost:9005/niskala/themes/adat-jawa/ornaments/divider-keraton.svg',
                             'items' => [
                                 [
                                     'id' => 'item-1',
                                     'title' => 'Upacara Siraman',
+                                    'icon_url' => 'http://localhost:9005/niskala/themes/adat-jawa/icons/icon-siraman.svg',
                                     'time_info' => 'Jumat Pon, 11 Desember 2026 — 09:00 WIB',
                                     'location' => 'Kediaman Mempelai Putri',
                                     'description' => 'Upacara sesuci raga dalah jiwa calon penganten kanthi toya pitu sumber kembang setaman, pinangka lambang reresik lair lan batin sadurunge ngambah gesang anyar.',
@@ -119,6 +133,7 @@ class ThemeSeeder extends Seeder
                                 [
                                     'id' => 'item-2',
                                     'title' => 'Malam Midodareni',
+                                    'icon_url' => 'http://localhost:9005/niskala/themes/adat-jawa/icons/icon-midodareni.svg',
                                     'time_info' => 'Jumat Pon, 11 Desember 2026 — 19:00 WIB',
                                     'location' => 'Kediaman Mempelai Putri',
                                     'description' => 'Wanci wengi ing ngendi para widadari mudhun maringi berkah kaendahan, kasekten, lan karaharjan dhumateng calon penganten putri.',
@@ -126,6 +141,7 @@ class ThemeSeeder extends Seeder
                                 [
                                     'id' => 'item-3',
                                     'title' => 'Ijab Kabul / Akad Nikah',
+                                    'icon_url' => 'http://localhost:9005/niskala/themes/adat-jawa/icons/icon-akad.svg',
                                     'time_info' => 'Sabtu Pahing, 12 Desember 2026 — 08:00 WIB',
                                     'location' => 'Pendopo Ageng Handrawina',
                                     'description' => 'Ikrar suci prajanjen nikah ing ngarsanipun Gusti Allah SWT, saksi, para sepuh, lan wali.',
@@ -133,6 +149,7 @@ class ThemeSeeder extends Seeder
                                 [
                                     'id' => 'item-4',
                                     'title' => 'Upacara Panggih Penganten',
+                                    'icon_url' => 'http://localhost:9005/niskala/themes/adat-jawa/icons/icon-panggih.svg',
                                     'time_info' => 'Sabtu Pahing, 12 Desember 2026 — 10:00 WIB',
                                     'location' => 'Sasana Hinggil Handrawina',
                                     'description' => 'Temuning sri penganten kakung lan putri lumantar prosesi adat Balangan Gantal, Wijik Suku/Ngidak Endhog, Sinduran, Kacar Kucur, Dahar Klimah, lan Sungkeman.',
@@ -140,6 +157,7 @@ class ThemeSeeder extends Seeder
                                 [
                                     'id' => 'item-5',
                                     'title' => 'Pahargyan Temu Manten (Resepsi)',
+                                    'icon_url' => 'http://localhost:9005/niskala/themes/adat-jawa/icons/icon-panggih.svg',
                                     'time_info' => 'Sabtu Pahing, 12 Desember 2026 — 11:30 - 14:00 WIB',
                                     'location' => 'Grand Ballroom Handrawina',
                                     'description' => 'Syukuran agung bebarengan para tamu rawuh kinurmatan dalah sedherek kanthi suwasana pinarak gamelan lan beksan Jawa.',

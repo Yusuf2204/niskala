@@ -109,7 +109,13 @@ const TraditionAccordionSection = ({ props = {}, isWeb = true }) => {
             {subtitle}
           </p>
         )}
-        <JavaneseDivider color={primaryGold} width={isWeb ? '220px' : '160px'} />
+        {props.divider_url ? (
+          <div className="mx-auto my-2" style={{ maxWidth: isWeb ? '220px' : '160px' }}>
+            <img src={props.divider_url} alt="" style={{ width: '100%', height: 'auto' }} />
+          </div>
+        ) : (
+          <JavaneseDivider color={primaryGold} width={isWeb ? '220px' : '160px'} />
+        )}
       </div>
 
       {/* Accordion List */}
@@ -145,20 +151,29 @@ const TraditionAccordionSection = ({ props = {}, isWeb = true }) => {
                   style={{ outline: 'none' }}
                 >
                   <div className="d-flex align-items-center gap-3">
-                    <div
-                      className="d-flex align-items-center justify-content-center rounded-circle flex-shrink-0 fw-bold"
-                      style={{
-                        width: '32px',
-                        height: '32px',
-                        fontSize: '0.85rem',
-                        backgroundColor: isExpanded ? primaryGold : 'rgba(197, 160, 89, 0.15)',
-                        color: isExpanded ? '#242420' : deepSogan,
-                        border: `1px solid ${primaryGold}`,
-                        transition: 'all 0.2s ease',
-                      }}
-                    >
-                      {index + 1}
-                    </div>
+                    {item.icon_url ? (
+                      <img
+                        src={item.icon_url}
+                        alt=""
+                        className="flex-shrink-0"
+                        style={{ width: '32px', height: '32px' }}
+                      />
+                    ) : (
+                      <div
+                        className="d-flex align-items-center justify-content-center rounded-circle flex-shrink-0 fw-bold"
+                        style={{
+                          width: '32px',
+                          height: '32px',
+                          fontSize: '0.85rem',
+                          backgroundColor: isExpanded ? primaryGold : 'rgba(197, 160, 89, 0.15)',
+                          color: isExpanded ? '#242420' : deepSogan,
+                          border: `1px solid ${primaryGold}`,
+                          transition: 'all 0.2s ease',
+                        }}
+                      >
+                        {index + 1}
+                      </div>
+                    )}
                     <div>
                       <h6
                         className="mb-0 fw-bold font-serif"
