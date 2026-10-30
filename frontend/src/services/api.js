@@ -38,7 +38,7 @@ api.interceptors.response.use(
       window.location.href = '/#/403'
     }
 
-    if (status === 404 && url !== '/me') {
+    if (status === 404 && url !== '/me' && !url?.includes('public/invitations')) {
       window.location.href = '/#/404'
     }
 

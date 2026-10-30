@@ -22,6 +22,7 @@ class DatabaseSeeder extends Seeder
             AdminUserSeeder::class,
             ThemeSeeder::class,
             MusicSeeder::class,
+            InvitationSeeder::class,
         ]);
     }
 }
