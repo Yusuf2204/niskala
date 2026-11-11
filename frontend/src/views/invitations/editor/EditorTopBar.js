@@ -174,7 +174,7 @@ const EditorTopBar = ({
           variant="outline"
           onClick={onOpenPreview}
           className="d-flex align-items-center gap-1 text-body"
-          title="Pratinjau Layar Penuh"
+          title="Buka Live Preview di Tab Baru"
         >
           <CIcon icon={cilExternalLink} size="sm" />
           <span className="d-none d-md-inline">Preview</span>

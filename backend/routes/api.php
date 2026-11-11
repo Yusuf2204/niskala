@@ -4,11 +4,13 @@ use App\Http\Controllers\Api\AuthController;
 // Route Controllers
 use App\Http\Controllers\Api\CompanyController;
 use App\Http\Controllers\Api\DashboardController;
+use App\Http\Controllers\Api\GuestController;
 use App\Http\Controllers\Api\InvitationController;
 use App\Http\Controllers\Api\MenuController;
 use App\Http\Controllers\Api\MusicController;
 use App\Http\Controllers\Api\RoleController;
 use App\Http\Controllers\Api\RoleMenuController;
+use App\Http\Controllers\Api\RsvpController;
 use App\Http\Controllers\Api\ThemeController;
 use App\Http\Controllers\Api\UserController;
 use Illuminate\Support\Facades\Route;
@@ -17,12 +19,15 @@ use Illuminate\Support\Facades\Route;
 Route::post('/login', [AuthController::class, 'login'])->middleware('throttle:5,1')->name('login');
 Route::get('company', [CompanyController::class, 'show']);
 
-// Catalog Public & Authenticated (PRD 01, PRD 02, PRD 04)
+// Catalog Public & Authenticated (PRD 01, PRD 02, PRD 04, PRD 05)
 Route::prefix('v1')->group(function () {
     Route::get('themes', [ThemeController::class, 'index']);
     Route::get('themes/{id}', [ThemeController::class, 'show']);
     Route::get('music', [MusicController::class, 'index']);
     Route::get('public/invitations/{slug}', [InvitationController::class, 'showPublic']);
+    Route::get('public/invitations/{slug}/wishes', [RsvpController::class, 'wishes']);
+    Route::post('public/invitations/{slug}/rsvps', [RsvpController::class, 'storePublic'])
+        ->middleware('throttle:5,1');
 });
 
 Route::middleware('auth:sanctum')->group(function () {
@@ -44,6 +49,13 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::post('invitations/{id}/media', [InvitationController::class, 'uploadMedia']);
         Route::post('invitations/{id}/publish', [InvitationController::class, 'publish']);
         Route::post('invitations/{id}/archive', [InvitationController::class, 'archive']);
+        Route::get('invitations/{id}/guests', [GuestController::class, 'index']);
+        Route::post('invitations/{id}/guests', [GuestController::class, 'store']);
+        Route::put('invitations/{id}/guests/{guestId}', [GuestController::class, 'update']);
+        Route::delete('invitations/{id}/guests/{guestId}', [GuestController::class, 'destroy']);
+        Route::get('invitations/{id}/rsvps', [RsvpController::class, 'index']);
+        Route::put('invitations/{id}/rsvps/{rsvpId}/moderate', [RsvpController::class, 'moderate']);
+        Route::get('invitations/{id}/rsvps/export', [RsvpController::class, 'export']);
         Route::post('music', [MusicController::class, 'store']);
         Route::delete('music/{id}', [MusicController::class, 'destroy']);
     });

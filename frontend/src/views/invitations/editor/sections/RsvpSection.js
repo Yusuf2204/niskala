@@ -1,33 +1,164 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useCallback } from 'react'
 import PropTypes from 'prop-types'
+import { CSpinner } from '@coreui/react'
+import api from '../../../../services/api'
+import { ATTENDANCE_LABELS, formatDateTimeId } from '../../../guests/guestHelpers'
 
-const RsvpSection = ({ props = {}, isWeb = true }) => {
+const SAMPLE_PREVIEW_WISHES = [
+  {
+    id: 'sample-1',
+    guest_name: 'Bapak Surya Pratama & Ibu',
+    attendance_status: 'attending',
+    pax_count: 2,
+    message: 'Selamat menempuh hidup baru, semoga senantiasa diberikan keberkahan dan kebahagiaan.',
+    created_at: null,
+  },
+  {
+    id: 'sample-2',
+    guest_name: 'Andi Wijaya',
+    attendance_status: 'tentative',
+    pax_count: 1,
+    message: 'Semoga acara berjalan lancar dan penuh khidmat. Doa terbaik selalu untuk kalian.',
+    created_at: null,
+  },
+]
+
+const WISH_BADGE_STYLES = {
+  attending: {
+    backgroundColor: '#EBF4EE',
+    color: '#2F5E3D',
+    border: '1px solid rgba(74, 124, 89, 0.35)',
+  },
+  tentative: {
+    backgroundColor: '#FBF5E8',
+    color: '#6E5523',
+    border: '1px solid rgba(166, 139, 101, 0.45)',
+  },
+  not_attending: {
+    backgroundColor: '#F5EAE8',
+    color: '#7D352B',
+    border: '1px solid rgba(125, 53, 43, 0.35)',
+  },
+}
+
+const RsvpSection = ({ props = {}, isWeb = true, renderMode = 'editor', invitationSlug = '' }) => {
   const {
     title = 'Konfirmasi Kehadiran & Doa',
     subtitle = 'Merupakan kehormatan bagi kami atas kehadiran dan doa restu Anda',
-    note = 'Mohon berkenan mengisi konfirmasi sebelum tanggal 1 Desember 2026 demi kelancaran penyambutan tamu.',
+    note = 'Mohon berkenan mengisi konfirmasi sebelum tanggal acara demi kelancaran penyambutan tamu.',
     guestName = '',
+    guestToken = '',
   } = props
 
-  const [formSubmitted, setFormSubmitted] = useState(false)
+  const isPublicMode = renderMode === 'public' && Boolean(invitationSlug)
+
   const [formData, setFormData] = useState({
-    name: guestName || '',
-    attendance: 'hadir',
-    pax: '1',
+    guest_name: guestName || '',
+    attendance_status: 'attending',
+    pax_count: '1',
     message: '',
   })
+  const [submitting, setSubmitting] = useState(false)
+  const [submitSuccess, setSubmitSuccess] = useState('')
+  const [submitError, setSubmitError] = useState('')
+
+  const [wishes, setWishes] = useState([])
+  const [wishesLoading, setWishesLoading] = useState(false)
+  const [loadingMore, setLoadingMore] = useState(false)
+  const [wishesPage, setWishesPage] = useState(1)
+  const [wishesLastPage, setWishesLastPage] = useState(1)
 
   useEffect(() => {
-    if (guestName && !formData.name) {
-      setFormData((prev) => ({ ...prev, name: guestName }))
+    if (guestName) {
+      setFormData((prev) => (prev.guest_name ? prev : { ...prev, guest_name: guestName }))
     }
   }, [guestName])
 
-  const handleSubmit = (e) => {
+  const loadWishes = useCallback(
+    async (page = 1, append = false) => {
+      if (!isPublicMode) return
+      if (append) {
+        setLoadingMore(true)
+      } else {
+        setWishesLoading(true)
+      }
+
+      try {
+        const res = await api.get(`/v1/public/invitations/${invitationSlug}/wishes`, {
+          params: { page, per_page: 10 },
+        })
+        const paginator = res.data?.data
+        const list = paginator?.data || []
+        setWishes((prev) => (append ? [...prev, ...list] : list))
+        setWishesPage(paginator?.current_page || 1)
+        setWishesLastPage(paginator?.last_page || 1)
+      } catch {
+        if (!append) setWishes([])
+      } finally {
+        setWishesLoading(false)
+        setLoadingMore(false)
+      }
+    },
+    [isPublicMode, invitationSlug],
+  )
+
+  useEffect(() => {
+    loadWishes(1, false)
+  }, [loadWishes])
+
+  const handleSubmit = async (e) => {
     e.preventDefault()
-    setFormSubmitted(true)
-    setTimeout(() => setFormSubmitted(false), 4000)
+    setSubmitError('')
+    setSubmitSuccess('')
+
+    if (!isPublicMode) {
+      setSubmitSuccess(
+        'Simulasi berhasil (Mode Editor/Preview). Pengiriman data nyata aktif pada tautan undangan publik.',
+      )
+      setTimeout(() => setSubmitSuccess(''), 4000)
+      return
+    }
+
+    setSubmitting(true)
+    try {
+      const res = await api.post(`/v1/public/invitations/${invitationSlug}/rsvps`, {
+        guest_name: formData.guest_name,
+        attendance_status: formData.attendance_status,
+        pax_count:
+          formData.attendance_status === 'not_attending'
+            ? 0
+            : parseInt(formData.pax_count, 10) || 1,
+        message: formData.message,
+        guest_token: guestToken || undefined,
+      })
+
+      const createdWish = res.data?.data
+      if (createdWish) {
+        setWishes((prev) => [createdWish, ...prev])
+      } else {
+        loadWishes(1, false)
+      }
+
+      setFormData((prev) => ({ ...prev, message: '' }))
+      setSubmitSuccess(
+        res.data?.message || 'Terima kasih atas konfirmasi kehadiran dan doa restu Anda!',
+      )
+    } catch (err) {
+      if (err.response?.status === 429) {
+        setSubmitError(
+          'Anda mengirim konfirmasi terlalu cepat. Mohon tunggu sekitar satu menit sebelum mencoba lagi.',
+        )
+      } else {
+        const errors = err.response?.data?.errors
+        const firstErr = errors ? Object.values(errors).flat()[0] : null
+        setSubmitError(firstErr || err.response?.data?.message || 'Gagal mengirim konfirmasi.')
+      }
+    } finally {
+      setSubmitting(false)
+    }
   }
+
+  const displayedWishes = isPublicMode ? wishes : SAMPLE_PREVIEW_WISHES
 
   return (
     <div
@@ -40,7 +171,7 @@ const RsvpSection = ({ props = {}, isWeb = true }) => {
       <div className="container" style={{ maxWidth: isWeb ? '720px' : '100%' }}>
         <p
           className="text-uppercase tracking-wider fw-semibold mb-1"
-          style={{ color: '#A68B65', fontSize: '0.85rem', letterSpacing: '2px' }}
+          style={{ color: '#8A6F4A', fontSize: '0.85rem', letterSpacing: '2px' }}
         >
           Buku Tamu Digital
         </p>
@@ -57,7 +188,7 @@ const RsvpSection = ({ props = {}, isWeb = true }) => {
         <p className="text-muted mb-2 small">{subtitle}</p>
         <p className="text-muted mb-4 small fst-italic">{note}</p>
 
-        {/* RSVP Mockup Form */}
+        {/* RSVP Form Card */}
         <div
           className="p-4 rounded-3 shadow-sm text-start"
           style={{
@@ -65,83 +196,239 @@ const RsvpSection = ({ props = {}, isWeb = true }) => {
             border: '1px solid rgba(166, 139, 101, 0.4)',
           }}
         >
-          {formSubmitted ? (
-            <div className="alert alert-success text-center py-3 mb-0" style={{ backgroundColor: '#EBF4EE', borderColor: '#4A7C59', color: '#4A7C59' }}>
-              ✓ Terima kasih atas konfirmasi kehadiran dan doa restu Anda!
+          {!isPublicMode && (
+            <div
+              className="rounded-2 px-3 py-2 mb-3 small"
+              style={{
+                backgroundColor: 'rgba(166, 139, 101, 0.14)',
+                color: '#5B482C',
+                border: '1px solid rgba(166, 139, 101, 0.35)',
+              }}
+            >
+              Mode Editor/Preview: Pengiriman formulir nyata ke database aktif saat undangan sudah
+              berstatus <strong>Published</strong>.
             </div>
-          ) : (
-            <form onSubmit={handleSubmit}>
-              <div className="mb-3">
-                <label className="form-label small fw-bold" style={{ color: '#34342F' }}>Nama Lengkap</label>
-                <input
-                  type="text"
-                  className="form-control"
-                  style={{ backgroundColor: '#FFFFFF', color: '#34342F', borderColor: 'rgba(166, 139, 101, 0.4)' }}
-                  placeholder="Contoh: Budi Santoso"
-                  value={formData.name}
-                  onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                  required
-                />
-              </div>
+          )}
 
-              <div className="row g-2 mb-3">
-                <div className="col-12 col-md-6">
-                  <label className="form-label small fw-bold" style={{ color: '#34342F' }}>Konfirmasi Kehadiran</label>
-                  <select
-                    className="form-select"
-                    style={{ backgroundColor: '#FFFFFF', color: '#34342F', borderColor: 'rgba(166, 139, 101, 0.4)' }}
-                    value={formData.attendance}
-                    onChange={(e) => setFormData({ ...formData, attendance: e.target.value })}
-                  >
-                    <option value="hadir">Ya, Saya Akan Hadir</option>
-                    <option value="tidak_hadir">Maaf, Tidak Bisa Hadir</option>
-                    <option value="ragu">Masih Ragu</option>
-                  </select>
-                </div>
-                <div className="col-12 col-md-6">
-                  <label className="form-label small fw-bold" style={{ color: '#34342F' }}>Jumlah Tamu</label>
-                  <select
-                    className="form-select"
-                    style={{ backgroundColor: '#FFFFFF', color: '#34342F', borderColor: 'rgba(166, 139, 101, 0.4)' }}
-                    value={formData.pax}
-                    onChange={(e) => setFormData({ ...formData, pax: e.target.value })}
-                  >
-                    <option value="1">1 Orang</option>
-                    <option value="2">2 Orang</option>
-                    <option value="3">3 Orang</option>
-                    <option value="4">4 Orang</option>
-                  </select>
-                </div>
-              </div>
+          {submitSuccess && (
+            <div
+              className="alert text-center py-3 mb-3"
+              style={{
+                backgroundColor: '#EBF4EE',
+                borderColor: '#4A7C59',
+                color: '#2F5E3D',
+              }}
+            >
+              ✓ {submitSuccess}
+            </div>
+          )}
 
-              <div className="mb-3">
-                <label className="form-label small fw-bold" style={{ color: '#34342F' }}>Ucapan &amp; Doa Restu</label>
-                <textarea
-                  className="form-control"
-                  rows="3"
-                  style={{ backgroundColor: '#FFFFFF', color: '#34342F', borderColor: 'rgba(166, 139, 101, 0.4)' }}
-                  placeholder="Tuliskan ucapan selamat dan doa terbaik untuk kedua mempelai..."
-                  value={formData.message}
-                  onChange={(e) => setFormData({ ...formData, message: e.target.value })}
-                  required
-                />
-              </div>
+          {submitError && (
+            <div
+              className="alert text-center py-2 mb-3 small"
+              style={{
+                backgroundColor: '#F5EAE8',
+                borderColor: '#B55347',
+                color: '#7D352B',
+              }}
+            >
+              {submitError}
+            </div>
+          )}
 
-              <div className="text-end">
-                <button
-                  type="submit"
-                  className="btn px-4 py-2 rounded-pill shadow-sm"
+          <form onSubmit={handleSubmit}>
+            <div className="mb-3">
+              <label className="form-label small fw-bold" style={{ color: '#34342F' }}>
+                Nama Lengkap
+              </label>
+              <input
+                type="text"
+                className="form-control"
+                style={{
+                  backgroundColor: '#FFFFFF',
+                  color: '#34342F',
+                  borderColor: 'rgba(166, 139, 101, 0.4)',
+                }}
+                placeholder="Contoh: Budi Santoso"
+                value={formData.guest_name}
+                onChange={(e) => setFormData({ ...formData, guest_name: e.target.value })}
+                maxLength={150}
+                required
+              />
+            </div>
+
+            <div className="row g-2 mb-3">
+              <div className="col-12 col-md-6">
+                <label className="form-label small fw-bold" style={{ color: '#34342F' }}>
+                  Konfirmasi Kehadiran
+                </label>
+                <select
+                  className="form-select"
                   style={{
-                    backgroundColor: '#A68B65',
-                    color: '#FFFFFF',
-                    fontWeight: 600,
-                    border: 'none',
+                    backgroundColor: '#FFFFFF',
+                    color: '#34342F',
+                    borderColor: 'rgba(166, 139, 101, 0.4)',
                   }}
+                  value={formData.attendance_status}
+                  onChange={(e) => setFormData({ ...formData, attendance_status: e.target.value })}
                 >
-                  Kirim Konfirmasi
-                </button>
+                  <option value="attending">Ya, Saya Akan Hadir</option>
+                  <option value="not_attending">Maaf, Tidak Bisa Hadir</option>
+                  <option value="tentative">Masih Ragu</option>
+                </select>
               </div>
-            </form>
+              <div className="col-12 col-md-6">
+                <label className="form-label small fw-bold" style={{ color: '#34342F' }}>
+                  Jumlah Tamu
+                </label>
+                <select
+                  className="form-select"
+                  style={{
+                    backgroundColor: '#FFFFFF',
+                    color: '#34342F',
+                    borderColor: 'rgba(166, 139, 101, 0.4)',
+                  }}
+                  value={formData.attendance_status === 'not_attending' ? '0' : formData.pax_count}
+                  onChange={(e) => setFormData({ ...formData, pax_count: e.target.value })}
+                  disabled={formData.attendance_status === 'not_attending'}
+                >
+                  {formData.attendance_status === 'not_attending' ? (
+                    <option value="0">0 Orang (Berhalangan)</option>
+                  ) : (
+                    <>
+                      <option value="1">1 Orang</option>
+                      <option value="2">2 Orang</option>
+                      <option value="3">3 Orang</option>
+                      <option value="4">4 Orang</option>
+                      <option value="5">5 Orang</option>
+                    </>
+                  )}
+                </select>
+              </div>
+            </div>
+
+            <div className="mb-3">
+              <label className="form-label small fw-bold" style={{ color: '#34342F' }}>
+                Ucapan &amp; Doa Restu
+              </label>
+              <textarea
+                className="form-control"
+                rows="3"
+                style={{
+                  backgroundColor: '#FFFFFF',
+                  color: '#34342F',
+                  borderColor: 'rgba(166, 139, 101, 0.4)',
+                }}
+                placeholder="Tuliskan ucapan selamat dan doa terbaik untuk kedua mempelai..."
+                value={formData.message}
+                onChange={(e) => setFormData({ ...formData, message: e.target.value })}
+                maxLength={1000}
+              />
+            </div>
+
+            <div className="text-end">
+              <button
+                type="submit"
+                disabled={submitting}
+                className="btn btn-niskala-gold px-4 py-2 rounded-pill shadow-sm"
+              >
+                {submitting ? 'Mengirim...' : 'Kirim Konfirmasi'}
+              </button>
+            </div>
+          </form>
+        </div>
+
+        {/* Wishes Feed */}
+        <div
+          className="mt-4 p-4 rounded-3 shadow-sm text-start"
+          style={{
+            backgroundColor: '#FAF8F5',
+            border: '1px solid rgba(166, 139, 101, 0.35)',
+          }}
+        >
+          <div className="d-flex justify-content-between align-items-center mb-3">
+            <h5
+              className="mb-0 fw-bold"
+              style={{
+                fontFamily: "'Playfair Display', Georgia, serif",
+                color: '#34342F',
+              }}
+            >
+              Untaian Doa &amp; Ucapan
+            </h5>
+            <span className="small text-muted">{displayedWishes.length} ditampilkan</span>
+          </div>
+
+          {wishesLoading ? (
+            <div className="text-center py-4">
+              <CSpinner size="sm" style={{ color: '#8A6F4A' }} />
+              <p className="small text-muted mt-2 mb-0">Memuat ucapan tamu...</p>
+            </div>
+          ) : displayedWishes.length === 0 ? (
+            <p className="small text-muted text-center py-3 mb-0">
+              Belum ada ucapan doa restu. Jadilah yang pertama mengirimkan doa untuk kedua mempelai!
+            </p>
+          ) : (
+            <div className="d-flex flex-column gap-3">
+              {displayedWishes.map((wish) => {
+                const badgeStyle =
+                  WISH_BADGE_STYLES[wish.attendance_status] || WISH_BADGE_STYLES.attending
+                return (
+                  <div
+                    key={wish.id}
+                    className="p-3 rounded-2"
+                    style={{
+                      backgroundColor: '#FFFFFF',
+                      border: '1px solid rgba(166, 139, 101, 0.25)',
+                    }}
+                  >
+                    <div className="d-flex justify-content-between align-items-start gap-2 flex-wrap mb-1">
+                      <strong style={{ color: '#34342F', fontSize: '0.95rem' }}>
+                        {wish.guest_name}
+                      </strong>
+                      <span
+                        className="badge rounded-pill px-2 py-1"
+                        style={{ ...badgeStyle, fontSize: '0.72rem', fontWeight: 600 }}
+                      >
+                        {ATTENDANCE_LABELS[wish.attendance_status] || wish.attendance_status}
+                      </span>
+                    </div>
+                    {wish.message && (
+                      <p
+                        className="mb-1 small"
+                        style={{ color: '#45453F', whiteSpace: 'pre-line', lineHeight: 1.5 }}
+                      >
+                        {wish.message}
+                      </p>
+                    )}
+                    {wish.created_at && (
+                      <small style={{ color: 'rgba(52, 52, 47, 0.55)', fontSize: '0.72rem' }}>
+                        {formatDateTimeId(wish.created_at)}
+                      </small>
+                    )}
+                  </div>
+                )
+              })}
+
+              {isPublicMode && wishesPage < wishesLastPage && (
+                <div className="text-center pt-1">
+                  <button
+                    type="button"
+                    disabled={loadingMore}
+                    onClick={() => loadWishes(wishesPage + 1, true)}
+                    className="btn btn-sm rounded-pill px-4"
+                    style={{
+                      backgroundColor: '#EFE9DD',
+                      color: '#34342F',
+                      border: '1px solid rgba(166, 139, 101, 0.45)',
+                      fontWeight: 600,
+                    }}
+                  >
+                    {loadingMore ? 'Memuat...' : 'Muat Lebih Banyak Ucapan'}
+                  </button>
+                </div>
+              )}
+            </div>
           )}
         </div>
       </div>
@@ -152,7 +439,8 @@ const RsvpSection = ({ props = {}, isWeb = true }) => {
 RsvpSection.propTypes = {
   props: PropTypes.object,
   isWeb: PropTypes.bool,
+  renderMode: PropTypes.oneOf(['editor', 'preview', 'public']),
+  invitationSlug: PropTypes.string,
 }
 
 export default RsvpSection
-

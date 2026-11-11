@@ -32,6 +32,8 @@ import {
   cilCheckCircle,
   cilFolder,
   cilSearch,
+  cilPeople,
+  cilChatBubble,
 } from '@coreui/icons'
 import { useNavigate } from 'react-router-dom'
 import api from '../../services/api'
@@ -354,6 +356,42 @@ const Invitations = () => {
                             <CIcon icon={cilCheckCircle} size="sm" /> Publish
                           </CButton>
                         )}
+
+                        {/* Live Preview (_blank tab) */}
+                        <CButton
+                          color="secondary"
+                          size="sm"
+                          variant="outline"
+                          title="Buka Live Preview di Tab Baru"
+                          onClick={() => window.open(`/#/preview/${inv.id}`, '_blank', 'noopener')}
+                          className="text-body"
+                        >
+                          <CIcon icon={cilExternalLink} size="sm" /> Preview
+                        </CButton>
+
+                        {/* Buku Tamu Undangan */}
+                        <CButton
+                          color="secondary"
+                          size="sm"
+                          variant="outline"
+                          title="Kelola Daftar Tamu Undangan"
+                          onClick={() => navigate(`/guests/list?invitationId=${inv.id}`)}
+                          className="text-body"
+                        >
+                          <CIcon icon={cilPeople} size="sm" /> Tamu
+                        </CButton>
+
+                        {/* Rekap RSVP & Doa */}
+                        <CButton
+                          color="secondary"
+                          size="sm"
+                          variant="outline"
+                          title="Rekap RSVP & Doa Restu"
+                          onClick={() => navigate(`/guests/rsvp?invitationId=${inv.id}`)}
+                          className="text-body"
+                        >
+                          <CIcon icon={cilChatBubble} size="sm" /> RSVP
+                        </CButton>
 
                         {/* Buka Publik */}
                         {inv.status === 'published' && (

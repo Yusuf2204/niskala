@@ -25,6 +25,7 @@ use OpenApi\Annotations as OA;
  * @OA\Tag(name="Themes", description="Master catalog of invitation design themes")
  * @OA\Tag(name="Music", description="Master background music catalog")
  * @OA\Tag(name="Invitations", description="Digital invitation management and lifecycle")
+ * @OA\Tag(name="Guests & RSVP", description="Guest book, personalized invitation links, RSVP submissions, and moderation")
  *
  * @OA\SecurityScheme(
  *     securityScheme="bearerAuth",

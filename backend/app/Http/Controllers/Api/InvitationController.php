@@ -166,7 +166,7 @@ class InvitationController extends Controller
     /**
      * Display the published invitation for public view by slug.
      */
-    public function showPublic(string $slug): JsonResponse
+    public function showPublic(Request $request, string $slug): JsonResponse
     {
         $invitation = Invitation::with(['theme', 'content', 'events'])
             ->where('slug', $slug)
@@ -180,8 +180,25 @@ class InvitationController extends Controller
             ], 404);
         }
 
+        $guestContext = null;
+        $guestToken = trim((string) $request->query('c', ''));
+        if ($guestToken !== '') {
+            $guest = $invitation->guests()->where('slug_token', $guestToken)->first();
+            if ($guest) {
+                $guestContext = [
+                    'name' => $guest->name,
+                    'category' => $guest->category,
+                    'pax_allocated' => $guest->pax_allocated,
+                    'token' => $guest->slug_token,
+                ];
+            }
+        }
+
+        $payload = $invitation->toArray();
+        $payload['guest_context'] = $guestContext;
+
         return response()->json([
-            'data' => $invitation,
+            'data' => $payload,
             'message' => 'Public invitation retrieved successfully.',
             'errors' => null,
         ]);

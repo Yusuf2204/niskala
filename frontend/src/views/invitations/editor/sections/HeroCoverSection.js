@@ -2,7 +2,7 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import { GununganEmblem } from './Ornaments'
 
-const HeroCoverSection = ({ props = {}, isWeb = true }) => {
+const HeroCoverSection = ({ props = {}, isWeb = true, onExploreClick }) => {
   const {
     title = 'The Wedding Of',
     primary_names = 'Rama & Shinta',
@@ -11,6 +11,7 @@ const HeroCoverSection = ({ props = {}, isWeb = true }) => {
     bg_image_url = 'https://images.unsplash.com/photo-1519741497674-611481863552?auto=format&fit=crop&w=1200&q=80',
     open_button_text = 'Buka Undangan',
     guest_greeting_prefix = 'Kepada Yth. Bapak/Ibu/Saudara/i:',
+    guestName = '',
     ornament_type = '',
   } = props
 
@@ -110,7 +111,7 @@ const HeroCoverSection = ({ props = {}, isWeb = true }) => {
             {guest_greeting_prefix}
           </small>
           <span className="fw-bold" style={{ color: '#FFFFFF', fontSize: '0.95rem' }}>
-            Tamu Undangan
+            {guestName || 'Tamu Undangan'}
           </span>
         </div>
 
@@ -123,6 +124,7 @@ const HeroCoverSection = ({ props = {}, isWeb = true }) => {
           </p>
           <button
             type="button"
+            onClick={onExploreClick}
             className="btn px-4 py-2 rounded-pill shadow-sm"
             style={{
               backgroundColor: '#A68B65',
@@ -143,6 +145,7 @@ const HeroCoverSection = ({ props = {}, isWeb = true }) => {
 HeroCoverSection.propTypes = {
   props: PropTypes.object,
   isWeb: PropTypes.bool,
+  onExploreClick: PropTypes.func,
 }
 
 export default HeroCoverSection

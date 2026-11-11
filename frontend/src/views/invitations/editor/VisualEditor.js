@@ -5,10 +5,10 @@ import EditorTopBar from './EditorTopBar'
 import SectionPalette from './SectionPalette'
 import EditorCanvas from './EditorCanvas'
 import PropertyInspector from './PropertyInspector'
-import PreviewModal from './PreviewModal'
 import { COMPONENT_REGISTRY, createNewSection } from './registry'
 import api from '../../../services/api'
 import { toastSuccess, toastError } from '../../../services/toastService'
+import { publishPreviewSnapshot } from '../../public/previewSync'
 import './editor.scss'
 
 const MAX_HISTORY = 30
@@ -31,7 +31,6 @@ const VisualEditor = () => {
   const [autosaveStatus, setAutosaveStatus] = useState('idle') // 'idle' | 'saving' | 'saved' | 'error'
   const [lastSavedAt, setLastSavedAt] = useState(null)
   const [publishLoading, setPublishLoading] = useState(false)
-  const [previewOpen, setPreviewOpen] = useState(false)
 
   // Local Undo / Redo History Stack
   const [history, setHistory] = useState([])
@@ -104,6 +103,12 @@ const VisualEditor = () => {
       // Initialize history
       setHistory([JSON.stringify(normalizedSections)])
       setHistoryIndex(0)
+
+      publishPreviewSnapshot(id, {
+        sections_data: normalizedSections,
+        music_url: invData.content?.music_url || '',
+        settings: invData.content?.settings || {},
+      })
     } catch (err) {
       toastError(err.response?.data?.message || 'Gagal memuat data undangan.')
     } finally {
@@ -130,6 +135,18 @@ const VisualEditor = () => {
       setHistoryIndex((prev) => Math.min(prev + 1, MAX_HISTORY - 1))
     },
     [historyIndex],
+  )
+
+  const syncPreviewDraft = useCallback(
+    (sectionsPayload, musicPayload) => {
+      if (!id) return
+      publishPreviewSnapshot(id, {
+        sections_data: sectionsPayload,
+        music_url: musicPayload,
+        settings: invitation?.content?.settings || {},
+      })
+    },
+    [id, invitation],
   )
 
   // Save to backend API
@@ -160,6 +177,7 @@ const VisualEditor = () => {
   const updateSectionsState = useCallback(
     (newSections, skipHistory = false) => {
       setSections(newSections)
+      syncPreviewDraft(newSections, musicUrlRef.current)
 
       if (!skipHistory) {
         pushHistory(newSections)
@@ -174,7 +192,7 @@ const VisualEditor = () => {
         saveContentToServer(newSections, musicUrlRef.current)
       }, DEBOUNCE_DELAY)
     },
-    [pushHistory, saveContentToServer],
+    [pushHistory, saveContentToServer, syncPreviewDraft],
   )
 
   // Undo handler
@@ -185,10 +203,11 @@ const VisualEditor = () => {
       const parsed = JSON.parse(history[prevIndex])
       setSections(parsed)
       setHistoryIndex(prevIndex)
+      syncPreviewDraft(parsed, musicUrlRef.current)
       if (debounceTimer.current) clearTimeout(debounceTimer.current)
       saveContentToServer(parsed, musicUrlRef.current)
     }
-  }, [history, historyIndex, saveContentToServer])
+  }, [history, historyIndex, saveContentToServer, syncPreviewDraft])
 
   // Redo handler
   const handleRedo = useCallback(() => {
@@ -198,10 +217,11 @@ const VisualEditor = () => {
       const parsed = JSON.parse(history[nextIndex])
       setSections(parsed)
       setHistoryIndex(nextIndex)
+      syncPreviewDraft(parsed, musicUrlRef.current)
       if (debounceTimer.current) clearTimeout(debounceTimer.current)
       saveContentToServer(parsed, musicUrlRef.current)
     }
-  }, [history, historyIndex, saveContentToServer])
+  }, [history, historyIndex, saveContentToServer, syncPreviewDraft])
 
   // Keyboard shortcut listener for Ctrl+Z and Ctrl+Y
   useEffect(() => {
@@ -277,11 +297,17 @@ const VisualEditor = () => {
 
   const handleUpdateMusicUrl = (newUrl) => {
     setMusicUrl(newUrl)
+    syncPreviewDraft(sectionsRef.current, newUrl)
     if (debounceTimer.current) clearTimeout(debounceTimer.current)
     debounceTimer.current = setTimeout(() => {
       saveContentToServer(sectionsRef.current, newUrl)
     }, DEBOUNCE_DELAY)
   }
+
+  const handleOpenBlankPreview = useCallback(() => {
+    syncPreviewDraft(sectionsRef.current, musicUrlRef.current)
+    window.open(`/#/preview/${id}?viewport=${viewportMode}&live=1`, '_blank', 'noopener')
+  }, [id, viewportMode, syncPreviewDraft])
 
   const handleManualSave = () => {
     if (debounceTimer.current) clearTimeout(debounceTimer.current)
@@ -337,7 +363,7 @@ const VisualEditor = () => {
         onRedo={handleRedo}
         viewportMode={viewportMode}
         onToggleViewport={setViewportMode}
-        onOpenPreview={() => setPreviewOpen(true)}
+        onOpenPreview={handleOpenBlankPreview}
         onManualSave={handleManualSave}
         onPublish={handlePublish}
         publishLoading={publishLoading}
@@ -377,14 +403,6 @@ const VisualEditor = () => {
           musicCatalog={musicCatalog}
         />
       </div>
-
-      {/* Modal Preview Layar Penuh */}
-      <PreviewModal
-        visible={previewOpen}
-        onClose={() => setPreviewOpen(false)}
-        sections={sections}
-        title={invitation?.title}
-      />
     </div>
   )
 }

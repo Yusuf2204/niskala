@@ -53,6 +53,16 @@ class Invitation extends Model
         return $this->hasMany(InvitationEvent::class, 'invitation_id')->orderBy('event_date')->orderBy('start_time');
     }
 
+    public function guests(): HasMany
+    {
+        return $this->hasMany(Guest::class, 'invitation_id')->orderBy('name');
+    }
+
+    public function rsvps(): HasMany
+    {
+        return $this->hasMany(Rsvp::class, 'invitation_id')->latest('id');
+    }
+
     public function isPublished(): bool
     {
         return $this->status === 'published';

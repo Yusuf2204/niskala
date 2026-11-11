@@ -2,9 +2,11 @@
 
 namespace Database\Seeders;
 
+use App\Models\Guest;
 use App\Models\Invitation;
 use App\Models\InvitationContent;
 use App\Models\InvitationEvent;
+use App\Models\Rsvp;
 use App\Models\Theme;
 use App\Models\User;
 use Illuminate\Database\Seeder;
@@ -320,5 +322,77 @@ class InvitationSeeder extends Seeder
                 'google_maps_url' => 'https://maps.google.com/?q=Keraton+Yogyakarta',
             ]
         );
+
+        // 5. Idempotent sample guests & wishes for Rama & Shinta
+        $sampleGuests = [
+            [
+                'slug_token' => 'rama-vip-01',
+                'name' => 'Bapak Surya Pratama & Ibu',
+                'phone_number' => '6281234567890',
+                'category' => 'VIP',
+                'pax_allocated' => 2,
+            ],
+            [
+                'slug_token' => 'rama-fam-02',
+                'name' => 'Keluarga Besar Handrawina',
+                'phone_number' => '6281298765432',
+                'category' => 'Family',
+                'pax_allocated' => 4,
+            ],
+            [
+                'slug_token' => 'rama-frd-03',
+                'name' => 'Siti Aminah',
+                'phone_number' => '6281355551234',
+                'category' => 'Friend',
+                'pax_allocated' => 1,
+            ],
+        ];
+
+        $vipGuest = null;
+        foreach ($sampleGuests as $guestData) {
+            $guest = Guest::updateOrCreate(
+                ['slug_token' => $guestData['slug_token']],
+                [
+                    'invitation_id' => $invitation->id,
+                    'name' => $guestData['name'],
+                    'phone_number' => $guestData['phone_number'],
+                    'category' => $guestData['category'],
+                    'pax_allocated' => $guestData['pax_allocated'],
+                ]
+            );
+            if ($guestData['slug_token'] === 'rama-vip-01') {
+                $vipGuest = $guest;
+            }
+        }
+
+        if ($invitation->rsvps()->count() === 0) {
+            Rsvp::firstOrCreate(
+                [
+                    'invitation_id' => $invitation->id,
+                    'guest_name' => 'Bapak Surya Pratama & Ibu',
+                ],
+                [
+                    'guest_id' => $vipGuest?->id,
+                    'attendance_status' => 'attending',
+                    'pax_count' => 2,
+                    'message' => 'Selamat menempuh hidup baru Raden Rama & Dyah Shinta, semoga langgeng dan penuh berkah.',
+                    'is_hidden' => false,
+                ]
+            );
+
+            Rsvp::firstOrCreate(
+                [
+                    'invitation_id' => $invitation->id,
+                    'guest_name' => 'Andi Wijaya',
+                ],
+                [
+                    'attendance_status' => 'tentative',
+                    'pax_count' => 1,
+                    'message' => 'Semoga acaranya lancar dan sakral, doa terbaik untuk kedua mempelai!',
+                    'is_hidden' => false,
+                ]
+            );
+        }
     }
 }
+
