@@ -5,7 +5,7 @@
 
 .invitation-canvas-isolated {
   font-family: var(--inv-font-body, 'Plus Jakarta Sans', sans-serif);
-  background-color: var(--inv-bg, #FAF6EE);
+  background-color: #242420;
   color: var(--inv-text, #2B1E16);
 
   &[data-inv-theme='adat-jawa'] {
@@ -42,6 +42,33 @@
     .inv-joglo-portrait:hover img:last-child {
       transform: scale(1.02);
     }
+  }
+}
+
+// ── Shared Card-Stack Section Layout (Editor + Preview + Public) ─
+.invitation-card-stack {
+  display: flex;
+  flex-direction: column;
+  gap: 22px;
+  padding: 20px 18px 28px;
+  background-color: #242420;
+
+  &.is-mobile-stack {
+    gap: 14px;
+    padding: 12px 10px 24px;
+  }
+}
+
+.invitation-card-slot {
+  position: relative;
+  flex-shrink: 0;
+  border-radius: 18px;
+  overflow: hidden;
+  border: 1px solid var(--inv-border, rgba(197, 160, 89, 0.34));
+  box-shadow: 0 14px 36px rgba(0, 0, 0, 0.28);
+
+  &.is-mobile-slot {
+    border-radius: 14px;
   }
 }
 

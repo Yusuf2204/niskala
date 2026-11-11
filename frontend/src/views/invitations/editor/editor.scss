@@ -94,7 +94,7 @@
   --cui-secondary-color: var(--inv-muted, rgba(52, 52, 47, 0.7));
   --cui-tertiary-color: rgba(52, 52, 47, 0.5);
 
-  background-color: var(--inv-bg, #FAF6EE);
+  background-color: #242420;
   color: var(--inv-text, #2B1E16);
 
   h1, h2, h3, h4, h5, h6 {
@@ -128,6 +128,17 @@
       border-color: #A68B65 !important;
       box-shadow: 0 0 0 0.2rem rgba(166, 139, 101, 0.2) !important;
     }
+  }
+}
+
+.editor-section-card {
+  cursor: pointer;
+  transition: outline-color 0.2s ease, box-shadow 0.2s ease;
+
+  &.is-selected {
+    outline: 3px solid #D8C2A0;
+    outline-offset: -3px;
+    box-shadow: 0 0 0 2px #A68B65, 0 16px 40px rgba(0, 0, 0, 0.45);
   }
 }
 

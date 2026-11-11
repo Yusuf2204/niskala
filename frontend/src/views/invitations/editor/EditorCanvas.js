@@ -58,27 +58,22 @@ const EditorCanvas = ({
         }}
       >
         <div
-          className="invitation-canvas-isolated shadow-lg overflow-hidden position-relative"
+          className={`invitation-canvas-isolated invitation-card-stack ${isWeb ? '' : 'is-mobile-stack'} shadow-lg overflow-hidden position-relative`}
           data-inv-theme={resolvedTheme.themeStyle}
           data-inv-animation={resolvedTheme.animation?.preset || 'classic-minimal'}
           style={{
             ...themeVars,
-            backgroundColor: '#201813',
-            display: 'flex',
-            flexDirection: 'column',
-            gap: isWeb ? '18px' : '12px',
-            padding: isWeb ? '16px' : '10px',
-            borderRadius: isWeb ? '16px' : '36px',
-            border: isWeb ? '1px solid rgba(52, 52, 47, 0.15)' : '10px solid #242420',
+            borderRadius: isWeb ? '18px' : '36px',
+            border: isWeb ? '1px solid rgba(52, 52, 47, 0.2)' : '10px solid #1C1C18',
             minHeight: '600px',
-            boxShadow: '0 20px 45px rgba(0, 0, 0, 0.15)',
+            boxShadow: '0 20px 45px rgba(0, 0, 0, 0.18)',
             color: 'var(--inv-text, #2B1E16)',
           }}
         >
           {/* Simulated Mobile Camera Notch (only shown in mobile mode) */}
           {!isWeb && (
             <div
-              className="position-sticky top-0 start-50 translate-middle-x my-2 d-flex justify-content-center align-items-center"
+              className="position-sticky top-0 start-50 translate-middle-x mt-1 mb-0 d-flex justify-content-center align-items-center"
               style={{
                 zIndex: 1050,
                 width: '120px',
@@ -144,16 +139,7 @@ const EditorCanvas = ({
                 <div
                   key={sec.id}
                   onClick={() => onSelectSection(sec.id)}
-                  className="position-relative transition-all"
-                  style={{
-                    borderRadius: isWeb ? '16px' : '12px',
-                    overflow: 'hidden',
-                    border: '1px solid rgba(197, 160, 89, 0.28)',
-                    outline: isSelected ? '3px solid #A68B65' : '1px dashed transparent',
-                    outlineOffset: '-2px',
-                    boxShadow: isSelected ? '0 0 20px rgba(166, 139, 101, 0.3)' : 'none',
-                    cursor: 'pointer',
-                  }}
+                  className={`invitation-card-slot editor-section-card ${isWeb ? '' : 'is-mobile-slot'} ${isSelected ? 'is-selected' : ''}`}
                 >
                   {/* Floating Action Pill for the Selected Section */}
                   {isSelected && (

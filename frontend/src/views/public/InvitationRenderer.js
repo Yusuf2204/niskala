@@ -83,7 +83,7 @@ const SectionRevealSlot = ({
     return () => observer.disconnect()
   }, [isEnvelopeOpen, motionEnabled, index])
 
-  const slotClasses = ['invitation-section-slot', 'inv-reveal-slot']
+  const slotClasses = ['invitation-section-slot', 'invitation-card-slot', 'inv-reveal-slot']
   if (isRevealed) {
     slotClasses.push('is-revealed')
   }
@@ -323,9 +323,13 @@ const InvitationRenderer = ({
     }
   }
 
-  const sheetClasses = ['invitation-sheet', 'invitation-canvas-isolated']
+  const sheetClasses = ['invitation-sheet', 'invitation-canvas-isolated', 'invitation-card-stack']
   if (mode === 'preview') {
-    sheetClasses.push(viewportMode === 'mobile' ? 'viewport-mobile' : 'viewport-web')
+    if (viewportMode === 'mobile') {
+      sheetClasses.push('viewport-mobile', 'is-mobile-stack')
+    } else {
+      sheetClasses.push('viewport-web')
+    }
   }
 
   const seenAnchors = new Set()

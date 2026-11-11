@@ -37,14 +37,10 @@
     width: 100%;
     max-width: 1040px;
     margin: 0 auto;
-    background-color: transparent;
     min-height: 100vh;
     position: relative;
     overflow-x: clip;
-    display: flex;
-    flex-direction: column;
-    gap: 22px;
-    padding: 20px 18px 96px;
+    padding-bottom: 96px;
     color: var(--inv-text, #34342F);
     transition: max-width 0.25s ease;
 
@@ -54,19 +50,13 @@
 
     &.viewport-mobile {
       max-width: 390px;
-      gap: 14px;
-      padding: 12px 10px 88px;
+      padding-bottom: 88px;
       border-left: 1px solid rgba(166, 139, 101, 0.28);
       border-right: 1px solid rgba(166, 139, 101, 0.28);
     }
   }
 
   .invitation-section-slot {
-    position: relative;
-    border-radius: 18px;
-    overflow: hidden;
-    border: 1px solid var(--inv-border, rgba(197, 160, 89, 0.34));
-    box-shadow: 0 14px 36px rgba(0, 0, 0, 0.28);
     scroll-margin-top: 72px;
   }
 
@@ -96,6 +86,11 @@
   }
 
   &.is-mobile-viewport {
+    .invitation-sheet {
+      gap: 14px;
+      padding: 12px 10px 88px;
+    }
+
     .invitation-section-slot {
       border-radius: 14px;
     }
