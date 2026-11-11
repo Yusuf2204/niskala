@@ -3,7 +3,9 @@
 namespace App\Providers;
 
 use App\Models\Invitation;
+use App\Models\ServiceOrder;
 use App\Policies\InvitationPolicy;
+use App\Policies\ServiceOrderPolicy;
 use App\Services\SwaggerGeneratorFactory;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\ServiceProvider;
@@ -25,6 +27,7 @@ class AppServiceProvider extends ServiceProvider
     public function boot(): void
     {
         Gate::policy(Invitation::class, InvitationPolicy::class);
+        Gate::policy(ServiceOrder::class, ServiceOrderPolicy::class);
     }
 }
 

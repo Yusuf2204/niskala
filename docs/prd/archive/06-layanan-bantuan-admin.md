@@ -1,7 +1,7 @@
-# PRD 05: Layanan Bantuan Admin & Operasional
+# PRD 06: Layanan Bantuan Admin & Operasional
 
 **Fase Roadmap:** Fase 4 (Admin & Operasional Layanan)  
-**Dokumen Acuan:** [project-plan-undangan-digital.md](file:///var/www/html/niskala/docs/project-plan-undangan-digital.md) | [rules.md](file:///var/www/html/niskala/docs/rules.md) | [context.md](file:///var/www/html/niskala/docs/context.md)  
+**Dokumen Acuan:** [project-plan-undangan-digital.md](file:///var/www/html/niskala/docs/project-plan-undangan-digital.md) | [rules.md](file:///var/www/html/niskala/docs/rules.md) | [context.md](file:///var/www/html/niskala/docs/context.md) | [02-navigasi-menu-dan-master-data.md](file:///var/www/html/niskala/docs/prd/02-navigasi-menu-dan-master-data.md)  
 **Status:** Draf Spesifikasi Lengkap
 
 ---

@@ -21,6 +21,8 @@ class DatabaseSeeder extends Seeder
             CompanySeeder::class,
             AdminUserSeeder::class,
             ThemeSeeder::class,
+            MusicSeeder::class,
+            InvitationSeeder::class,
         ]);
     }
 }

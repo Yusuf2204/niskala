@@ -16,7 +16,8 @@
     "build": "vite build",
     "lint": "eslint",
     "serve": "vite preview",
-    "start": "vite"
+    "start": "vite",
+    "test:theme": "node scripts/stress-test-theme.mjs"
   },
   "dependencies": {
     "@coreui/coreui": "^5.5.0",

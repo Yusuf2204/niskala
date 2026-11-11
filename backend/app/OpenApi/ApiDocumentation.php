@@ -23,7 +23,10 @@ use OpenApi\Annotations as OA;
  * @OA\Tag(name="Role Permissions", description="Dynamic sidebar permission system")
  * @OA\Tag(name="Company", description="Company profile and branding")
  * @OA\Tag(name="Themes", description="Master catalog of invitation design themes")
+ * @OA\Tag(name="Music", description="Master background music catalog")
  * @OA\Tag(name="Invitations", description="Digital invitation management and lifecycle")
+ * @OA\Tag(name="Guests & RSVP", description="Guest book, personalized invitation links, RSVP submissions, and moderation")
+ * @OA\Tag(name="Service Orders & Admin", description="Hybrid assistance service orders, admin review queue, client invitations, and audit trail")
  *
  * @OA\SecurityScheme(
  *     securityScheme="bearerAuth",
@@ -71,6 +74,7 @@ use OpenApi\Annotations as OA;
  *     @OA\Property(property="id", type="integer", example=1),
  *     @OA\Property(property="name", type="string", example="Admin"),
  *     @OA\Property(property="email", type="string", format="email", example="admin@gmail.com"),
+ *     @OA\Property(property="avatar", type="string", nullable=true, example="data:image/jpeg;base64,..."),
  *     @OA\Property(property="role_id", type="integer", nullable=true, example=1)
  * )
  *
@@ -201,11 +205,48 @@ use OpenApi\Annotations as OA;
  *     @OA\Property(property="id", type="integer", example=1),
  *     @OA\Property(property="name", type="string", example="Admin"),
  *     @OA\Property(property="email", type="string", format="email", example="admin@example.com"),
+ *     @OA\Property(property="avatar", type="string", nullable=true, description="User avatar image as base64 data URL or URL path", example="data:image/jpeg;base64,..."),
  *     @OA\Property(property="email_verified_at", type="string", format="date-time", nullable=true),
  *     @OA\Property(property="role_id", type="integer", nullable=true, example=1),
  *     @OA\Property(property="role", ref="#/components/schemas/RoleModel", nullable=true),
  *     @OA\Property(property="created_at", type="string", format="date-time", nullable=true),
  *     @OA\Property(property="updated_at", type="string", format="date-time", nullable=true)
+ * )
+ *
+ * @OA\Schema(
+ *     schema="UpdateProfileRequest",
+ *     required={"name","email"},
+ *
+ *     @OA\Property(property="name", type="string", example="Administrator Niskala"),
+ *     @OA\Property(property="email", type="string", format="email", example="admin@example.com"),
+ *     @OA\Property(
+ *         property="avatar",
+ *         type="string",
+ *         nullable=true,
+ *         description="User avatar as base64 data URL or image path.",
+ *         example="data:image/png;base64,iVBORw0KGgo..."
+ *     )
+ * )
+ *
+ * @OA\Schema(
+ *     schema="ProfileResponse",
+ *
+ *     @OA\Property(property="data", ref="#/components/schemas/User"),
+ *     @OA\Property(property="message", type="string", example="OK"),
+ *     @OA\Property(property="errors", nullable=true, example=null)
+ * )
+ *
+ * @OA\Schema(
+ *     schema="UploadAvatarResponse",
+ *
+ *     @OA\Property(
+ *         property="data",
+ *         type="object",
+ *         @OA\Property(property="user", ref="#/components/schemas/User"),
+ *         @OA\Property(property="avatar", type="string", example="/storage/avatars/1/avatar.jpg")
+ *     ),
+ *     @OA\Property(property="message", type="string", example="Foto profil berhasil diperbarui."),
+ *     @OA\Property(property="errors", nullable=true, example=null)
  * )
  *
  * @OA\Schema(
@@ -806,6 +847,125 @@ class ApiDocumentation
      * )
      */
     public function usersItem(): void {}
+
+    /**
+     * @OA\Get(
+     *     path="/profile",
+     *     tags={"Users"},
+     *     summary="Get authenticated user profile",
+     *     security={{"bearerAuth":{}}},
+     *
+     *     @OA\Response(
+     *         response=200,
+     *         description="User profile data",
+     *
+     *         @OA\JsonContent(
+     *             ref="#/components/schemas/ProfileResponse",
+     *             example={
+     *                 "data": {
+     *                     "id": 1,
+     *                     "name": "Admin",
+     *                     "email": "admin@example.com",
+     *                     "avatar": null,
+     *                     "role_id": 1,
+     *                     "role": {"id": 1, "role_name": "admin"}
+     *                 },
+     *                 "message": "OK",
+     *                 "errors": null
+     *             }
+     *         )
+     *     ),
+     *     @OA\Response(response=401, description="Unauthorized")
+     * )
+     */
+    public function getProfile(): void {}
+
+    /**
+     * @OA\Put(
+     *     path="/profile",
+     *     tags={"Users"},
+     *     summary="Update authenticated user profile and avatar",
+     *     security={{"bearerAuth":{}}},
+     *
+     *     @OA\RequestBody(
+     *         required=true,
+     *
+     *         @OA\JsonContent(
+     *             ref="#/components/schemas/UpdateProfileRequest",
+     *             example={"name":"Administrator Niskala","email":"admin@example.com","avatar":"data:image/png;base64,iVBORw0KGgo..."}
+     *         )
+     *     ),
+     *
+     *     @OA\Response(
+     *         response=200,
+     *         description="Profile updated",
+     *
+     *         @OA\JsonContent(
+     *             ref="#/components/schemas/ProfileResponse",
+     *             example={
+     *                 "data": {
+     *                     "id": 1,
+     *                     "name": "Administrator Niskala",
+     *                     "email": "admin@example.com",
+     *                     "avatar": "data:image/png;base64,iVBORw0KGgo...",
+     *                     "role_id": 1
+     *                 },
+     *                 "message": "Profil berhasil diperbarui",
+     *                 "errors": null
+     *             }
+     *         )
+     *     ),
+     *     @OA\Response(response=401, description="Unauthorized"),
+     *     @OA\Response(response=422, description="Validation error")
+     * )
+     */
+    public function updateProfile(): void {}
+
+    /**
+     * @OA\Post(
+     *     path="/profile/avatar",
+     *     tags={"Users"},
+     *     summary="Upload avatar photo for authenticated user",
+     *     security={{"bearerAuth":{}}},
+     *
+     *     @OA\RequestBody(
+     *         required=true,
+     *
+     *         @OA\MediaType(
+     *             mediaType="multipart/form-data",
+     *             @OA\Schema(
+     *                 required={"avatar"},
+     *                 @OA\Property(
+     *                     property="avatar",
+     *                     type="string",
+     *                     format="binary",
+     *                     description="Avatar image file (JPEG, PNG, JPG, WebP, max 5MB)"
+     *                 )
+     *             )
+     *         )
+     *     ),
+     *
+     *     @OA\Response(
+     *         response=200,
+     *         description="Avatar uploaded",
+     *
+     *         @OA\JsonContent(
+     *             ref="#/components/schemas/UploadAvatarResponse",
+     *             example={
+     *                 "data": {
+     *                     "user": {"id": 1, "name": "Admin", "email": "admin@example.com"},
+     *                     "avatar": "/storage/avatars/1/avatar.jpg"
+     *                 },
+     *                 "message": "Foto profil berhasil diperbarui.",
+     *                 "errors": null
+     *             }
+     *         )
+     *     ),
+     *     @OA\Response(response=401, description="Unauthorized"),
+     *     @OA\Response(response=422, description="Validation error")
+     * )
+     */
+    public function uploadAvatar(): void {}
 
     /**
      * @OA\Post(

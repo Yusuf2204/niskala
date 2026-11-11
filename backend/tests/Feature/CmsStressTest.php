@@ -21,7 +21,7 @@ class CmsStressTest extends TestCase
 
         config([
             'auth.admin.email' => 'admin@example.com',
-            'auth.admin.password' => 'secret12345678',
+            'auth.admin.password' => 'adminpassword123',
             'auth.admin.name' => 'Super Admin',
         ]);
     }
@@ -42,6 +42,8 @@ class CmsStressTest extends TestCase
         $this->assertSame($menuCountInitial, Menus::count(), 'Menus duplicated after second seed run');
         $this->assertSame($companyCountInitial, Company::count(), 'Companies duplicated after second seed run');
         $this->assertSame($userCountInitial, User::count(), 'Users duplicated after second seed run');
+        $this->assertSame(0, Menus::whereNotNull('menu_parent_id')->whereNotNull('menu_icon')->count(), 'Submenus must not have icons');
+        $this->assertSame(0, Menus::whereNull('menu_parent_id')->whereNull('menu_icon')->count(), 'Header menus must have icons');
     }
 
     public function test_authentication_flow_and_token_generation(): void
@@ -59,7 +61,7 @@ class CmsStressTest extends TestCase
         // Valid credentials
         $loginRes = $this->postJson('/api/login', [
             'email' => 'admin@example.com',
-            'password' => 'secret12345678',
+            'password' => 'adminpassword123',
         ]);
         $loginRes->assertStatus(200)
             ->assertJsonStructure([
@@ -143,7 +145,7 @@ class CmsStressTest extends TestCase
         $admin = User::where('email', 'admin@example.com')->first();
         $loginRes = $this->postJson('/api/login', [
             'email' => 'admin@example.com',
-            'password' => 'secret12345678',
+            'password' => 'adminpassword123',
         ]);
         $headers = ['Authorization' => 'Bearer '.$loginRes->json('data.token')];
 
@@ -166,7 +168,7 @@ class CmsStressTest extends TestCase
         $admin = User::where('email', 'admin@example.com')->first();
         $loginRes = $this->postJson('/api/login', [
             'email' => 'admin@example.com',
-            'password' => 'secret12345678',
+            'password' => 'adminpassword123',
         ]);
         $headers = ['Authorization' => 'Bearer '.$loginRes->json('data.token')];
 
@@ -188,7 +190,7 @@ class CmsStressTest extends TestCase
 
         $loginRes = $this->postJson('/api/login', [
             'email' => 'admin@example.com',
-            'password' => 'secret12345678',
+            'password' => 'adminpassword123',
         ]);
         $headers = ['Authorization' => 'Bearer '.$loginRes->json('data.token')];
 
@@ -202,7 +204,7 @@ class CmsStressTest extends TestCase
 
         // Mismatched confirmation
         $mismatchRes = $this->withHeaders($headers)->postJson('/api/change-password', [
-            'current_password' => 'secret12345678',
+            'current_password' => 'adminpassword123',
             'new_password' => 'brandnewpassword123',
             'confirm_password' => 'differentpassword',
         ]);
@@ -210,7 +212,7 @@ class CmsStressTest extends TestCase
 
         // Successful password change
         $successRes = $this->withHeaders($headers)->postJson('/api/change-password', [
-            'current_password' => 'secret12345678',
+            'current_password' => 'adminpassword123',
             'new_password' => 'brandnewpassword123',
             'confirm_password' => 'brandnewpassword123',
         ]);
@@ -219,7 +221,7 @@ class CmsStressTest extends TestCase
         // Login with old password fails
         $this->postJson('/api/login', [
             'email' => 'admin@example.com',
-            'password' => 'secret12345678',
+            'password' => 'adminpassword123',
         ])->assertStatus(401);
 
         // Login with new password succeeds
@@ -229,13 +231,71 @@ class CmsStressTest extends TestCase
         ])->assertStatus(200);
     }
 
+    public function test_user_profile_update_and_avatar_flow(): void
+    {
+        $this->seed(DatabaseSeeder::class);
+
+        $loginRes = $this->postJson('/api/login', [
+            'email' => 'admin@example.com',
+            'password' => 'adminpassword123',
+        ]);
+        $headers = ['Authorization' => 'Bearer '.$loginRes->json('data.token')];
+
+        // 1. Verify GET /api/profile and GET /api/v1/profile
+        $getProfileRes = $this->withHeaders($headers)->getJson('/api/profile');
+        $getProfileRes->assertStatus(200)
+            ->assertJsonPath('data.email', 'admin@example.com');
+
+        $getV1ProfileRes = $this->withHeaders($headers)->getJson('/api/v1/profile');
+        $getV1ProfileRes->assertStatus(200)
+            ->assertJsonPath('data.email', 'admin@example.com');
+
+        // 2. Update profile with name, email, and avatar
+        $fakeAvatar = 'data:image/webp;base64,UklGRhoAAABXRUJQVlA4TA0AAAAvAAAAEAcQERGIiP4HAA==';
+        $updateRes = $this->withHeaders($headers)->putJson('/api/profile', [
+            'name' => 'Administrator Niskala',
+            'email' => 'admin.new@example.com',
+            'avatar' => $fakeAvatar,
+        ]);
+
+        $updateRes->assertStatus(200);
+        $this->assertEquals('Administrator Niskala', $updateRes->json('data.name'));
+        $this->assertEquals('admin.new@example.com', $updateRes->json('data.email'));
+        $this->assertEquals($fakeAvatar, $updateRes->json('data.avatar'));
+
+        // 3. Verify via /me endpoint
+        $meRes = $this->withHeaders($headers)->getJson('/api/me');
+        $meRes->assertStatus(200);
+        $this->assertEquals('Administrator Niskala', $meRes->json('data.user.name'));
+        $this->assertEquals($fakeAvatar, $meRes->json('data.user.avatar'));
+
+        // 4. Test POST /api/profile/avatar file upload
+        \Illuminate\Support\Facades\Storage::fake('public');
+        $file = \Illuminate\Http\UploadedFile::fake()->image('avatar.jpg');
+        $uploadFileRes = $this->withHeaders($headers)->postJson('/api/profile/avatar', [
+            'avatar' => $file,
+        ]);
+        $uploadFileRes->assertStatus(200)
+            ->assertJsonStructure(['data' => ['user', 'avatar']]);
+        $this->assertNotNull($uploadFileRes->json('data.avatar'));
+
+        // 5. Remove avatar
+        $removeRes = $this->withHeaders($headers)->putJson('/api/profile', [
+            'name' => 'Administrator Niskala',
+            'email' => 'admin.new@example.com',
+            'avatar' => null,
+        ]);
+        $removeRes->assertStatus(200);
+        $this->assertNull($removeRes->json('data.avatar'));
+    }
+
     public function test_user_crud_and_validation_edge_cases(): void
     {
         $this->seed(DatabaseSeeder::class);
 
         $loginRes = $this->postJson('/api/login', [
             'email' => 'admin@example.com',
-            'password' => 'secret12345678',
+            'password' => 'adminpassword123',
         ]);
         $headers = ['Authorization' => 'Bearer '.$loginRes->json('data.token')];
         $userRole = Roles::where('role_name', 'user')->first();
@@ -299,7 +359,7 @@ class CmsStressTest extends TestCase
 
         $loginRes = $this->postJson('/api/login', [
             'email' => 'admin@example.com',
-            'password' => 'secret12345678',
+            'password' => 'adminpassword123',
         ]);
         $headers = ['Authorization' => 'Bearer '.$loginRes->json('data.token')];
 
@@ -337,7 +397,7 @@ class CmsStressTest extends TestCase
 
         $loginRes = $this->postJson('/api/login', [
             'email' => 'admin@example.com',
-            'password' => 'secret12345678',
+            'password' => 'adminpassword123',
         ]);
         $headers = ['Authorization' => 'Bearer '.$loginRes->json('data.token')];
 
@@ -369,7 +429,7 @@ class CmsStressTest extends TestCase
         // Admin update
         $loginRes = $this->postJson('/api/login', [
             'email' => 'admin@example.com',
-            'password' => 'secret12345678',
+            'password' => 'adminpassword123',
         ]);
         $headers = ['Authorization' => 'Bearer '.$loginRes->json('data.token')];
 

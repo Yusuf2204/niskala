@@ -8,7 +8,7 @@ import {
   CDropdownMenu,
   CDropdownToggle,
 } from '@coreui/react'
-import { cilAccountLogout, cilLockLocked } from '@coreui/icons'
+import { cilAccountLogout, cilLockLocked, cilUser } from '@coreui/icons'
 import { useNavigate } from 'react-router-dom'
 import { useSelector, useDispatch } from 'react-redux'
 import CIcon from '@coreui/icons-react'
@@ -47,6 +47,14 @@ const AppHeaderDropdown = () => {
         <CDropdownHeader className="bg-body-secondary fw-semibold my-2">
           {user?.name || 'My Account'}
         </CDropdownHeader>
+
+        <CDropdownItem
+          onClick={() => navigate('/profile')}
+          style={{ cursor: 'pointer' }}
+        >
+          <CIcon icon={cilUser} className="me-2 text-secondary" />
+          Profil Saya &amp; Foto
+        </CDropdownItem>
 
         <CDropdownItem
           onClick={() => navigate('/setup/change-password')}

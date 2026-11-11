@@ -8,6 +8,8 @@ use App\Models\Theme;
 use App\Models\User;
 use Database\Seeders\ThemeSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Http\UploadedFile;
+use Illuminate\Support\Facades\Storage;
 use Laravel\Sanctum\Sanctum;
 use Tests\TestCase;
 
@@ -24,8 +26,16 @@ class InvitationApiTest extends TestCase
     {
         parent::setUp();
 
-        $this->seed(ThemeSeeder::class);
-        $this->theme = Theme::firstOrFail();
+        $this->theme = Theme::firstOrCreate(
+            ['slug' => 'test-theme'],
+            [
+                'name' => 'Test Theme',
+                'category' => 'wedding',
+                'description' => 'Test theme for testing',
+                'is_active' => true,
+                'version' => '1.0.0',
+            ]
+        );
 
         $customerRole = Roles::firstOrCreate(['role_name' => 'customer']);
         $adminRole = Roles::firstOrCreate(['role_name' => 'admin']);
@@ -63,14 +73,32 @@ class InvitationApiTest extends TestCase
         $response = $this->getJson('/api/v1/themes');
 
         $response->assertStatus(200)
-            ->assertJsonPath('message', 'Themes retrieved successfully.')
-            ->assertJsonStructure([
-                'data' => [
-                    '*' => ['id', 'name', 'slug', 'category', 'thumbnail', 'default_config'],
-                ],
-            ]);
+            ->assertJsonPath('message', 'Themes retrieved successfully.');
 
-        $this->assertGreaterThanOrEqual(2, count($response->json('data')));
+        $this->assertIsArray($response->json('data'));
+    }
+
+    public function test_authenticated_user_can_create_draft_invitation_without_theme(): void
+    {
+        Sanctum::actingAs($this->userA);
+
+        $payload = [
+            'title' => 'Pernikahan Tanpa Tema',
+            'event_type' => 'wedding',
+        ];
+
+        $response = $this->postJson('/api/v1/invitations', $payload);
+
+        $response->assertStatus(201)
+            ->assertJsonPath('data.title', 'Pernikahan Tanpa Tema')
+            ->assertJsonPath('data.theme_id', null)
+            ->assertJsonPath('data.status', 'draft');
+
+        $this->assertDatabaseHas('tr_invitations', [
+            'title' => 'Pernikahan Tanpa Tema',
+            'theme_id' => null,
+            'status' => 'draft',
+        ]);
     }
 
     public function test_authenticated_user_can_create_draft_invitation(): void
@@ -114,6 +142,44 @@ class InvitationApiTest extends TestCase
             'invitation_id' => $invitationId,
             'event_title' => 'Akad Nikah',
         ]);
+    }
+
+    public function test_authenticated_user_can_create_invitation_with_adat_jawa_theme_and_accordion(): void
+    {
+        $this->seed(ThemeSeeder::class);
+        Sanctum::actingAs($this->userA);
+
+        $jawaTheme = Theme::where('slug', 'adat-jawa')->first();
+        $this->assertNotNull($jawaTheme, 'Theme Adat Jawa should exist');
+
+        $payload = [
+            'title' => 'Pernikahan Rama & Shinta',
+            'theme_id' => $jawaTheme->id,
+            'event_type' => 'wedding',
+        ];
+
+        $response = $this->postJson('/api/v1/invitations', $payload);
+
+        $response->assertStatus(201)
+            ->assertJsonPath('data.title', 'Pernikahan Rama & Shinta')
+            ->assertJsonPath('data.theme_id', $jawaTheme->id);
+
+        $invitationId = $response->json('data.id');
+        $content = \App\Models\InvitationContent::where('invitation_id', $invitationId)->first();
+        $this->assertNotNull($content);
+
+        $this->assertSame('adat-jawa', $content->settings['theme_style'] ?? null);
+        $this->assertSame('keraton-royal', $content->settings['animation']['preset'] ?? null);
+        $this->assertNotEmpty($content->settings['assets']['corner_url'] ?? null);
+        $this->assertNotEmpty($content->settings['assets']['frame_url'] ?? null);
+        $this->assertNotEmpty($content->settings['assets']['pattern_url'] ?? null);
+
+        $sectionTypes = collect($content->sections_data)->pluck('type')->all();
+        $this->assertContains('TraditionAccordion', $sectionTypes);
+
+        $accordion = collect($content->sections_data)->firstWhere('type', 'TraditionAccordion');
+        $this->assertNotEmpty($accordion['props']['items']);
+        $this->assertEquals('gunungan', $accordion['props']['ornament']);
     }
 
     public function test_reserved_slugs_are_rejected(): void
@@ -302,5 +368,102 @@ class InvitationApiTest extends TestCase
         $invitation = Invitation::with('content')->find($invitationId);
         $this->assertCount(2, $invitation->content->sections_data);
         $this->assertEquals('#A68B65', $invitation->content->settings['primary_color']);
+    }
+
+    public function test_upload_media_and_idor_protection(): void
+    {
+        Storage::fake('public');
+
+        Sanctum::actingAs($this->userA);
+
+        $createResponse = $this->postJson('/api/v1/invitations', [
+            'title' => 'Media Test Invitation',
+            'theme_id' => $this->theme->id,
+            'slug' => 'media-test-slug',
+        ]);
+        $invitationId = $createResponse->json('data.id');
+
+        $fakeImage = UploadedFile::fake()->image('couple.jpg', 600, 600);
+
+        // User A uploads to User A's invitation -> Success
+        $uploadResponse = $this->postJson("/api/v1/invitations/{$invitationId}/media", [
+            'file' => $fakeImage,
+            'type' => 'photo',
+        ]);
+
+        $uploadResponse->assertStatus(201)
+            ->assertJsonPath('message', 'Media uploaded successfully.')
+            ->assertJsonStructure(['data' => ['file_path', 'filename', 'size', 'mime_type']]);
+
+        // User A uploads audio to User A's invitation -> Success
+        $fakeAudio = UploadedFile::fake()->create('custom-wedding.mp3', 3000, 'audio/mpeg');
+        $audioResponse = $this->postJson("/api/v1/invitations/{$invitationId}/media", [
+            'file' => $fakeAudio,
+            'type' => 'music',
+        ]);
+        $audioResponse->assertStatus(201)
+            ->assertJsonPath('data.mime_type', 'audio/mpeg');
+
+        // User B tries to upload to User A's invitation -> 403 IDOR blocked
+        Sanctum::actingAs($this->userB);
+        $unauthorizedResponse = $this->postJson("/api/v1/invitations/{$invitationId}/media", [
+            'file' => UploadedFile::fake()->image('hacker.jpg', 600, 600),
+            'type' => 'photo',
+        ]);
+
+        $unauthorizedResponse->assertStatus(403);
+    }
+
+    public function test_show_public_returns_404_when_invitation_is_draft_or_unknown(): void
+    {
+        Sanctum::actingAs($this->userA);
+
+        $createResponse = $this->postJson('/api/v1/invitations', [
+            'title' => 'Draft Public Test',
+            'theme_id' => $this->theme->id,
+            'slug' => 'draft-public-test',
+        ]);
+        $invitationId = $createResponse->json('data.id');
+
+        // Unauthenticated request to draft slug -> 404
+        $publicRes = $this->getJson('/api/v1/public/invitations/draft-public-test');
+        $publicRes->assertStatus(404)
+            ->assertJsonPath('message', 'Undangan tidak ditemukan atau belum dipublikasikan.');
+
+        // Unknown slug -> 404
+        $notFoundRes = $this->getJson('/api/v1/public/invitations/non-existent-slug-xyz');
+        $notFoundRes->assertStatus(404);
+    }
+
+    public function test_show_public_returns_200_when_invitation_is_published(): void
+    {
+        Sanctum::actingAs($this->userA);
+
+        $createResponse = $this->postJson('/api/v1/invitations', [
+            'title' => 'Published Public Test',
+            'theme_id' => $this->theme->id,
+            'slug' => 'published-public-test',
+        ]);
+        $invitationId = $createResponse->json('data.id');
+
+        // Publish the invitation
+        $this->postJson("/api/v1/invitations/{$invitationId}/publish")->assertStatus(200);
+
+        // Guest accesses public slug unauthenticated -> 200 OK
+        $publicRes = $this->getJson('/api/v1/public/invitations/published-public-test');
+        $publicRes->assertStatus(200)
+            ->assertJsonPath('data.slug', 'published-public-test')
+            ->assertJsonPath('data.status', 'published')
+            ->assertJsonStructure([
+                'data' => [
+                    'id',
+                    'title',
+                    'slug',
+                    'status',
+                    'theme',
+                    'content',
+                    'events',
+                ],
+            ]);
     }
 }

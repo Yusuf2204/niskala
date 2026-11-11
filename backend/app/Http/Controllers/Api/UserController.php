@@ -7,6 +7,7 @@ use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Storage;
 
 class UserController extends Controller
 {
@@ -84,6 +85,77 @@ class UserController extends Controller
         return response()->json([
             'data' => null,
             'message' => 'User deleted',
+            'errors' => null,
+        ]);
+    }
+
+    public function profile(Request $request)
+    {
+        return response()->json([
+            'data' => $request->user()->load('role'),
+            'message' => 'OK',
+            'errors' => null,
+        ]);
+    }
+
+    public function updateProfile(Request $request)
+    {
+        /** @var User $user */
+        $user = $request->user();
+
+        $data = $request->validate([
+            'name' => 'required|string|max:255',
+            'email' => 'required|email|max:255|unique:users,email,'.$user->id,
+            'avatar' => 'nullable|string',
+        ]);
+
+        if (array_key_exists('avatar', $data) && empty($data['avatar'])) {
+            $data['avatar'] = null;
+        }
+
+        $user->update($data);
+
+        return response()->json([
+            'data' => $user->fresh(['role']),
+            'message' => 'Profil berhasil diperbarui',
+            'errors' => null,
+        ]);
+    }
+
+    public function uploadAvatar(Request $request)
+    {
+        /** @var User $user */
+        $user = $request->user();
+
+        if ($request->hasFile('avatar')) {
+            $request->validate([
+                'avatar' => ['required', 'file', 'image', 'mimes:jpeg,png,jpg,webp,gif', 'max:5120'],
+            ]);
+
+            $disk = config('filesystems.default') === 's3' ? 's3' : 'public';
+            $path = $request->file('avatar')->store('avatars/' . $user->id, $disk);
+            $avatarUrl = Storage::disk($disk)->url($path);
+            $user->update(['avatar' => $avatarUrl]);
+        } elseif ($request->filled('avatar')) {
+            $data = $request->validate([
+                'avatar' => ['required', 'string'],
+            ]);
+            $user->update(['avatar' => $data['avatar']]);
+            $avatarUrl = $user->avatar;
+        } else {
+            return response()->json([
+                'data' => null,
+                'message' => 'File atau data avatar wajib disertakan.',
+                'errors' => ['avatar' => ['File atau data avatar wajib disertakan.']],
+            ], 422);
+        }
+
+        return response()->json([
+            'data' => [
+                'user' => $user->fresh(['role']),
+                'avatar' => $avatarUrl,
+            ],
+            'message' => 'Foto profil berhasil diperbarui.',
             'errors' => null,
         ]);
     }

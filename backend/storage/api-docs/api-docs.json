@@ -576,6 +576,170 @@
                 ]
             }
         },
+        "/profile": {
+            "get": {
+                "tags": [
+                    "Users"
+                ],
+                "summary": "Get authenticated user profile",
+                "operationId": "ae7dbcf2cf8c020a95637b77c946e547",
+                "responses": {
+                    "200": {
+                        "description": "User profile data",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ProfileResponse"
+                                },
+                                "example": {
+                                    "data": {
+                                        "id": 1,
+                                        "name": "Admin",
+                                        "email": "admin@example.com",
+                                        "avatar": null,
+                                        "role_id": 1,
+                                        "role": {
+                                            "id": 1,
+                                            "role_name": "admin"
+                                        }
+                                    },
+                                    "message": "OK",
+                                    "errors": null
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            },
+            "put": {
+                "tags": [
+                    "Users"
+                ],
+                "summary": "Update authenticated user profile and avatar",
+                "operationId": "f4501adf3aea047309b7fe1e5bf7a842",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/UpdateProfileRequest"
+                            },
+                            "example": {
+                                "name": "Administrator Niskala",
+                                "email": "admin@example.com",
+                                "avatar": "data:image/png;base64,iVBORw0KGgo..."
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Profile updated",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ProfileResponse"
+                                },
+                                "example": {
+                                    "data": {
+                                        "id": 1,
+                                        "name": "Administrator Niskala",
+                                        "email": "admin@example.com",
+                                        "avatar": "data:image/png;base64,iVBORw0KGgo...",
+                                        "role_id": 1
+                                    },
+                                    "message": "Profil berhasil diperbarui",
+                                    "errors": null
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized"
+                    },
+                    "422": {
+                        "description": "Validation error"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/profile/avatar": {
+            "post": {
+                "tags": [
+                    "Users"
+                ],
+                "summary": "Upload avatar photo for authenticated user",
+                "operationId": "a5e9a56360c190ecb03c0d91498bebab",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "multipart/form-data": {
+                            "schema": {
+                                "required": [
+                                    "avatar"
+                                ],
+                                "properties": {
+                                    "avatar": {
+                                        "description": "Avatar image file (JPEG, PNG, JPG, WebP, max 5MB)",
+                                        "type": "string",
+                                        "format": "binary"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Avatar uploaded",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/UploadAvatarResponse"
+                                },
+                                "example": {
+                                    "data": {
+                                        "user": {
+                                            "id": 1,
+                                            "name": "Admin",
+                                            "email": "admin@example.com"
+                                        },
+                                        "avatar": "/storage/avatars/1/avatar.jpg"
+                                    },
+                                    "message": "Foto profil berhasil diperbarui.",
+                                    "errors": null
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized"
+                    },
+                    "422": {
+                        "description": "Validation error"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
         "/change-password": {
             "post": {
                 "tags": [
@@ -1337,6 +1501,814 @@
                     }
                 ]
             }
+        },
+        "/v1/themes": {
+            "get": {
+                "tags": [
+                    "Themes"
+                ],
+                "summary": "List all active design themes",
+                "operationId": "599f4d839a5bf303c7ff345cd44f69d3",
+                "parameters": [
+                    {
+                        "name": "category",
+                        "in": "query",
+                        "description": "Filter by category",
+                        "required": false,
+                        "schema": {
+                            "type": "string",
+                            "enum": [
+                                "wedding",
+                                "birthday",
+                                "general"
+                            ]
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Theme catalog list",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "$ref": "#/components/schemas/Theme"
+                                            }
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Themes retrieved successfully."
+                                        },
+                                        "errors": {
+                                            "example": null,
+                                            "nullable": true
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/v1/themes/{id}": {
+            "get": {
+                "tags": [
+                    "Themes"
+                ],
+                "summary": "Get details of a specific theme",
+                "operationId": "686f78a09fb6c69d8ca537d5fff28ef1",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "Theme ID",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "example": 1
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Theme details",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/components/schemas/Theme"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Theme details retrieved successfully."
+                                        },
+                                        "errors": {
+                                            "example": null,
+                                            "nullable": true
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Theme not found"
+                    }
+                }
+            }
+        },
+        "/v1/music": {
+            "get": {
+                "tags": [
+                    "Music"
+                ],
+                "summary": "List active background music tracks",
+                "operationId": "6a9e55e65c4bcbf45dd118a9357e8df7",
+                "parameters": [
+                    {
+                        "name": "category",
+                        "in": "query",
+                        "description": "Filter by category",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "search",
+                        "in": "query",
+                        "description": "Search title or artist",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "List of music tracks",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "$ref": "#/components/schemas/Music"
+                                            }
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Music tracks retrieved successfully."
+                                        },
+                                        "errors": {
+                                            "example": null,
+                                            "nullable": true
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "post": {
+                "tags": [
+                    "Music"
+                ],
+                "summary": "Upload a new background music track (auth required)",
+                "operationId": "3abe00a1e435a7062f269fc624517911",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "multipart/form-data": {
+                            "schema": {
+                                "required": [
+                                    "title",
+                                    "file"
+                                ],
+                                "properties": {
+                                    "title": {
+                                        "type": "string",
+                                        "example": "Canon in D"
+                                    },
+                                    "artist": {
+                                        "type": "string",
+                                        "example": "Pachelbel",
+                                        "nullable": true
+                                    },
+                                    "category": {
+                                        "type": "string",
+                                        "example": "wedding"
+                                    },
+                                    "duration_seconds": {
+                                        "type": "integer",
+                                        "example": 240,
+                                        "nullable": true
+                                    },
+                                    "file": {
+                                        "type": "string",
+                                        "format": "binary"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Music track uploaded",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/components/schemas/Music"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Music track uploaded successfully."
+                                        },
+                                        "errors": {
+                                            "example": null,
+                                            "nullable": true
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/v1/music/{id}": {
+            "delete": {
+                "tags": [
+                    "Music"
+                ],
+                "summary": "Delete a master music track (admin only)",
+                "operationId": "c117c43432df7da606833a2368656448",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "Music ID",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "example": 1
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Music track deleted",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "data": {
+                                            "example": null,
+                                            "nullable": true
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Music track deleted successfully."
+                                        },
+                                        "errors": {
+                                            "example": null,
+                                            "nullable": true
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized"
+                    },
+                    "403": {
+                        "description": "Forbidden (Admin only)"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/v1/invitations": {
+            "get": {
+                "tags": [
+                    "Invitations"
+                ],
+                "summary": "List invitations for authenticated user or admin",
+                "operationId": "557be3bd93249cf3d80d8bb98beea4ea",
+                "parameters": [
+                    {
+                        "name": "status",
+                        "in": "query",
+                        "description": "Filter by status",
+                        "required": false,
+                        "schema": {
+                            "type": "string",
+                            "enum": [
+                                "draft",
+                                "published",
+                                "archived"
+                            ]
+                        }
+                    },
+                    {
+                        "name": "search",
+                        "in": "query",
+                        "description": "Search title or slug",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "user_id",
+                        "in": "query",
+                        "description": "Admin only: filter by user ID",
+                        "required": false,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "per_page",
+                        "in": "query",
+                        "description": "Items per page",
+                        "required": false,
+                        "schema": {
+                            "type": "integer",
+                            "default": 15
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Paginated list of invitations",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "data": {
+                                            "type": "object"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Invitations retrieved successfully."
+                                        },
+                                        "errors": {
+                                            "example": null,
+                                            "nullable": true
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            },
+            "post": {
+                "tags": [
+                    "Invitations"
+                ],
+                "summary": "Create a new draft invitation",
+                "operationId": "2d2d97b11802afa079ad4be487f571fe",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/StoreInvitationInput"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Draft invitation created",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/components/schemas/Invitation"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Invitation created successfully as draft."
+                                        },
+                                        "errors": {
+                                            "example": null,
+                                            "nullable": true
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized"
+                    },
+                    "422": {
+                        "description": "Validation error or reserved slug"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/v1/invitations/{id}": {
+            "get": {
+                "tags": [
+                    "Invitations"
+                ],
+                "summary": "Get full invitation details (owner or admin only)",
+                "operationId": "bbfbed25d01f2ce0543e4953816fd1c7",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "Invitation ID",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "example": 1
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Full invitation details",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/components/schemas/Invitation"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Invitation details retrieved successfully."
+                                        },
+                                        "errors": {
+                                            "example": null,
+                                            "nullable": true
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized"
+                    },
+                    "403": {
+                        "description": "Forbidden (Anti-IDOR)"
+                    },
+                    "404": {
+                        "description": "Not found"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            },
+            "put": {
+                "tags": [
+                    "Invitations"
+                ],
+                "summary": "Update basic invitation details",
+                "operationId": "f78cdd1b0114bc339b51061a688a3999",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "Invitation ID",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "example": 1
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/UpdateInvitationInput"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Invitation updated successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/components/schemas/Invitation"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Invitation updated successfully."
+                                        },
+                                        "errors": {
+                                            "example": null,
+                                            "nullable": true
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized"
+                    },
+                    "403": {
+                        "description": "Forbidden"
+                    },
+                    "422": {
+                        "description": "Validation error"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            },
+            "delete": {
+                "tags": [
+                    "Invitations"
+                ],
+                "summary": "Delete invitation",
+                "operationId": "90020d3227cb4e2d28fe6ecaea925ff9",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "Invitation ID",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "example": 1
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Invitation deleted",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "data": {
+                                            "example": null,
+                                            "nullable": true
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Invitation deleted successfully."
+                                        },
+                                        "errors": {
+                                            "example": null,
+                                            "nullable": true
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized"
+                    },
+                    "403": {
+                        "description": "Forbidden"
+                    },
+                    "404": {
+                        "description": "Not found"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/v1/invitations/{id}/content": {
+            "put": {
+                "tags": [
+                    "Invitations"
+                ],
+                "summary": "Update invitation sections and layout content",
+                "operationId": "da962a8a435aa4962bb8c83250178df3",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "Invitation ID",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "example": 1
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/UpdateInvitationContentInput"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Content updated successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/components/schemas/InvitationContent"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Invitation content updated successfully."
+                                        },
+                                        "errors": {
+                                            "example": null,
+                                            "nullable": true
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized"
+                    },
+                    "403": {
+                        "description": "Forbidden"
+                    },
+                    "422": {
+                        "description": "Validation error"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/v1/invitations/{id}/publish": {
+            "post": {
+                "tags": [
+                    "Invitations"
+                ],
+                "summary": "Publish an invitation to make it live",
+                "operationId": "092e4907895cc4d777a7258f6c432f06",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "Invitation ID",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "example": 1
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Invitation published successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/components/schemas/Invitation"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Invitation published successfully."
+                                        },
+                                        "errors": {
+                                            "example": null,
+                                            "nullable": true
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized"
+                    },
+                    "403": {
+                        "description": "Forbidden"
+                    },
+                    "422": {
+                        "description": "Cannot publish without content sections"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/v1/invitations/{id}/archive": {
+            "post": {
+                "tags": [
+                    "Invitations"
+                ],
+                "summary": "Archive an invitation",
+                "operationId": "f10160baa1190d6be26b3a545e092fdc",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "Invitation ID",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "example": 1
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Invitation archived successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/components/schemas/Invitation"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Invitation archived successfully."
+                                        },
+                                        "errors": {
+                                            "example": null,
+                                            "nullable": true
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized"
+                    },
+                    "403": {
+                        "description": "Forbidden"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
         }
     },
     "components": {
@@ -1414,6 +2386,11 @@
                         "type": "string",
                         "format": "email",
                         "example": "admin@gmail.com"
+                    },
+                    "avatar": {
+                        "type": "string",
+                        "example": "data:image/jpeg;base64,...",
+                        "nullable": true
                     },
                     "role_id": {
                         "type": "integer",
@@ -1673,6 +2650,12 @@
                         "format": "email",
                         "example": "admin@example.com"
                     },
+                    "avatar": {
+                        "description": "User avatar image as base64 data URL or URL path",
+                        "type": "string",
+                        "example": "data:image/jpeg;base64,...",
+                        "nullable": true
+                    },
                     "email_verified_at": {
                         "type": "string",
                         "format": "date-time",
@@ -1699,6 +2682,71 @@
                     "updated_at": {
                         "type": "string",
                         "format": "date-time",
+                        "nullable": true
+                    }
+                },
+                "type": "object"
+            },
+            "UpdateProfileRequest": {
+                "required": [
+                    "name",
+                    "email"
+                ],
+                "properties": {
+                    "name": {
+                        "type": "string",
+                        "example": "Administrator Niskala"
+                    },
+                    "email": {
+                        "type": "string",
+                        "format": "email",
+                        "example": "admin@example.com"
+                    },
+                    "avatar": {
+                        "description": "User avatar as base64 data URL or image path.",
+                        "type": "string",
+                        "example": "data:image/png;base64,iVBORw0KGgo...",
+                        "nullable": true
+                    }
+                },
+                "type": "object"
+            },
+            "ProfileResponse": {
+                "properties": {
+                    "data": {
+                        "$ref": "#/components/schemas/User"
+                    },
+                    "message": {
+                        "type": "string",
+                        "example": "OK"
+                    },
+                    "errors": {
+                        "example": null,
+                        "nullable": true
+                    }
+                },
+                "type": "object"
+            },
+            "UploadAvatarResponse": {
+                "properties": {
+                    "data": {
+                        "properties": {
+                            "user": {
+                                "$ref": "#/components/schemas/User"
+                            },
+                            "avatar": {
+                                "type": "string",
+                                "example": "/storage/avatars/1/avatar.jpg"
+                            }
+                        },
+                        "type": "object"
+                    },
+                    "message": {
+                        "type": "string",
+                        "example": "Foto profil berhasil diperbarui."
+                    },
+                    "errors": {
+                        "example": null,
                         "nullable": true
                     }
                 },
@@ -2192,6 +3240,446 @@
                     }
                 },
                 "type": "object"
+            },
+            "Theme": {
+                "properties": {
+                    "id": {
+                        "type": "integer",
+                        "example": 1
+                    },
+                    "name": {
+                        "type": "string",
+                        "example": "Classic Ivory"
+                    },
+                    "slug": {
+                        "type": "string",
+                        "example": "classic-ivory"
+                    },
+                    "category": {
+                        "type": "string",
+                        "example": "wedding"
+                    },
+                    "description": {
+                        "type": "string",
+                        "example": "Tema klasik bernuansa hangat dan elegan."
+                    },
+                    "thumbnail": {
+                        "type": "string",
+                        "example": "/assets/themes/classic-ivory.jpg"
+                    },
+                    "default_config": {
+                        "type": "object"
+                    },
+                    "is_active": {
+                        "type": "boolean",
+                        "example": true
+                    },
+                    "version": {
+                        "type": "string",
+                        "example": "1.0.0"
+                    },
+                    "created_at": {
+                        "type": "string",
+                        "format": "date-time"
+                    },
+                    "updated_at": {
+                        "type": "string",
+                        "format": "date-time"
+                    }
+                },
+                "type": "object"
+            },
+            "Music": {
+                "properties": {
+                    "id": {
+                        "type": "integer",
+                        "example": 1
+                    },
+                    "title": {
+                        "type": "string",
+                        "example": "A Thousand Years (Instrumental)"
+                    },
+                    "artist": {
+                        "type": "string",
+                        "example": "The Piano Guys",
+                        "nullable": true
+                    },
+                    "file_path": {
+                        "type": "string",
+                        "example": "/storage/music/sample.mp3"
+                    },
+                    "category": {
+                        "type": "string",
+                        "example": "wedding"
+                    },
+                    "duration_seconds": {
+                        "type": "integer",
+                        "example": 255,
+                        "nullable": true
+                    },
+                    "is_active": {
+                        "type": "boolean",
+                        "example": true
+                    },
+                    "created_at": {
+                        "type": "string",
+                        "format": "date-time"
+                    },
+                    "updated_at": {
+                        "type": "string",
+                        "format": "date-time"
+                    }
+                },
+                "type": "object"
+            },
+            "InvitationEvent": {
+                "properties": {
+                    "id": {
+                        "type": "integer",
+                        "example": 1
+                    },
+                    "invitation_id": {
+                        "type": "integer",
+                        "example": 1
+                    },
+                    "event_title": {
+                        "type": "string",
+                        "example": "Akad Nikah"
+                    },
+                    "event_date": {
+                        "type": "string",
+                        "format": "date",
+                        "example": "2026-12-12"
+                    },
+                    "start_time": {
+                        "type": "string",
+                        "example": "08:00"
+                    },
+                    "end_time": {
+                        "type": "string",
+                        "example": "10:00",
+                        "nullable": true
+                    },
+                    "time_zone": {
+                        "type": "string",
+                        "example": "WIB"
+                    },
+                    "location_name": {
+                        "type": "string",
+                        "example": "Masjid Al-Ikhlas"
+                    },
+                    "address": {
+                        "type": "string",
+                        "example": "Jl. Merdeka No. 10, Jakarta"
+                    },
+                    "google_maps_url": {
+                        "type": "string",
+                        "example": "https://maps.google.com/?q=...",
+                        "nullable": true
+                    },
+                    "latitude": {
+                        "type": "number",
+                        "format": "float",
+                        "nullable": true
+                    },
+                    "longitude": {
+                        "type": "number",
+                        "format": "float",
+                        "nullable": true
+                    }
+                },
+                "type": "object"
+            },
+            "InvitationContent": {
+                "properties": {
+                    "id": {
+                        "type": "integer",
+                        "example": 1
+                    },
+                    "invitation_id": {
+                        "type": "integer",
+                        "example": 1
+                    },
+                    "schema_version": {
+                        "type": "string",
+                        "example": "1.0.0"
+                    },
+                    "sections_data": {
+                        "type": "array",
+                        "items": {
+                            "properties": {
+                                "id": {
+                                    "type": "string",
+                                    "example": "hero-cover-1"
+                                },
+                                "type": {
+                                    "type": "string",
+                                    "example": "HeroCover"
+                                },
+                                "order": {
+                                    "type": "integer",
+                                    "example": 0
+                                },
+                                "props": {
+                                    "type": "object"
+                                }
+                            },
+                            "type": "object"
+                        }
+                    },
+                    "music_url": {
+                        "type": "string",
+                        "example": "/storage/music/sample.mp3",
+                        "nullable": true
+                    },
+                    "settings": {
+                        "type": "object"
+                    }
+                },
+                "type": "object"
+            },
+            "Invitation": {
+                "properties": {
+                    "id": {
+                        "type": "integer",
+                        "example": 1
+                    },
+                    "user_id": {
+                        "type": "integer",
+                        "example": 1
+                    },
+                    "theme_id": {
+                        "type": "integer",
+                        "example": 1
+                    },
+                    "title": {
+                        "type": "string",
+                        "example": "The Wedding of Romeo & Juliet"
+                    },
+                    "event_type": {
+                        "type": "string",
+                        "example": "wedding",
+                        "enum": [
+                            "wedding",
+                            "birthday",
+                            "general"
+                        ]
+                    },
+                    "slug": {
+                        "type": "string",
+                        "example": "romeo-juliet"
+                    },
+                    "status": {
+                        "type": "string",
+                        "example": "draft",
+                        "enum": [
+                            "draft",
+                            "published",
+                            "archived"
+                        ]
+                    },
+                    "cover_image": {
+                        "type": "string",
+                        "example": "/storage/covers/sample.jpg",
+                        "nullable": true
+                    },
+                    "meta_description": {
+                        "type": "string",
+                        "example": "Pernikahan Romeo dan Juliet.",
+                        "nullable": true
+                    },
+                    "published_at": {
+                        "type": "string",
+                        "format": "date-time",
+                        "nullable": true
+                    },
+                    "created_at": {
+                        "type": "string",
+                        "format": "date-time"
+                    },
+                    "updated_at": {
+                        "type": "string",
+                        "format": "date-time"
+                    },
+                    "theme": {
+                        "$ref": "#/components/schemas/Theme"
+                    },
+                    "content": {
+                        "$ref": "#/components/schemas/InvitationContent"
+                    },
+                    "events": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/InvitationEvent"
+                        }
+                    }
+                },
+                "type": "object"
+            },
+            "StoreInvitationInput": {
+                "required": [
+                    "title",
+                    "theme_id"
+                ],
+                "properties": {
+                    "title": {
+                        "type": "string",
+                        "example": "The Wedding of Romeo & Juliet"
+                    },
+                    "theme_id": {
+                        "type": "integer",
+                        "example": 1
+                    },
+                    "event_type": {
+                        "type": "string",
+                        "example": "wedding",
+                        "enum": [
+                            "wedding",
+                            "birthday",
+                            "general"
+                        ]
+                    },
+                    "slug": {
+                        "type": "string",
+                        "example": "romeo-juliet",
+                        "nullable": true
+                    },
+                    "cover_image": {
+                        "type": "string",
+                        "example": "/storage/covers/sample.jpg",
+                        "nullable": true
+                    },
+                    "meta_description": {
+                        "type": "string",
+                        "example": "Pernikahan Romeo & Juliet.",
+                        "nullable": true
+                    },
+                    "event_title": {
+                        "type": "string",
+                        "example": "Akad Nikah",
+                        "nullable": true
+                    },
+                    "event_date": {
+                        "type": "string",
+                        "format": "date",
+                        "example": "2026-12-12",
+                        "nullable": true
+                    },
+                    "start_time": {
+                        "type": "string",
+                        "example": "08:00",
+                        "nullable": true
+                    },
+                    "end_time": {
+                        "type": "string",
+                        "example": "10:00",
+                        "nullable": true
+                    },
+                    "time_zone": {
+                        "type": "string",
+                        "example": "WIB",
+                        "nullable": true
+                    },
+                    "location_name": {
+                        "type": "string",
+                        "example": "Masjid Al-Ikhlas",
+                        "nullable": true
+                    },
+                    "address": {
+                        "type": "string",
+                        "example": "Jl. Merdeka No. 10",
+                        "nullable": true
+                    },
+                    "google_maps_url": {
+                        "type": "string",
+                        "example": "https://maps.google.com/?q=...",
+                        "nullable": true
+                    }
+                },
+                "type": "object"
+            },
+            "UpdateInvitationInput": {
+                "properties": {
+                    "title": {
+                        "type": "string",
+                        "example": "The Wedding of Romeo & Juliet (Updated)"
+                    },
+                    "theme_id": {
+                        "type": "integer",
+                        "example": 1
+                    },
+                    "event_type": {
+                        "type": "string",
+                        "example": "wedding",
+                        "enum": [
+                            "wedding",
+                            "birthday",
+                            "general"
+                        ]
+                    },
+                    "slug": {
+                        "type": "string",
+                        "example": "romeo-dan-juliet"
+                    },
+                    "cover_image": {
+                        "type": "string",
+                        "example": "/storage/covers/updated.jpg",
+                        "nullable": true
+                    },
+                    "meta_description": {
+                        "type": "string",
+                        "example": "Deskripsi meta undangan.",
+                        "nullable": true
+                    }
+                },
+                "type": "object"
+            },
+            "UpdateInvitationContentInput": {
+                "required": [
+                    "sections_data"
+                ],
+                "properties": {
+                    "schema_version": {
+                        "type": "string",
+                        "example": "1.0.0"
+                    },
+                    "sections_data": {
+                        "type": "array",
+                        "items": {
+                            "required": [
+                                "id",
+                                "type"
+                            ],
+                            "properties": {
+                                "id": {
+                                    "type": "string",
+                                    "example": "hero-1"
+                                },
+                                "type": {
+                                    "type": "string",
+                                    "example": "HeroCover"
+                                },
+                                "order": {
+                                    "type": "integer",
+                                    "example": 0
+                                },
+                                "props": {
+                                    "type": "object"
+                                }
+                            },
+                            "type": "object"
+                        }
+                    },
+                    "music_url": {
+                        "type": "string",
+                        "example": "/storage/music/wedding.mp3",
+                        "nullable": true
+                    },
+                    "settings": {
+                        "type": "object"
+                    }
+                },
+                "type": "object"
             }
         },
         "securitySchemes": {
@@ -2227,6 +3715,18 @@
         {
             "name": "Company",
             "description": "Company profile and branding"
+        },
+        {
+            "name": "Themes",
+            "description": "Master catalog of invitation design themes"
+        },
+        {
+            "name": "Music",
+            "description": "Master background music catalog"
+        },
+        {
+            "name": "Invitations",
+            "description": "Digital invitation management and lifecycle"
         }
     ]
 }

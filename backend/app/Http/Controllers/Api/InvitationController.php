@@ -7,21 +7,31 @@ use App\Http\Requests\Api\StoreInvitationRequest;
 use App\Http\Requests\Api\UpdateInvitationContentRequest;
 use App\Http\Requests\Api\UpdateInvitationRequest;
 use App\Models\Invitation;
-use App\Models\Theme;
+use App\Services\AuditLogger;
+use App\Services\InvitationCreationService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Str;
+use Illuminate\Support\Facades\Storage;
 
 class InvitationController extends Controller
 {
+    public function __construct(
+        private readonly InvitationCreationService $creator,
+        private readonly AuditLogger $auditLogger,
+    ) {}
+
     /**
      * Display a paginated listing of invitations.
      */
     public function index(Request $request): JsonResponse
     {
         $user = $request->user();
-        $query = Invitation::with(['theme:id,name,slug,thumbnail', 'events']);
+        $relations = ['theme:id,name,slug,thumbnail', 'events'];
+        if ($user->isAdmin()) {
+            $relations[] = 'user:id,name,email';
+        }
+
+        $query = Invitation::with($relations);
 
         if (! $user->isAdmin()) {
             $query->where('user_id', $user->id);
@@ -56,76 +66,7 @@ class InvitationController extends Controller
      */
     public function store(StoreInvitationRequest $request): JsonResponse
     {
-        $user = $request->user();
-        $validated = $request->validated();
-
-        $slug = ! empty($validated['slug'])
-            ? $validated['slug']
-            : $this->generateUniqueSlug($validated['title']);
-
-        $theme = Theme::findOrFail($validated['theme_id']);
-
-        $invitation = DB::transaction(function () use ($user, $validated, $slug, $theme) {
-            $invitation = Invitation::create([
-                'user_id' => $user->id,
-                'theme_id' => $theme->id,
-                'title' => $validated['title'],
-                'event_type' => $validated['event_type'] ?? 'wedding',
-                'slug' => $slug,
-                'status' => 'draft',
-                'cover_image' => $validated['cover_image'] ?? null,
-                'meta_description' => $validated['meta_description'] ?? null,
-            ]);
-
-            // Initialize default content based on theme configuration
-            $defaultConfig = $theme->default_config ?? [];
-            $defaultSections = $defaultConfig['default_sections'] ?? [
-                'HeroCover',
-                'CoupleProfile',
-                'EventSchedule',
-                'FooterSection',
-            ];
-
-            $sectionsData = [];
-            foreach ($defaultSections as $index => $sectionType) {
-                $sectionsData[] = [
-                    'id' => Str::slug($sectionType).'-'.Str::random(6),
-                    'type' => $sectionType,
-                    'order' => $index,
-                    'props' => [
-                        'title' => $sectionType === 'HeroCover' ? $validated['title'] : '',
-                    ],
-                ];
-            }
-
-            $invitation->content()->create([
-                'schema_version' => '1.0.0',
-                'sections_data' => $sectionsData,
-                'music_url' => null,
-                'settings' => [
-                    'palette' => $defaultConfig['palette'] ?? null,
-                    'typography' => $defaultConfig['typography'] ?? null,
-                ],
-            ]);
-
-            // Create initial event if event fields are provided
-            if (! empty($validated['event_title']) && ! empty($validated['event_date'])) {
-                $invitation->events()->create([
-                    'event_title' => $validated['event_title'],
-                    'event_date' => $validated['event_date'],
-                    'start_time' => $validated['start_time'] ?? '09:00',
-                    'end_time' => $validated['end_time'] ?? null,
-                    'time_zone' => $validated['time_zone'] ?? 'WIB',
-                    'location_name' => $validated['location_name'] ?? 'Lokasi Acara',
-                    'address' => $validated['address'] ?? 'Alamat Acara',
-                    'google_maps_url' => $validated['google_maps_url'] ?? null,
-                ]);
-            }
-
-            return $invitation;
-        });
-
-        $invitation->load(['theme', 'content', 'events']);
+        $invitation = $this->creator->createDraftForUser($request->user(), $request->validated());
 
         return response()->json([
             'data' => $invitation,
@@ -157,6 +98,47 @@ class InvitationController extends Controller
     }
 
     /**
+     * Display the published invitation for public view by slug.
+     */
+    public function showPublic(Request $request, string $slug): JsonResponse
+    {
+        $invitation = Invitation::with(['theme', 'content', 'events'])
+            ->where('slug', $slug)
+            ->first();
+
+        if (! $invitation || $invitation->status !== 'published') {
+            return response()->json([
+                'data' => null,
+                'message' => 'Undangan tidak ditemukan atau belum dipublikasikan.',
+                'errors' => ['slug' => ['This invitation is private, draft, or does not exist.']],
+            ], 404);
+        }
+
+        $guestContext = null;
+        $guestToken = trim((string) $request->query('c', ''));
+        if ($guestToken !== '') {
+            $guest = $invitation->guests()->where('slug_token', $guestToken)->first();
+            if ($guest) {
+                $guestContext = [
+                    'name' => $guest->name,
+                    'category' => $guest->category,
+                    'pax_allocated' => $guest->pax_allocated,
+                    'token' => $guest->slug_token,
+                ];
+            }
+        }
+
+        $payload = $invitation->toArray();
+        $payload['guest_context'] = $guestContext;
+
+        return response()->json([
+            'data' => $payload,
+            'message' => 'Public invitation retrieved successfully.',
+            'errors' => null,
+        ]);
+    }
+
+    /**
      * Update the specified invitation basic info.
      */
     public function update(UpdateInvitationRequest $request, int $id): JsonResponse
@@ -171,8 +153,24 @@ class InvitationController extends Controller
             ], 403);
         }
 
-        $invitation->update($request->validated());
+        $validated = $request->validated();
+        $invitation->update($validated);
         $invitation->load(['theme', 'content', 'events']);
+
+        if ($request->user()->isAdmin()) {
+            $this->auditLogger->log(
+                $request->user(),
+                'invitation.admin_updated',
+                $invitation,
+                null,
+                [
+                    'owner_id' => $invitation->user_id,
+                    'slug' => $invitation->slug,
+                    'changed_fields' => array_keys($validated),
+                ],
+                $request,
+            );
+        }
 
         return response()->json([
             'data' => $invitation,
@@ -208,11 +206,84 @@ class InvitationController extends Controller
             ]
         );
 
+        if ($request->user()->isAdmin()) {
+            $this->auditLogger->log(
+                $request->user(),
+                'invitation.admin_content_updated',
+                $invitation,
+                null,
+                [
+                    'owner_id' => $invitation->user_id,
+                    'slug' => $invitation->slug,
+                    'section_count' => count($validated['sections_data']),
+                ],
+                $request,
+            );
+        }
+
         return response()->json([
             'data' => $content,
             'message' => 'Invitation content updated successfully.',
             'errors' => null,
         ]);
+    }
+
+    /**
+     * Upload media file for an invitation.
+     */
+    public function uploadMedia(Request $request, int $id): JsonResponse
+    {
+        $invitation = Invitation::findOrFail($id);
+
+        if ($request->user()->cannot('update', $invitation)) {
+            return response()->json([
+                'data' => null,
+                'message' => 'This action is unauthorized.',
+                'errors' => ['authorization' => ['You do not have permission to upload media for this invitation.']],
+            ], 403);
+        }
+
+        $type = $request->input('type', 'general');
+        $isAudio = $type === 'music';
+
+        $rules = [
+            'file' => $isAudio
+                ? ['required', 'file', 'mimes:mp3,wav,ogg,audio/mpeg', 'max:10240']
+                : ['required', 'file', 'image', 'mimes:jpeg,png,jpg,webp,gif', 'max:5120'],
+            'type' => ['nullable', 'string', 'in:cover,photo,gallery,music,general'],
+        ];
+
+        $validated = $request->validate($rules);
+
+        $folder = 'invitations/' . $invitation->id . '/' . ($validated['type'] ?? 'general');
+        $disk = config('filesystems.default') === 's3' ? 's3' : 'public';
+        $path = $request->file('file')->store($folder, $disk);
+
+        if ($request->user()->isAdmin()) {
+            $this->auditLogger->log(
+                $request->user(),
+                'invitation.admin_media_uploaded',
+                $invitation,
+                null,
+                [
+                    'owner_id' => $invitation->user_id,
+                    'slug' => $invitation->slug,
+                    'media_type' => $validated['type'] ?? 'general',
+                ],
+                $request,
+            );
+        }
+
+        return response()->json([
+            'data' => [
+                'file_path' => Storage::disk($disk)->url($path),
+                'filename' => $request->file('file')->getClientOriginalName(),
+                'size' => $request->file('file')->getSize(),
+                'mime_type' => $request->file('file')->getMimeType(),
+            ],
+            'message' => 'Media uploaded successfully.',
+            'errors' => null,
+        ], 201);
     }
 
     /**
@@ -246,6 +317,19 @@ class InvitationController extends Controller
             'published_at' => now(),
         ]);
 
+        $this->auditLogger->log(
+            $request->user(),
+            'invitation.published',
+            $invitation,
+            null,
+            [
+                'owner_id' => $invitation->user_id,
+                'slug' => $invitation->slug,
+                'actor_is_admin' => $request->user()->isAdmin(),
+            ],
+            $request,
+        );
+
         $invitation->load(['theme', 'content', 'events']);
 
         return response()->json([
@@ -274,6 +358,19 @@ class InvitationController extends Controller
             'status' => 'archived',
         ]);
 
+        $this->auditLogger->log(
+            $request->user(),
+            'invitation.archived',
+            $invitation,
+            null,
+            [
+                'owner_id' => $invitation->user_id,
+                'slug' => $invitation->slug,
+                'actor_is_admin' => $request->user()->isAdmin(),
+            ],
+            $request,
+        );
+
         $invitation->load(['theme', 'content', 'events']);
 
         return response()->json([
@@ -298,39 +395,29 @@ class InvitationController extends Controller
             ], 403);
         }
 
+        $snapshot = [
+            'owner_id' => $invitation->user_id,
+            'slug' => $invitation->slug,
+            'title' => $invitation->title,
+            'actor_is_admin' => $request->user()->isAdmin(),
+        ];
+
         $invitation->delete();
+
+        $this->auditLogger->log(
+            $request->user(),
+            'invitation.deleted',
+            Invitation::class,
+            $id,
+            $snapshot,
+            $request,
+        );
 
         return response()->json([
             'data' => null,
             'message' => 'Invitation deleted successfully.',
             'errors' => null,
         ]);
-    }
-
-    /**
-     * Generate unique slug from title.
-     */
-    protected function generateUniqueSlug(string $title): string
-    {
-        $base = Str::slug($title);
-        if (empty($base)) {
-            $base = 'undangan';
-        }
-
-        $reserved = ['admin', 'api', 'dashboard', 'public', 'storage', 'docs', 'settings', 'themes', 'up'];
-        $slug = $base;
-        $counter = 1;
-
-        while (Invitation::where('slug', $slug)->exists() || in_array($slug, $reserved, true)) {
-            $slug = $base.'-'.Str::lower(Str::random(5));
-            $counter++;
-            if ($counter > 10) {
-                $slug = $base.'-'.time();
-                break;
-            }
-        }
-
-        return $slug;
     }
 }
 
