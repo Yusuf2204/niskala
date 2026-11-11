@@ -7,22 +7,31 @@ use App\Http\Requests\Api\StoreInvitationRequest;
 use App\Http\Requests\Api\UpdateInvitationContentRequest;
 use App\Http\Requests\Api\UpdateInvitationRequest;
 use App\Models\Invitation;
-use App\Models\Theme;
+use App\Services\AuditLogger;
+use App\Services\InvitationCreationService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
-use Illuminate\Support\Str;
 
 class InvitationController extends Controller
 {
+    public function __construct(
+        private readonly InvitationCreationService $creator,
+        private readonly AuditLogger $auditLogger,
+    ) {}
+
     /**
      * Display a paginated listing of invitations.
      */
     public function index(Request $request): JsonResponse
     {
         $user = $request->user();
-        $query = Invitation::with(['theme:id,name,slug,thumbnail', 'events']);
+        $relations = ['theme:id,name,slug,thumbnail', 'events'];
+        if ($user->isAdmin()) {
+            $relations[] = 'user:id,name,email';
+        }
+
+        $query = Invitation::with($relations);
 
         if (! $user->isAdmin()) {
             $query->where('user_id', $user->id);
@@ -57,82 +66,7 @@ class InvitationController extends Controller
      */
     public function store(StoreInvitationRequest $request): JsonResponse
     {
-        $user = $request->user();
-        $validated = $request->validated();
-
-        $slug = ! empty($validated['slug'])
-            ? $validated['slug']
-            : $this->generateUniqueSlug($validated['title']);
-
-        $themeId = $validated['theme_id'] ?? null;
-        $theme = $themeId ? Theme::find($themeId) : null;
-
-        $invitation = DB::transaction(function () use ($user, $validated, $slug, $theme, $themeId) {
-            $invitation = Invitation::create([
-                'user_id' => $user->id,
-                'theme_id' => $themeId,
-                'title' => $validated['title'],
-                'event_type' => $validated['event_type'] ?? 'wedding',
-                'slug' => $slug,
-                'status' => 'draft',
-                'cover_image' => $validated['cover_image'] ?? null,
-                'meta_description' => $validated['meta_description'] ?? null,
-            ]);
-
-            // Initialize default content based on theme configuration or standard defaults
-            $defaultConfig = $theme?->default_config ?? [];
-            $defaultSections = $defaultConfig['default_sections'] ?? [
-                'HeroCover',
-                'CoupleProfile',
-                'EventSchedule',
-                'FooterSection',
-            ];
-            $sectionPresets = $defaultConfig['section_presets'] ?? [];
-
-            $sectionsData = [];
-            foreach ($defaultSections as $index => $sectionType) {
-                $props = $sectionPresets[$sectionType] ?? [];
-                if ($sectionType === 'HeroCover') {
-                    if (empty($props['title'])) {
-                        $props['title'] = $validated['title'];
-                    }
-                }
-                $sectionsData[] = [
-                    'id' => Str::slug($sectionType).'-'.Str::random(6),
-                    'type' => $sectionType,
-                    'order' => $index,
-                    'props' => $props,
-                ];
-            }
-
-            $invitation->content()->create([
-                'schema_version' => '1.0.0',
-                'sections_data' => $sectionsData,
-                'music_url' => $defaultConfig['default_music_url'] ?? null,
-                'settings' => [
-                    'palette' => $defaultConfig['palette'] ?? null,
-                    'typography' => $defaultConfig['typography'] ?? null,
-                ],
-            ]);
-
-            // Create initial event if event fields are provided
-            if (! empty($validated['event_title']) && ! empty($validated['event_date'])) {
-                $invitation->events()->create([
-                    'event_title' => $validated['event_title'],
-                    'event_date' => $validated['event_date'],
-                    'start_time' => $validated['start_time'] ?? '09:00',
-                    'end_time' => $validated['end_time'] ?? null,
-                    'time_zone' => $validated['time_zone'] ?? 'WIB',
-                    'location_name' => $validated['location_name'] ?? 'Lokasi Acara',
-                    'address' => $validated['address'] ?? 'Alamat Acara',
-                    'google_maps_url' => $validated['google_maps_url'] ?? null,
-                ]);
-            }
-
-            return $invitation;
-        });
-
-        $invitation->load(['theme', 'content', 'events']);
+        $invitation = $this->creator->createDraftForUser($request->user(), $request->validated());
 
         return response()->json([
             'data' => $invitation,
@@ -219,8 +153,24 @@ class InvitationController extends Controller
             ], 403);
         }
 
-        $invitation->update($request->validated());
+        $validated = $request->validated();
+        $invitation->update($validated);
         $invitation->load(['theme', 'content', 'events']);
+
+        if ($request->user()->isAdmin()) {
+            $this->auditLogger->log(
+                $request->user(),
+                'invitation.admin_updated',
+                $invitation,
+                null,
+                [
+                    'owner_id' => $invitation->user_id,
+                    'slug' => $invitation->slug,
+                    'changed_fields' => array_keys($validated),
+                ],
+                $request,
+            );
+        }
 
         return response()->json([
             'data' => $invitation,
@@ -255,6 +205,21 @@ class InvitationController extends Controller
                 'settings' => array_key_exists('settings', $validated) ? $validated['settings'] : $invitation->content?->settings,
             ]
         );
+
+        if ($request->user()->isAdmin()) {
+            $this->auditLogger->log(
+                $request->user(),
+                'invitation.admin_content_updated',
+                $invitation,
+                null,
+                [
+                    'owner_id' => $invitation->user_id,
+                    'slug' => $invitation->slug,
+                    'section_count' => count($validated['sections_data']),
+                ],
+                $request,
+            );
+        }
 
         return response()->json([
             'data' => $content,
@@ -293,6 +258,21 @@ class InvitationController extends Controller
         $folder = 'invitations/' . $invitation->id . '/' . ($validated['type'] ?? 'general');
         $disk = config('filesystems.default') === 's3' ? 's3' : 'public';
         $path = $request->file('file')->store($folder, $disk);
+
+        if ($request->user()->isAdmin()) {
+            $this->auditLogger->log(
+                $request->user(),
+                'invitation.admin_media_uploaded',
+                $invitation,
+                null,
+                [
+                    'owner_id' => $invitation->user_id,
+                    'slug' => $invitation->slug,
+                    'media_type' => $validated['type'] ?? 'general',
+                ],
+                $request,
+            );
+        }
 
         return response()->json([
             'data' => [
@@ -337,6 +317,19 @@ class InvitationController extends Controller
             'published_at' => now(),
         ]);
 
+        $this->auditLogger->log(
+            $request->user(),
+            'invitation.published',
+            $invitation,
+            null,
+            [
+                'owner_id' => $invitation->user_id,
+                'slug' => $invitation->slug,
+                'actor_is_admin' => $request->user()->isAdmin(),
+            ],
+            $request,
+        );
+
         $invitation->load(['theme', 'content', 'events']);
 
         return response()->json([
@@ -365,6 +358,19 @@ class InvitationController extends Controller
             'status' => 'archived',
         ]);
 
+        $this->auditLogger->log(
+            $request->user(),
+            'invitation.archived',
+            $invitation,
+            null,
+            [
+                'owner_id' => $invitation->user_id,
+                'slug' => $invitation->slug,
+                'actor_is_admin' => $request->user()->isAdmin(),
+            ],
+            $request,
+        );
+
         $invitation->load(['theme', 'content', 'events']);
 
         return response()->json([
@@ -389,39 +395,29 @@ class InvitationController extends Controller
             ], 403);
         }
 
+        $snapshot = [
+            'owner_id' => $invitation->user_id,
+            'slug' => $invitation->slug,
+            'title' => $invitation->title,
+            'actor_is_admin' => $request->user()->isAdmin(),
+        ];
+
         $invitation->delete();
+
+        $this->auditLogger->log(
+            $request->user(),
+            'invitation.deleted',
+            Invitation::class,
+            $id,
+            $snapshot,
+            $request,
+        );
 
         return response()->json([
             'data' => null,
             'message' => 'Invitation deleted successfully.',
             'errors' => null,
         ]);
-    }
-
-    /**
-     * Generate unique slug from title.
-     */
-    protected function generateUniqueSlug(string $title): string
-    {
-        $base = Str::slug($title);
-        if (empty($base)) {
-            $base = 'undangan';
-        }
-
-        $reserved = ['admin', 'api', 'dashboard', 'public', 'storage', 'docs', 'settings', 'themes', 'up'];
-        $slug = $base;
-        $counter = 1;
-
-        while (Invitation::where('slug', $slug)->exists() || in_array($slug, $reserved, true)) {
-            $slug = $base.'-'.Str::lower(Str::random(5));
-            $counter++;
-            if ($counter > 10) {
-                $slug = $base.'-'.time();
-                break;
-            }
-        }
-
-        return $slug;
     }
 }
 

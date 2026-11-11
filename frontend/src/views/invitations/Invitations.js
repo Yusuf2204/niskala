@@ -162,7 +162,8 @@ const Invitations = () => {
             <CIcon icon={cilEnvelopeClosed} className="text-secondary" /> Daftar Undangan Digital
           </h4>
           <p className="text-body-secondary mb-0 small">
-            Kelola seluruh undangan pernikahan, ulang tahun, dan acara spesial Anda dalam satu panel.
+            Kelola seluruh undangan pernikahan, ulang tahun, dan acara spesial Anda dalam satu
+            panel.
           </p>
         </div>
         <div className="d-flex gap-2">
@@ -310,6 +311,11 @@ const Invitations = () => {
                       <small className="text-body-secondary d-flex align-items-center gap-1 font-monospace">
                         /{inv.slug}
                       </small>
+                      {inv.user && (
+                        <small className="text-body-secondary d-block mt-1">
+                          Pemilik: {inv.user.name} ({inv.user.email})
+                        </small>
+                      )}
                     </CTableDataCell>
                     <CTableDataCell>
                       <span className="fw-semibold text-body-secondary">
@@ -433,8 +439,8 @@ const Invitations = () => {
         </CModalHeader>
         <CModalBody>
           <p className="mb-0 text-muted">
-            Apakah Anda yakin ingin menghapus undangan ini? Tindakan ini tidak dapat dibatalkan
-            dan seluruh konten sections terkait akan terhapus.
+            Apakah Anda yakin ingin menghapus undangan ini? Tindakan ini tidak dapat dibatalkan dan
+            seluruh konten sections terkait akan terhapus.
           </p>
         </CModalBody>
         <CModalFooter>
@@ -451,4 +457,3 @@ const Invitations = () => {
 }
 
 export default Invitations
-

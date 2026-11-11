@@ -42,6 +42,8 @@ class CmsStressTest extends TestCase
         $this->assertSame($menuCountInitial, Menus::count(), 'Menus duplicated after second seed run');
         $this->assertSame($companyCountInitial, Company::count(), 'Companies duplicated after second seed run');
         $this->assertSame($userCountInitial, User::count(), 'Users duplicated after second seed run');
+        $this->assertSame(0, Menus::whereNotNull('menu_parent_id')->whereNotNull('menu_icon')->count(), 'Submenus must not have icons');
+        $this->assertSame(0, Menus::whereNull('menu_parent_id')->whereNull('menu_icon')->count(), 'Header menus must have icons');
     }
 
     public function test_authentication_flow_and_token_generation(): void

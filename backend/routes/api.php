@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Api\AdminOperationsController;
 use App\Http\Controllers\Api\AuthController;
 // Route Controllers
 use App\Http\Controllers\Api\CompanyController;
@@ -11,6 +12,7 @@ use App\Http\Controllers\Api\MusicController;
 use App\Http\Controllers\Api\RoleController;
 use App\Http\Controllers\Api\RoleMenuController;
 use App\Http\Controllers\Api\RsvpController;
+use App\Http\Controllers\Api\ServiceOrderController;
 use App\Http\Controllers\Api\ThemeController;
 use App\Http\Controllers\Api\UserController;
 use Illuminate\Support\Facades\Route;
@@ -58,6 +60,24 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::get('invitations/{id}/rsvps/export', [RsvpController::class, 'export']);
         Route::post('music', [MusicController::class, 'store']);
         Route::delete('music/{id}', [MusicController::class, 'destroy']);
+
+        // Service Orders (PRD 06 - Client)
+        Route::get('service-orders', [ServiceOrderController::class, 'index']);
+        Route::post('service-orders', [ServiceOrderController::class, 'store']);
+        Route::get('service-orders/{id}', [ServiceOrderController::class, 'show']);
+        Route::post('service-orders/{id}/approve', [ServiceOrderController::class, 'approve']);
+        Route::post('service-orders/{id}/request-revision', [ServiceOrderController::class, 'requestRevision']);
+        Route::post('service-orders/{id}/cancel', [ServiceOrderController::class, 'cancel']);
+
+        // Admin Operations & Audit Trail (PRD 06 - Admin Only)
+        Route::middleware('role.admin')->prefix('admin')->group(function () {
+            Route::get('service-orders', [AdminOperationsController::class, 'serviceOrders']);
+            Route::put('service-orders/{id}/status', [AdminOperationsController::class, 'updateServiceOrderStatus']);
+            Route::put('service-orders/{id}/assign', [AdminOperationsController::class, 'assignServiceOrder']);
+            Route::post('service-orders/{id}/create-invitation', [AdminOperationsController::class, 'createInvitationForOrder']);
+            Route::get('invitations', [AdminOperationsController::class, 'invitations']);
+            Route::get('audit-logs', [AdminOperationsController::class, 'auditLogs']);
+        });
     });
 
     // Setup (Admin only)

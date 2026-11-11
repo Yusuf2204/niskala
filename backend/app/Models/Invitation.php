@@ -63,6 +63,11 @@ class Invitation extends Model
         return $this->hasMany(Rsvp::class, 'invitation_id')->latest('id');
     }
 
+    public function serviceOrders(): HasMany
+    {
+        return $this->hasMany(ServiceOrder::class, 'invitation_id')->latest('id');
+    }
+
     public function isPublished(): bool
     {
         return $this->status === 'published';

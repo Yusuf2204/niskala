@@ -18,6 +18,8 @@ const RsvpList = React.lazy(() => import('./views/guests/RsvpList'))
 
 // Layanan Bantuan (PRD 06)
 const ServiceOrders = React.lazy(() => import('./views/serviceOrders/ServiceOrders'))
+const AdminInvitations = React.lazy(() => import('./views/admin/AdminInvitations'))
+const AuditLogs = React.lazy(() => import('./views/admin/AuditLogs'))
 
 // Profile (PRD 01 & Akun Pengguna)
 const Profile = React.lazy(() => import('./views/profile/Profile'))
@@ -52,6 +54,9 @@ const routes = [
 
   // Layanan Bantuan (PRD 06)
   { path: '/service-orders', name: 'Layanan Bantuan', element: ServiceOrders },
+  { path: '/admin', exact: true, name: 'Operasional Admin', element: AdminInvitations },
+  { path: '/admin/invitations', name: 'Semua Undangan Klien', element: AdminInvitations },
+  { path: '/admin/audit-logs', name: 'Audit Logs', element: AuditLogs },
 
   // Profile & Akun
   { path: '/profile', name: 'Profil Saya', element: Profile },

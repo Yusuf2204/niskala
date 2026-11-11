@@ -38,22 +38,10 @@ class MenuSeeder extends Seeder
             ]
         );
 
-        $masterChildren = [
-            ['menu_name' => 'Tema Desain', 'menu_path' => '/master/themes', 'menu_icon' => 'cilPaint', 'menu_order' => 1],
-            ['menu_name' => 'Musik Latar', 'menu_path' => '/master/music', 'menu_icon' => 'cilMusicNote', 'menu_order' => 2],
-        ];
-
-        foreach ($masterChildren as $child) {
-            Menus::updateOrCreate(
-                ['menu_path' => $child['menu_path']],
-                [
-                    'menu_name' => $child['menu_name'],
-                    'menu_icon' => $child['menu_icon'],
-                    'menu_parent_id' => $master->id,
-                    'menu_order' => $child['menu_order'],
-                ]
-            );
-        }
+        $this->seedChildren($master->id, [
+            ['menu_name' => 'Tema Desain', 'menu_path' => '/master/themes', 'menu_order' => 1],
+            ['menu_name' => 'Musik Latar', 'menu_path' => '/master/music', 'menu_order' => 2],
+        ]);
 
         // 3. Undangan
         $invitations = Menus::updateOrCreate(
@@ -66,22 +54,10 @@ class MenuSeeder extends Seeder
             ]
         );
 
-        $invitationChildren = [
-            ['menu_name' => 'Daftar Undangan', 'menu_path' => '/invitations/list', 'menu_icon' => 'cilFolder', 'menu_order' => 1],
-            ['menu_name' => 'Buat Undangan', 'menu_path' => '/invitations/create', 'menu_icon' => 'cilPlus', 'menu_order' => 2],
-        ];
-
-        foreach ($invitationChildren as $child) {
-            Menus::updateOrCreate(
-                ['menu_path' => $child['menu_path']],
-                [
-                    'menu_name' => $child['menu_name'],
-                    'menu_icon' => $child['menu_icon'],
-                    'menu_parent_id' => $invitations->id,
-                    'menu_order' => $child['menu_order'],
-                ]
-            );
-        }
+        $this->seedChildren($invitations->id, [
+            ['menu_name' => 'Daftar Undangan', 'menu_path' => '/invitations/list', 'menu_order' => 1],
+            ['menu_name' => 'Buat Undangan', 'menu_path' => '/invitations/create', 'menu_order' => 2],
+        ]);
 
         // 4. Tamu & RSVP
         $guests = Menus::updateOrCreate(
@@ -94,22 +70,10 @@ class MenuSeeder extends Seeder
             ]
         );
 
-        $guestChildren = [
-            ['menu_name' => 'Buku Tamu', 'menu_path' => '/guests/list', 'menu_icon' => 'cilUser', 'menu_order' => 1],
-            ['menu_name' => 'Rekap RSVP & Doa', 'menu_path' => '/guests/rsvp', 'menu_icon' => 'cilChatBubble', 'menu_order' => 2],
-        ];
-
-        foreach ($guestChildren as $child) {
-            Menus::updateOrCreate(
-                ['menu_path' => $child['menu_path']],
-                [
-                    'menu_name' => $child['menu_name'],
-                    'menu_icon' => $child['menu_icon'],
-                    'menu_parent_id' => $guests->id,
-                    'menu_order' => $child['menu_order'],
-                ]
-            );
-        }
+        $this->seedChildren($guests->id, [
+            ['menu_name' => 'Buku Tamu', 'menu_path' => '/guests/list', 'menu_order' => 1],
+            ['menu_name' => 'Rekap RSVP & Doa', 'menu_path' => '/guests/rsvp', 'menu_order' => 2],
+        ]);
 
         // 5. Layanan Bantuan
         Menus::updateOrCreate(
@@ -122,32 +86,58 @@ class MenuSeeder extends Seeder
             ]
         );
 
-        // 6. Setup
+        // 6. Operasional Admin (PRD 06 - Admin Only via RoleMenuSeeder)
+        $adminOps = Menus::updateOrCreate(
+            ['menu_path' => '/admin'],
+            [
+                'menu_name' => 'Operasional Admin',
+                'menu_icon' => 'cilShieldAlt',
+                'menu_parent_id' => null,
+                'menu_order' => 6,
+            ]
+        );
+
+        $this->seedChildren($adminOps->id, [
+            ['menu_name' => 'Semua Undangan Klien', 'menu_path' => '/admin/invitations', 'menu_order' => 1],
+            ['menu_name' => 'Audit Logs', 'menu_path' => '/admin/audit-logs', 'menu_order' => 2],
+        ]);
+
+        // 7. Setup
         $setup = Menus::updateOrCreate(
             ['menu_path' => '/setup'],
             [
                 'menu_name' => 'Setup',
                 'menu_icon' => 'cilSettings',
                 'menu_parent_id' => null,
-                'menu_order' => 6,
+                'menu_order' => 7,
             ]
         );
 
-        $setupChildren = [
+        $this->seedChildren($setup->id, [
             ['menu_name' => 'Company', 'menu_path' => '/setup/company', 'menu_order' => 1],
             ['menu_name' => 'Users', 'menu_path' => '/setup/users', 'menu_order' => 2],
             ['menu_name' => 'Roles', 'menu_path' => '/setup/roles', 'menu_order' => 3],
             ['menu_name' => 'Menus', 'menu_path' => '/setup/menus', 'menu_order' => 4],
             ['menu_name' => 'Role Permissions', 'menu_path' => '/setup/role-permissions', 'menu_order' => 5],
             ['menu_name' => 'Change Password', 'menu_path' => '/setup/change-password', 'menu_order' => 6],
-        ];
+        ]);
+    }
 
-        foreach ($setupChildren as $child) {
+    /**
+     * Upsert submenu items without icons so only top-level header menus display icons.
+     *
+     * @param  array<int, array{menu_name: string, menu_path: string, menu_order: int}>  $children
+     */
+    private function seedChildren(int $parentId, array $children): void
+    {
+        foreach ($children as $child) {
             Menus::updateOrCreate(
                 ['menu_path' => $child['menu_path']],
                 [
                     'menu_name' => $child['menu_name'],
-                    'menu_parent_id' => $setup->id,
+                    // Clear legacy submenu icons on re-seed as requested.
+                    'menu_icon' => null,
+                    'menu_parent_id' => $parentId,
                     'menu_order' => $child['menu_order'],
                 ]
             );

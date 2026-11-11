@@ -64,4 +64,19 @@ class User extends Authenticatable
     {
         return $this->hasMany(Invitation::class, 'user_id');
     }
+
+    public function serviceOrders(): \Illuminate\Database\Eloquent\Relations\HasMany
+    {
+        return $this->hasMany(ServiceOrder::class, 'user_id');
+    }
+
+    public function assignedServiceOrders(): \Illuminate\Database\Eloquent\Relations\HasMany
+    {
+        return $this->hasMany(ServiceOrder::class, 'assigned_admin_id');
+    }
+
+    public function auditLogs(): \Illuminate\Database\Eloquent\Relations\HasMany
+    {
+        return $this->hasMany(AuditLog::class, 'user_id');
+    }
 }

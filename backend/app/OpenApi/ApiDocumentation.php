@@ -26,6 +26,7 @@ use OpenApi\Annotations as OA;
  * @OA\Tag(name="Music", description="Master background music catalog")
  * @OA\Tag(name="Invitations", description="Digital invitation management and lifecycle")
  * @OA\Tag(name="Guests & RSVP", description="Guest book, personalized invitation links, RSVP submissions, and moderation")
+ * @OA\Tag(name="Service Orders & Admin", description="Hybrid assistance service orders, admin review queue, client invitations, and audit trail")
  *
  * @OA\SecurityScheme(
  *     securityScheme="bearerAuth",
