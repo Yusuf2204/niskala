@@ -32,6 +32,7 @@ const SectionPalette = ({
   const [searchQuery, setSearchQuery] = useState('')
 
   const registryItems = Object.values(COMPONENT_REGISTRY).filter((item) => {
+    if (item.hiddenInCatalog) return false
     if (!searchQuery) return true
     const q = searchQuery.toLowerCase()
     return (

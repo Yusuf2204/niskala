@@ -1,6 +1,18 @@
 // Component Registry for Niskala Visual Editor
 // Defines all available section types, default props, descriptions, and icon representations.
 
+const RSVP_SHARED_META = {
+  name: 'Buku Tamu & RSVP',
+  category: 'Interaksi',
+  description: 'Formulir konfirmasi kehadiran tamu beserta kolom penyampaian doa restu.',
+  icon: 'cilChatBubble',
+  defaultProps: {
+    title: 'Konfirmasi Kehadiran & Doa',
+    subtitle: 'Merupakan kehormatan bagi kami atas kehadiran dan doa restu Anda',
+    note: 'Mohon berkenan mengisi konfirmasi sebelum tanggal 1 Desember 2026 demi kelancaran penyambutan tamu.',
+  },
+}
+
 export const COMPONENT_REGISTRY = {
   HeroCover: {
     type: 'HeroCover',
@@ -217,28 +229,14 @@ export const COMPONENT_REGISTRY = {
     },
   },
   RsvpSection: {
+    ...RSVP_SHARED_META,
     type: 'RsvpSection',
-    name: 'Buku Tamu & RSVP',
-    category: 'Interaksi',
-    description: 'Formulir konfirmasi kehadiran tamu beserta kolom penyampaian doa restu.',
-    icon: 'cilChatBubble',
-    defaultProps: {
-      title: 'Konfirmasi Kehadiran & Doa',
-      subtitle: 'Merupakan kehormatan bagi kami atas kehadiran dan doa restu Anda',
-      note: 'Mohon berkenan mengisi konfirmasi sebelum tanggal 1 Desember 2026 demi kelancaran penyambutan tamu.',
-    },
   },
+  // Legacy alias kept for backward compatibility with older saved drafts; excluded from catalog UI
   RsvpForm: {
+    ...RSVP_SHARED_META,
     type: 'RsvpForm',
-    name: 'Buku Tamu & RSVP',
-    category: 'Interaksi',
-    description: 'Formulir konfirmasi kehadiran tamu beserta kolom penyampaian doa restu.',
-    icon: 'cilChatBubble',
-    defaultProps: {
-      title: 'Konfirmasi Kehadiran & Doa',
-      subtitle: 'Merupakan kehormatan bagi kami atas kehadiran dan doa restu Anda',
-      note: 'Mohon berkenan mengisi konfirmasi sebelum tanggal 1 Desember 2026 demi kelancaran penyambutan tamu.',
-    },
+    hiddenInCatalog: true,
   },
   FooterSection: {
     type: 'FooterSection',
