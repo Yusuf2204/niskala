@@ -10,8 +10,10 @@ import {
 } from '@coreui/icons'
 import SECTION_COMPONENTS from './sections'
 import { COMPONENT_REGISTRY } from './registry'
+import { buildInvitationCssVars, resolveInvitationTheme } from '../../../utils/invitationTheme'
 
 const EditorCanvas = ({
+  invitation = null,
   sections,
   selectedSectionId,
   onSelectSection,
@@ -22,6 +24,8 @@ const EditorCanvas = ({
   viewportMode, // 'web' | 'mobile'
 }) => {
   const isWeb = viewportMode === 'web'
+  const resolvedTheme = resolveInvitationTheme(invitation)
+  const themeVars = buildInvitationCssVars(resolvedTheme)
 
   return (
     <div className="flex-grow-1 overflow-y-auto p-3 p-md-4 d-flex flex-column align-items-center editor-workspace">
@@ -55,13 +59,16 @@ const EditorCanvas = ({
       >
         <div
           className="invitation-canvas-isolated shadow-lg overflow-hidden position-relative"
+          data-inv-theme={resolvedTheme.themeStyle}
+          data-inv-animation={resolvedTheme.animation?.preset || 'classic-minimal'}
           style={{
-            backgroundColor: '#FAF8F5',
+            ...themeVars,
+            backgroundColor: 'var(--inv-bg, #FAF6EE)',
             borderRadius: isWeb ? '16px' : '36px',
             border: isWeb ? '1px solid rgba(52, 52, 47, 0.15)' : '10px solid #242420',
             minHeight: '600px',
             boxShadow: '0 20px 45px rgba(0, 0, 0, 0.15)',
-            color: '#34342F',
+            color: 'var(--inv-text, #2B1E16)',
           }}
         >
           {/* Simulated Mobile Camera Notch (only shown in mobile mode) */}
@@ -199,7 +206,7 @@ const EditorCanvas = ({
 
                   {/* Render Section Component */}
                   {Component ? (
-                    <Component props={sec.props || {}} isWeb={isWeb} />
+                    <Component props={sec.props || {}} isWeb={isWeb} theme={resolvedTheme} />
                   ) : (
                     <div className="p-4 text-center bg-danger-subtle text-danger">
                       Komponen <strong>{sec.type}</strong> tidak ditemukan pada registry.
@@ -216,6 +223,7 @@ const EditorCanvas = ({
 }
 
 EditorCanvas.propTypes = {
+  invitation: PropTypes.object,
   sections: PropTypes.array.isRequired,
   selectedSectionId: PropTypes.string,
   onSelectSection: PropTypes.func.isRequired,

@@ -1,43 +1,51 @@
 import React from 'react'
 import PropTypes from 'prop-types'
+import { CornerOrnaments, SectionHeaderOrnaments, ThemeBatikOverlay } from './ThemeDecorators'
 
-const PhotoGallerySection = ({ props = {}, isWeb = true, onImageClick }) => {
+const PhotoGallerySection = ({ props = {}, isWeb = true, onImageClick, theme = {} }) => {
   const {
     title = 'Momen Bahagia',
     subtitle = 'Galeri Foto Kenangan & Prewedding',
     images = [],
   } = props
 
+  const assets = theme?.assets || {}
+  const isOrnamentAnimated = theme?.animation?.ornament_motion !== false
+  const dividerUrl = props.divider_url || assets.divider_url || ''
+  const cornerUrl = props.corner_url || assets.corner_url || ''
+  const patternUrl = props.pattern_url || assets.pattern_url || ''
+
   return (
     <div
-      className="py-5 px-3 text-center"
+      className="position-relative py-5 px-3 text-center inv-section-framed"
       style={{
-        backgroundColor: '#FAF8F5',
-        color: '#34342F',
+        backgroundColor: 'var(--inv-bg, #FAF6EE)',
+        color: 'var(--inv-text, #2B1E16)',
       }}
     >
-      <div className="container" style={{ maxWidth: isWeb ? '960px' : '100%' }}>
-        <p
-          className="text-uppercase tracking-wider fw-semibold mb-1"
-          style={{ color: '#A68B65', fontSize: '0.85rem', letterSpacing: '2px' }}
-        >
-          Dokumentasi
-        </p>
-        <h2
-          className="font-serif mb-2"
-          style={{
-            fontFamily: "'Playfair Display', Georgia, serif",
-            color: '#34342F',
-            fontSize: isWeb ? '2.2rem' : '1.7rem',
-          }}
-        >
-          {title}
-        </h2>
-        <p className="text-muted mb-4 small">{subtitle}</p>
+      <ThemeBatikOverlay patternUrl={patternUrl} isWeb={isWeb} opacity={0.22} />
+      <CornerOrnaments
+        cornerUrl={cornerUrl}
+        isWeb={isWeb}
+        variant="top"
+        opacity={0.55}
+        size={isWeb ? 74 : 46}
+        offset={isWeb ? 12 : 8}
+        animated={isOrnamentAnimated}
+      />
+
+      <div className="container position-relative" style={{ maxWidth: isWeb ? '960px' : '100%', zIndex: 2 }}>
+        <SectionHeaderOrnaments
+          eyebrow="Dokumentasi"
+          title={title}
+          subtitle={subtitle}
+          dividerUrl={dividerUrl}
+          isWeb={isWeb}
+        />
 
         {/* Gallery Grid */}
         <div
-          className="row g-3 justify-content-center"
+          className="row g-3 justify-content-center mt-2"
           style={{
             display: 'grid',
             gridTemplateColumns: isWeb ? 'repeat(4, 1fr)' : 'repeat(2, 1fr)',
@@ -47,10 +55,10 @@ const PhotoGallerySection = ({ props = {}, isWeb = true, onImageClick }) => {
           {images.map((imgUrl, idx) => (
             <div
               key={idx}
-              className="rounded-3 overflow-hidden shadow-sm position-relative"
+              className="rounded-3 overflow-hidden shadow-sm position-relative inv-gallery-tile"
               style={{
                 height: isWeb ? '220px' : '160px',
-                border: '2px solid rgba(166, 139, 101, 0.25)',
+                border: '2px solid var(--inv-border, rgba(197, 160, 89, 0.4))',
                 cursor: onImageClick ? 'pointer' : 'default',
               }}
               onClick={() => onImageClick && onImageClick(imgUrl)}
@@ -64,7 +72,7 @@ const PhotoGallerySection = ({ props = {}, isWeb = true, onImageClick }) => {
                   width: '100%',
                   height: '100%',
                   objectFit: 'cover',
-                  transition: 'transform 0.3s ease',
+                  transition: 'transform 0.35s ease',
                 }}
               />
             </div>
@@ -79,6 +87,7 @@ PhotoGallerySection.propTypes = {
   props: PropTypes.object,
   isWeb: PropTypes.bool,
   onImageClick: PropTypes.func,
+  theme: PropTypes.object,
 }
 
 export default PhotoGallerySection

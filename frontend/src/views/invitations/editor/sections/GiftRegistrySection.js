@@ -1,7 +1,8 @@
 import React, { useState } from 'react'
 import PropTypes from 'prop-types'
+import { CornerOrnaments, SectionHeaderOrnaments, ThemeBatikOverlay } from './ThemeDecorators'
 
-const GiftRegistrySection = ({ props = {}, isWeb = true }) => {
+const GiftRegistrySection = ({ props = {}, isWeb = true, theme = {} }) => {
   const {
     title = 'Tanda Kasih & Hadiah',
     note = 'Doa restu Anda merupakan karunia terindah bagi kami. Namun jika Anda ingin memberikan hadiah, kami menyediakan amplop digital berikut:',
@@ -17,71 +18,85 @@ const GiftRegistrySection = ({ props = {}, isWeb = true }) => {
     setTimeout(() => setCopiedIndex(null), 2000)
   }
 
+  const assets = theme?.assets || {}
+  const isOrnamentAnimated = theme?.animation?.ornament_motion !== false
+  const dividerUrl = props.divider_url || assets.divider_url || ''
+  const cornerUrl = props.corner_url || assets.corner_url || ''
+  const patternUrl =
+    props.pattern_secondary_url ||
+    props.pattern_url ||
+    assets.pattern_secondary_url ||
+    assets.pattern_url ||
+    ''
+
   return (
     <div
-      className="py-5 px-3 text-center"
+      className="position-relative py-5 px-3 text-center inv-section-framed"
       style={{
-        backgroundColor: '#FAF8F5',
-        color: '#34342F',
+        backgroundColor: 'var(--inv-surface, #F3ECE0)',
+        color: 'var(--inv-text, #2B1E16)',
       }}
     >
-      <div className="container" style={{ maxWidth: isWeb ? '860px' : '100%' }}>
-        <p
-          className="text-uppercase tracking-wider fw-semibold mb-1"
-          style={{ color: '#A68B65', fontSize: '0.85rem', letterSpacing: '2px' }}
-        >
-          Amplop Digital
-        </p>
-        <h2
-          className="font-serif mb-2"
-          style={{
-            fontFamily: "'Playfair Display', Georgia, serif",
-            color: '#34342F',
-            fontSize: isWeb ? '2.2rem' : '1.7rem',
-          }}
-        >
-          {title}
-        </h2>
-        <p className="text-muted mb-4 small mx-auto" style={{ maxWidth: '620px' }}>
-          {note}
-        </p>
+      <ThemeBatikOverlay patternUrl={patternUrl} isWeb={isWeb} opacity={0.3} />
+      <CornerOrnaments
+        cornerUrl={cornerUrl}
+        isWeb={isWeb}
+        variant="full"
+        opacity={0.55}
+        size={isWeb ? 78 : 50}
+        offset={isWeb ? 12 : 8}
+        animated={isOrnamentAnimated}
+      />
+
+      <div className="container position-relative" style={{ maxWidth: isWeb ? '860px' : '100%', zIndex: 2 }}>
+        <SectionHeaderOrnaments
+          eyebrow="Amplop Digital"
+          title={title}
+          subtitle={note}
+          dividerUrl={dividerUrl}
+          isWeb={isWeb}
+        />
 
         {/* Bank Cards */}
         <div
-          className={`d-flex ${isWeb ? 'flex-row' : 'flex-column'} justify-content-center align-items-stretch gap-3 mb-4`}
+          className={`d-flex ${isWeb ? 'flex-row' : 'flex-column'} justify-content-center align-items-stretch gap-3 mb-4 mt-4`}
         >
           {accounts.map((acc, idx) => (
             <div
               key={idx}
-              className="p-4 rounded-3 shadow-sm flex-grow-1 text-center"
+              className="p-4 rounded-3 shadow-sm flex-grow-1 text-center inv-card-framed"
               style={{
-                backgroundColor: '#FFFFFF',
-                border: '1px solid rgba(166, 139, 101, 0.4)',
+                backgroundColor: 'var(--inv-card, #FFFDF9)',
+                border: '1px solid var(--inv-border, rgba(197, 160, 89, 0.4))',
                 maxWidth: isWeb ? '340px' : '100%',
               }}
             >
               <div
                 className="fw-bold text-uppercase mb-2"
-                style={{ color: '#A68B65', letterSpacing: '1px' }}
+                style={{ color: 'var(--inv-primary, #8A6728)', letterSpacing: '1px' }}
               >
                 {acc.bank}
               </div>
               <div
                 className="fw-bold font-monospace my-2"
-                style={{ fontSize: '1.25rem', color: '#34342F' }}
+                style={{ fontSize: '1.25rem', color: 'var(--inv-text, #2B1E16)' }}
               >
                 {acc.number}
               </div>
-              <p className="text-muted small mb-3">a.n. {acc.holder}</p>
+              <p className="small mb-3" style={{ color: 'var(--inv-muted, #6A5342)' }}>
+                a.n. {acc.holder}
+              </p>
               <button
                 type="button"
                 className="btn btn-sm px-3 rounded-pill"
                 onClick={() => handleCopy(acc.number, idx)}
                 style={{
-                  backgroundColor: copiedIndex === idx ? '#4A7C59' : '#34342F',
-                  color: '#FFFFFF',
+                  backgroundColor:
+                    copiedIndex === idx ? '#4A7C59' : 'var(--inv-dark-bg, #241B15)',
+                  color: '#FAF6EE',
                   fontWeight: 600,
                   fontSize: '0.8rem',
+                  border: '1px solid var(--inv-border, rgba(197, 160, 89, 0.35))',
                 }}
               >
                 {copiedIndex === idx ? '✓ Berhasil Disalin' : 'Salin Nomor'}
@@ -94,13 +109,17 @@ const GiftRegistrySection = ({ props = {}, isWeb = true }) => {
           <div
             className="p-3 rounded-3 text-start mx-auto"
             style={{
-              backgroundColor: '#F1EDE5',
-              border: '1px dashed rgba(166, 139, 101, 0.5)',
+              backgroundColor: 'var(--inv-card, #FFFDF9)',
+              border: '1px dashed var(--inv-border, rgba(197, 160, 89, 0.5))',
               maxWidth: '680px',
             }}
           >
-            <h6 className="fw-bold mb-1" style={{ color: '#34342F' }}>📦 Kirim Kado Fisik</h6>
-            <p className="small mb-0" style={{ color: 'rgba(52, 52, 47, 0.7)' }}>{physical_gift_address}</p>
+            <h6 className="fw-bold mb-1" style={{ color: 'var(--inv-text, #2B1E16)' }}>
+              📦 Kirim Kado Fisik
+            </h6>
+            <p className="small mb-0" style={{ color: 'var(--inv-muted, #6A5342)' }}>
+              {physical_gift_address}
+            </p>
           </div>
         )}
       </div>
@@ -111,6 +130,7 @@ const GiftRegistrySection = ({ props = {}, isWeb = true }) => {
 GiftRegistrySection.propTypes = {
   props: PropTypes.object,
   isWeb: PropTypes.bool,
+  theme: PropTypes.object,
 }
 
 export default GiftRegistrySection

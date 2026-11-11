@@ -3,6 +3,7 @@ import PropTypes from 'prop-types'
 import { CSpinner } from '@coreui/react'
 import api from '../../../../services/api'
 import { ATTENDANCE_LABELS, formatDateTimeId } from '../../../guests/guestHelpers'
+import { SectionHeaderOrnaments, ThemeBatikOverlay } from './ThemeDecorators'
 
 const SAMPLE_PREVIEW_WISHES = [
   {
@@ -41,7 +42,13 @@ const WISH_BADGE_STYLES = {
   },
 }
 
-const RsvpSection = ({ props = {}, isWeb = true, renderMode = 'editor', invitationSlug = '' }) => {
+const RsvpSection = ({
+  props = {},
+  isWeb = true,
+  renderMode = 'editor',
+  invitationSlug = '',
+  theme = {},
+}) => {
   const {
     title = 'Konfirmasi Kehadiran & Doa',
     subtitle = 'Merupakan kehormatan bagi kami atas kehadiran dan doa restu Anda',
@@ -49,6 +56,10 @@ const RsvpSection = ({ props = {}, isWeb = true, renderMode = 'editor', invitati
     guestName = '',
     guestToken = '',
   } = props
+
+  const assets = theme?.assets || {}
+  const dividerUrl = props.divider_url || assets.divider_url || ''
+  const patternUrl = props.pattern_url || assets.pattern_url || ''
 
   const isPublicMode = renderMode === 'public' && Boolean(invitationSlug)
 
@@ -162,47 +173,41 @@ const RsvpSection = ({ props = {}, isWeb = true, renderMode = 'editor', invitati
 
   return (
     <div
-      className="py-5 px-3 text-center"
+      className="position-relative py-5 px-3 text-center inv-section-framed"
       style={{
-        backgroundColor: '#F1EDE5',
-        color: '#34342F',
+        backgroundColor: 'var(--inv-bg, #FAF6EE)',
+        color: 'var(--inv-text, #2B1E16)',
       }}
     >
-      <div className="container" style={{ maxWidth: isWeb ? '720px' : '100%' }}>
-        <p
-          className="text-uppercase tracking-wider fw-semibold mb-1"
-          style={{ color: '#8A6F4A', fontSize: '0.85rem', letterSpacing: '2px' }}
-        >
-          Buku Tamu Digital
+      <ThemeBatikOverlay patternUrl={patternUrl} isWeb={isWeb} opacity={0.26} />
+
+      <div className="container position-relative" style={{ maxWidth: isWeb ? '720px' : '100%', zIndex: 2 }}>
+        <SectionHeaderOrnaments
+          eyebrow="Buku Tamu Digital"
+          title={title}
+          subtitle={subtitle}
+          dividerUrl={dividerUrl}
+          isWeb={isWeb}
+        />
+        <p className="mb-4 small fst-italic" style={{ color: 'var(--inv-muted, #6A5342)' }}>
+          {note}
         </p>
-        <h2
-          className="font-serif mb-2"
-          style={{
-            fontFamily: "'Playfair Display', Georgia, serif",
-            color: '#34342F',
-            fontSize: isWeb ? '2.2rem' : '1.7rem',
-          }}
-        >
-          {title}
-        </h2>
-        <p className="text-muted mb-2 small">{subtitle}</p>
-        <p className="text-muted mb-4 small fst-italic">{note}</p>
 
         {/* RSVP Form Card */}
         <div
-          className="p-4 rounded-3 shadow-sm text-start"
+          className="p-4 rounded-3 shadow-sm text-start inv-card-framed"
           style={{
-            backgroundColor: '#FAF8F5',
-            border: '1px solid rgba(166, 139, 101, 0.4)',
+            backgroundColor: 'var(--inv-card, #FFFDF9)',
+            border: '1px solid var(--inv-border, rgba(197, 160, 89, 0.4))',
           }}
         >
           {!isPublicMode && (
             <div
               className="rounded-2 px-3 py-2 mb-3 small"
               style={{
-                backgroundColor: 'rgba(166, 139, 101, 0.14)',
-                color: '#5B482C',
-                border: '1px solid rgba(166, 139, 101, 0.35)',
+                backgroundColor: 'rgba(197, 160, 89, 0.14)',
+                color: 'var(--inv-text, #2B1E16)',
+                border: '1px solid var(--inv-border, rgba(197, 160, 89, 0.35))',
               }}
             >
               Mode Editor/Preview: Pengiriman formulir nyata ke database aktif saat undangan sudah
@@ -238,7 +243,7 @@ const RsvpSection = ({ props = {}, isWeb = true, renderMode = 'editor', invitati
 
           <form onSubmit={handleSubmit}>
             <div className="mb-3">
-              <label className="form-label small fw-bold" style={{ color: '#34342F' }}>
+              <label className="form-label small fw-bold" style={{ color: 'var(--inv-text, #2B1E16)' }}>
                 Nama Lengkap
               </label>
               <input
@@ -246,8 +251,8 @@ const RsvpSection = ({ props = {}, isWeb = true, renderMode = 'editor', invitati
                 className="form-control"
                 style={{
                   backgroundColor: '#FFFFFF',
-                  color: '#34342F',
-                  borderColor: 'rgba(166, 139, 101, 0.4)',
+                  color: 'var(--inv-text, #2B1E16)',
+                  borderColor: 'var(--inv-border, rgba(197, 160, 89, 0.42))',
                 }}
                 placeholder="Contoh: Budi Santoso"
                 value={formData.guest_name}
@@ -259,15 +264,15 @@ const RsvpSection = ({ props = {}, isWeb = true, renderMode = 'editor', invitati
 
             <div className="row g-2 mb-3">
               <div className="col-12 col-md-6">
-                <label className="form-label small fw-bold" style={{ color: '#34342F' }}>
+                <label className="form-label small fw-bold" style={{ color: 'var(--inv-text, #2B1E16)' }}>
                   Konfirmasi Kehadiran
                 </label>
                 <select
                   className="form-select"
                   style={{
                     backgroundColor: '#FFFFFF',
-                    color: '#34342F',
-                    borderColor: 'rgba(166, 139, 101, 0.4)',
+                    color: 'var(--inv-text, #2B1E16)',
+                    borderColor: 'var(--inv-border, rgba(197, 160, 89, 0.42))',
                   }}
                   value={formData.attendance_status}
                   onChange={(e) => setFormData({ ...formData, attendance_status: e.target.value })}
@@ -278,15 +283,15 @@ const RsvpSection = ({ props = {}, isWeb = true, renderMode = 'editor', invitati
                 </select>
               </div>
               <div className="col-12 col-md-6">
-                <label className="form-label small fw-bold" style={{ color: '#34342F' }}>
+                <label className="form-label small fw-bold" style={{ color: 'var(--inv-text, #2B1E16)' }}>
                   Jumlah Tamu
                 </label>
                 <select
                   className="form-select"
                   style={{
                     backgroundColor: '#FFFFFF',
-                    color: '#34342F',
-                    borderColor: 'rgba(166, 139, 101, 0.4)',
+                    color: 'var(--inv-text, #2B1E16)',
+                    borderColor: 'var(--inv-border, rgba(197, 160, 89, 0.42))',
                   }}
                   value={formData.attendance_status === 'not_attending' ? '0' : formData.pax_count}
                   onChange={(e) => setFormData({ ...formData, pax_count: e.target.value })}
@@ -308,7 +313,7 @@ const RsvpSection = ({ props = {}, isWeb = true, renderMode = 'editor', invitati
             </div>
 
             <div className="mb-3">
-              <label className="form-label small fw-bold" style={{ color: '#34342F' }}>
+              <label className="form-label small fw-bold" style={{ color: 'var(--inv-text, #2B1E16)' }}>
                 Ucapan &amp; Doa Restu
               </label>
               <textarea
@@ -316,8 +321,8 @@ const RsvpSection = ({ props = {}, isWeb = true, renderMode = 'editor', invitati
                 rows="3"
                 style={{
                   backgroundColor: '#FFFFFF',
-                  color: '#34342F',
-                  borderColor: 'rgba(166, 139, 101, 0.4)',
+                  color: 'var(--inv-text, #2B1E16)',
+                  borderColor: 'var(--inv-border, rgba(197, 160, 89, 0.42))',
                 }}
                 placeholder="Tuliskan ucapan selamat dan doa terbaik untuk kedua mempelai..."
                 value={formData.message}
@@ -340,32 +345,36 @@ const RsvpSection = ({ props = {}, isWeb = true, renderMode = 'editor', invitati
 
         {/* Wishes Feed */}
         <div
-          className="mt-4 p-4 rounded-3 shadow-sm text-start"
+          className="mt-4 p-4 rounded-3 shadow-sm text-start inv-card-framed"
           style={{
-            backgroundColor: '#FAF8F5',
-            border: '1px solid rgba(166, 139, 101, 0.35)',
+            backgroundColor: 'var(--inv-card, #FFFDF9)',
+            border: '1px solid var(--inv-border, rgba(197, 160, 89, 0.35))',
           }}
         >
           <div className="d-flex justify-content-between align-items-center mb-3">
             <h5
               className="mb-0 fw-bold"
               style={{
-                fontFamily: "'Playfair Display', Georgia, serif",
-                color: '#34342F',
+                fontFamily: "var(--inv-font-heading, 'Playfair Display', Georgia, serif)",
+                color: 'var(--inv-text, #2B1E16)',
               }}
             >
               Untaian Doa &amp; Ucapan
             </h5>
-            <span className="small text-muted">{displayedWishes.length} ditampilkan</span>
+            <span className="small" style={{ color: 'var(--inv-muted, #6A5342)' }}>
+              {displayedWishes.length} ditampilkan
+            </span>
           </div>
 
           {wishesLoading ? (
             <div className="text-center py-4">
-              <CSpinner size="sm" style={{ color: '#8A6F4A' }} />
-              <p className="small text-muted mt-2 mb-0">Memuat ucapan tamu...</p>
+              <CSpinner size="sm" style={{ color: 'var(--inv-primary, #8A6728)' }} />
+              <p className="small mt-2 mb-0" style={{ color: 'var(--inv-muted, #6A5342)' }}>
+                Memuat ucapan tamu...
+              </p>
             </div>
           ) : displayedWishes.length === 0 ? (
-            <p className="small text-muted text-center py-3 mb-0">
+            <p className="small text-center py-3 mb-0" style={{ color: 'var(--inv-muted, #6A5342)' }}>
               Belum ada ucapan doa restu. Jadilah yang pertama mengirimkan doa untuk kedua mempelai!
             </p>
           ) : (
@@ -378,12 +387,12 @@ const RsvpSection = ({ props = {}, isWeb = true, renderMode = 'editor', invitati
                     key={wish.id}
                     className="p-3 rounded-2"
                     style={{
-                      backgroundColor: '#FFFFFF',
-                      border: '1px solid rgba(166, 139, 101, 0.25)',
+                      backgroundColor: 'var(--inv-surface, #F3ECE0)',
+                      border: '1px solid var(--inv-border, rgba(197, 160, 89, 0.25))',
                     }}
                   >
                     <div className="d-flex justify-content-between align-items-start gap-2 flex-wrap mb-1">
-                      <strong style={{ color: '#34342F', fontSize: '0.95rem' }}>
+                      <strong style={{ color: 'var(--inv-text, #2B1E16)', fontSize: '0.95rem' }}>
                         {wish.guest_name}
                       </strong>
                       <span
@@ -396,13 +405,18 @@ const RsvpSection = ({ props = {}, isWeb = true, renderMode = 'editor', invitati
                     {wish.message && (
                       <p
                         className="mb-1 small"
-                        style={{ color: '#45453F', whiteSpace: 'pre-line', lineHeight: 1.5 }}
+                        style={{
+                          color: 'var(--inv-text, #2B1E16)',
+                          opacity: 0.88,
+                          whiteSpace: 'pre-line',
+                          lineHeight: 1.5,
+                        }}
                       >
                         {wish.message}
                       </p>
                     )}
                     {wish.created_at && (
-                      <small style={{ color: 'rgba(52, 52, 47, 0.55)', fontSize: '0.72rem' }}>
+                      <small style={{ color: 'var(--inv-muted, #6A5342)', fontSize: '0.72rem' }}>
                         {formatDateTimeId(wish.created_at)}
                       </small>
                     )}
@@ -418,9 +432,9 @@ const RsvpSection = ({ props = {}, isWeb = true, renderMode = 'editor', invitati
                     onClick={() => loadWishes(wishesPage + 1, true)}
                     className="btn btn-sm rounded-pill px-4"
                     style={{
-                      backgroundColor: '#EFE9DD',
-                      color: '#34342F',
-                      border: '1px solid rgba(166, 139, 101, 0.45)',
+                      backgroundColor: 'var(--inv-surface, #F3ECE0)',
+                      color: 'var(--inv-text, #2B1E16)',
+                      border: '1px solid var(--inv-border, rgba(197, 160, 89, 0.45))',
                       fontWeight: 600,
                     }}
                   >
@@ -441,6 +455,7 @@ RsvpSection.propTypes = {
   isWeb: PropTypes.bool,
   renderMode: PropTypes.oneOf(['editor', 'preview', 'public']),
   invitationSlug: PropTypes.string,
+  theme: PropTypes.object,
 }
 
 export default RsvpSection

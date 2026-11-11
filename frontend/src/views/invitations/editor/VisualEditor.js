@@ -246,7 +246,17 @@ const VisualEditor = () => {
 
   // Section Manipulation Handlers
   const handleAddSection = (newSec) => {
-    const sectionToAdd = newSec || createNewSection('HeroCover')
+    const baseSection = newSec || createNewSection('HeroCover')
+    const themePreset = invitation?.theme?.default_config?.section_presets?.[baseSection.type]
+    const sectionToAdd = themePreset
+      ? {
+          ...baseSection,
+          props: {
+            ...baseSection.props,
+            ...themePreset,
+          },
+        }
+      : baseSection
     const updated = [...sections, sectionToAdd]
     updateSectionsState(updated)
     setSelectedSectionId(sectionToAdd.id)
@@ -384,6 +394,7 @@ const VisualEditor = () => {
 
         {/* Kanvas Tengah: Interactive Preview Canvas (Web mode default) */}
         <EditorCanvas
+          invitation={invitation}
           sections={sections}
           selectedSectionId={selectedSectionId}
           onSelectSection={setSelectedSectionId}

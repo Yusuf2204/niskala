@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react'
 import PropTypes from 'prop-types'
+import { SectionHeaderOrnaments, ThemeBatikOverlay } from './ThemeDecorators'
 
-const CountdownSection = ({ props = {}, isWeb = true }) => {
+const CountdownSection = ({ props = {}, isWeb = true, theme = {} }) => {
   const {
     title = 'Menghitung Hari Bahagia',
     target_date = '2026-12-12T09:00:00',
@@ -33,35 +34,36 @@ const CountdownSection = ({ props = {}, isWeb = true }) => {
     return () => clearInterval(timer)
   }, [target_date])
 
+  const assets = theme?.assets || {}
+  const dividerUrl = props.divider_url || assets.divider_url || ''
+  const patternUrl =
+    props.pattern_secondary_url ||
+    props.pattern_url ||
+    assets.pattern_secondary_url ||
+    assets.pattern_url ||
+    ''
+
   return (
     <div
-      className="py-5 px-3 text-center"
+      className="position-relative py-5 px-3 text-center inv-section-framed"
       style={{
-        backgroundColor: '#F1EDE5',
-        color: '#34342F',
+        backgroundColor: 'var(--inv-surface, #F3ECE0)',
+        color: 'var(--inv-text, #2B1E16)',
       }}
     >
-      <div className="container" style={{ maxWidth: isWeb ? '800px' : '100%' }}>
-        <p
-          className="text-uppercase tracking-wider fw-semibold mb-1"
-          style={{ color: '#A68B65', fontSize: '0.85rem', letterSpacing: '2px' }}
-        >
-          Save The Date
-        </p>
-        <h2
-          className="font-serif mb-2"
-          style={{
-            fontFamily: "'Playfair Display', Georgia, serif",
-            color: '#34342F',
-            fontSize: isWeb ? '2.2rem' : '1.7rem',
-          }}
-        >
-          {title}
-        </h2>
-        <p className="text-muted mb-4 small">{description}</p>
+      <ThemeBatikOverlay patternUrl={patternUrl} isWeb={isWeb} opacity={0.28} />
+
+      <div className="container position-relative" style={{ maxWidth: isWeb ? '800px' : '100%', zIndex: 2 }}>
+        <SectionHeaderOrnaments
+          eyebrow="Save The Date"
+          title={title}
+          subtitle={description}
+          dividerUrl={dividerUrl}
+          isWeb={isWeb}
+        />
 
         {/* 4 Box Countdown */}
-        <div className="d-flex justify-content-center align-items-center gap-2 gap-md-3">
+        <div className="d-flex justify-content-center align-items-center gap-2 gap-md-3 mt-4">
           {[
             { label: 'Hari', value: timeLeft.days },
             { label: 'Jam', value: timeLeft.hours },
@@ -70,18 +72,19 @@ const CountdownSection = ({ props = {}, isWeb = true }) => {
           ].map((item, idx) => (
             <div
               key={idx}
-              className="p-3 rounded-3 shadow-sm text-center"
+              className="p-3 rounded-3 shadow-sm text-center inv-card-framed"
               style={{
-                backgroundColor: '#FAF8F5',
-                border: '1px solid rgba(166, 139, 101, 0.4)',
-                minWidth: isWeb ? '100px' : '70px',
+                backgroundColor: 'var(--inv-card, #FFFDF9)',
+                border: '1px solid var(--inv-border, rgba(197, 160, 89, 0.42))',
+                minWidth: isWeb ? '104px' : '70px',
               }}
             >
               <div
                 className="fw-bold font-serif"
                 style={{
+                  fontFamily: "var(--inv-font-heading, 'Playfair Display', Georgia, serif)",
                   fontSize: isWeb ? '2rem' : '1.4rem',
-                  color: '#34342F',
+                  color: 'var(--inv-text, #2B1E16)',
                   lineHeight: '1.2',
                 }}
               >
@@ -89,7 +92,7 @@ const CountdownSection = ({ props = {}, isWeb = true }) => {
               </div>
               <small
                 className="text-uppercase fw-semibold"
-                style={{ fontSize: '0.7rem', color: '#A68B65', letterSpacing: '1px' }}
+                style={{ fontSize: '0.7rem', color: 'var(--inv-primary, #8A6728)', letterSpacing: '1px' }}
               >
                 {item.label}
               </small>
@@ -104,6 +107,7 @@ const CountdownSection = ({ props = {}, isWeb = true }) => {
 CountdownSection.propTypes = {
   props: PropTypes.object,
   isWeb: PropTypes.bool,
+  theme: PropTypes.object,
 }
 
 export default CountdownSection

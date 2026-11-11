@@ -4,6 +4,7 @@ import EnvelopeGate from './EnvelopeGate'
 import FloatingMusicPlayer from './FloatingMusicPlayer'
 import FloatingQuickNav from './FloatingQuickNav'
 import SECTION_COMPONENTS from '../invitations/editor/sections'
+import { resolveInvitationTheme, buildInvitationCssVars } from '../../utils/invitationTheme'
 import './public.scss'
 
 const SECTION_ANCHOR_MAP = {
@@ -19,22 +20,84 @@ const SECTION_ANCHOR_MAP = {
   RsvpForm: 'sec-rsvp',
 }
 
-const buildInvitationCssVars = (settings) => {
-  if (!settings || typeof settings !== 'object') return undefined
-  const palette = settings.palette || settings.colors || {}
-  const typography = settings.typography || {}
-  const vars = {}
+/**
+ * Reveal section progressively as it enters viewport once the envelope curtain is open.
+ */
+const SectionRevealSlot = ({
+  id,
+  sectionId,
+  index,
+  isEnvelopeOpen,
+  motionEnabled,
+  registerRef,
+  children,
+}) => {
+  const slotRef = useRef(null)
+  const [observedReveal, setObservedReveal] = useState(false)
+  const isRevealed =
+    !motionEnabled ||
+    index === 0 ||
+    typeof IntersectionObserver === 'undefined' ||
+    (isEnvelopeOpen && observedReveal)
 
-  if (palette.bg) vars['--inv-bg'] = palette.bg
-  if (palette.surface) vars['--inv-surface'] = palette.surface
-  if (palette.primary) vars['--inv-primary'] = palette.primary
-  if (palette.secondary) vars['--inv-secondary'] = palette.secondary
-  if (palette.text) vars['--inv-text'] = palette.text
-  if (palette.accent) vars['--inv-accent'] = palette.accent
-  if (typography.heading) vars['--inv-font-heading'] = typography.heading
-  if (typography.body) vars['--inv-font-body'] = typography.body
+  useEffect(() => {
+    if (
+      !motionEnabled ||
+      index === 0 ||
+      !isEnvelopeOpen ||
+      typeof IntersectionObserver === 'undefined'
+    ) {
+      return undefined
+    }
 
-  return Object.keys(vars).length > 0 ? vars : undefined
+    const node = slotRef.current
+    if (!node) return undefined
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting || entry.boundingClientRect.top < window.innerHeight) {
+            setObservedReveal(true)
+            observer.unobserve(entry.target)
+          }
+        })
+      },
+      { threshold: 0.01, rootMargin: '120px 0px -10px 0px' },
+    )
+
+    observer.observe(node)
+    return () => observer.disconnect()
+  }, [isEnvelopeOpen, motionEnabled, index])
+
+  const slotClasses = ['invitation-section-slot', 'inv-reveal-slot']
+  if (isRevealed) {
+    slotClasses.push('is-revealed')
+  }
+
+  return (
+    <div
+      id={id}
+      ref={(el) => {
+        slotRef.current = el
+        if (registerRef && sectionId) {
+          registerRef(sectionId, el)
+        }
+      }}
+      className={slotClasses.join(' ')}
+    >
+      {children}
+    </div>
+  )
+}
+
+SectionRevealSlot.propTypes = {
+  id: PropTypes.string,
+  sectionId: PropTypes.string,
+  index: PropTypes.number.isRequired,
+  isEnvelopeOpen: PropTypes.bool.isRequired,
+  motionEnabled: PropTypes.bool.isRequired,
+  registerRef: PropTypes.func,
+  children: PropTypes.node.isRequired,
 }
 
 const InvitationRenderer = ({
@@ -80,10 +143,13 @@ const InvitationRenderer = ({
 
   const sections = invitation?.content?.sections_data || []
   const musicUrl = invitation?.content?.music_url || ''
-  const themeStyle = useMemo(
-    () => buildInvitationCssVars(invitation?.content?.settings),
-    [invitation?.content?.settings],
-  )
+
+  const resolvedTheme = useMemo(() => resolveInvitationTheme(invitation), [invitation])
+  const themeVars = useMemo(() => buildInvitationCssVars(resolvedTheme), [resolvedTheme])
+
+  const motionEnabled =
+    resolvedTheme.animation?.preset !== 'none' &&
+    resolvedTheme.animation?.section_reveal !== 'none'
 
   const effectiveIsWeb = mode === 'preview' ? viewportMode === 'web' : windowWidth >= 768
 
@@ -120,6 +186,10 @@ const InvitationRenderer = ({
     }
   }
 
+  const registerSectionRef = (sectionId, el) => {
+    sectionRefs.current[sectionId] = el
+  }
+
   const rootClasses = ['public-invitation-root']
   if (mode === 'preview') {
     rootClasses.push('has-preview-bar')
@@ -136,13 +206,18 @@ const InvitationRenderer = ({
   const seenAnchors = new Set()
 
   return (
-    <div className={rootClasses.join(' ')} style={themeStyle}>
+    <div
+      className={rootClasses.join(' ')}
+      style={themeVars}
+      data-inv-motion={isEnvelopeOpen && motionEnabled ? 'active' : 'off'}
+    >
       {/* 1. Fullscreen Opening Envelope Curtain */}
       <EnvelopeGate
         isOpen={isEnvelopeOpen}
         onOpen={handleOpenGate}
         invitation={invitation}
         guestName={guestName}
+        theme={resolvedTheme}
       />
 
       {/* 2. Background Audio Element */}
@@ -169,9 +244,13 @@ const InvitationRenderer = ({
       )}
 
       {/* 4. Central Invitation Sheet */}
-      <div className={sheetClasses.join(' ')}>
+      <div
+        className={sheetClasses.join(' ')}
+        data-inv-theme={resolvedTheme.themeStyle}
+        data-inv-animation={resolvedTheme.animation?.preset || 'subtle-fade'}
+      >
         {sections.length === 0 ? (
-          <div className="text-center py-5 px-4" style={{ color: 'rgba(52, 52, 47, 0.7)' }}>
+          <div className="text-center py-5 px-4" style={{ color: 'var(--inv-muted, #6A5342)' }}>
             Belum ada section konten pada undangan ini.
           </div>
         ) : (
@@ -187,27 +266,27 @@ const InvitationRenderer = ({
             }
 
             return (
-              <div
+              <SectionRevealSlot
                 key={sec.id || `${sec.type}-${index}`}
                 id={anchorId}
-                ref={(el) => {
-                  if (sec.id) {
-                    sectionRefs.current[sec.id] = el
-                  }
-                }}
-                className="invitation-section-slot"
+                sectionId={sec.id}
+                index={index}
+                isEnvelopeOpen={isEnvelopeOpen}
+                motionEnabled={motionEnabled}
+                registerRef={registerSectionRef}
               >
                 <Component
                   props={{ ...(sec.props || {}), guestName, guestToken }}
                   isWeb={effectiveIsWeb}
                   renderMode={mode}
                   invitationSlug={invitation?.slug}
+                  theme={resolvedTheme}
                   onImageClick={(url) => setActiveLightboxImg(url)}
                   onExploreClick={
                     sec.type === 'HeroCover' ? () => handleExploreFromHero(index) : undefined
                   }
                 />
-              </div>
+              </SectionRevealSlot>
             )
           })
         )}

@@ -1,257 +1,259 @@
 import React, { useState } from 'react'
 import PropTypes from 'prop-types'
-import { GununganEmblem, JavaneseDivider } from './Ornaments'
+import { GununganEmblem } from './Ornaments'
+import { CornerOrnaments, SectionHeaderOrnaments, ThemeBatikOverlay } from './ThemeDecorators'
 
 const DEFAULT_ITEMS = [
   {
     id: 'item-1',
     title: 'Upacara Siraman',
-    time_info: 'Jumat Pon, 11 Desember 2026 — 09:00 WIB',
+    time_info: 'Jumat, 11 Desember 2026 — 09:00 WIB',
     location: 'Kediaman Mempelai Putri',
     description:
-      'Upacara sesuci raga dalah jiwa calon penganten kanthi toya pitu sumber kembang setaman, pinangka lambang reresik lair lan batin sadurunge ngambah gesang anyar.',
+      'Ritual penyucian diri lahir dan batin calon pengantin menggunakan air dari tujuh sumber dengan taburan kembang setaman sebelum memasuki kehidupan berumah tangga.',
   },
   {
     id: 'item-2',
     title: 'Malam Midodareni',
-    time_info: 'Jumat Pon, 11 Desember 2026 — 19:00 WIB',
+    time_info: 'Jumat, 11 Desember 2026 — 19:00 WIB',
     location: 'Kediaman Mempelai Putri',
     description:
-      'Wanci wengi ing ngendi para widadari mudhun maringi berkah kaendahan, kasekten, lan karaharjan dhumateng calon penganten putri.',
+      'Malam tirakatan dan doa restu keluarga besar di kediaman mempelai putri sebagai simbol turunnya keberkahan menjelang hari akad nikah.',
   },
   {
     id: 'item-3',
     title: 'Ijab Kabul / Akad Nikah',
-    time_info: 'Sabtu Pahing, 12 Desember 2026 — 08:00 WIB',
+    time_info: 'Sabtu, 12 Desember 2026 — 08:00 WIB',
     location: 'Pendopo Ageng Handrawina',
     description:
-      'Ikrar suci prajanjen nikah ing ngarsanipun Gusti Allah SWT, saksi, para sepuh, lan wali.',
+      'Prosesi pengucapan ikrar suci pernikahan di hadapan penghulu, wali, saksi, dan keluarga besar sebagai puncak sakral ikatan pernikahan.',
   },
   {
     id: 'item-4',
     title: 'Upacara Panggih Penganten',
-    time_info: 'Sabtu Pahing, 12 Desember 2026 — 10:00 WIB',
+    time_info: 'Sabtu, 12 Desember 2026 — 10:00 WIB',
     location: 'Sasana Hinggil Handrawina',
     description:
-      'Temuning sri penganten kakung lan putri lumantar prosesi adat Balangan Gantal, Wijik Suku/Ngidak Endhog, Sinduran, Kacar Kucur, Dahar Klimah, lan Sungkeman.',
+      'Pertemuan adat kedua mempelai setelah akad nikah melalui rangkaian prosesi Balangan Gantal, Wijik Suku, Sinduran, Kacar Kucur, Dahar Klimah, dan Sungkeman.',
   },
   {
     id: 'item-5',
-    title: 'Pahargyan Temu Manten (Resepsi)',
-    time_info: 'Sabtu Pahing, 12 Desember 2026 — 11:30 - 14:00 WIB',
+    title: 'Resepsi / Pahargyan Temu Manten',
+    time_info: 'Sabtu, 12 Desember 2026 — 11:30 - 14:00 WIB',
     location: 'Grand Ballroom Handrawina',
     description:
-      'Syukuran agung bebarengan para tamu rawuh kinurmatan dalah sedherek kanthi suwasana pinarak gamelan lan beksan Jawa.',
+      'Perjamuan syukuran bersama seluruh tamu undangan dan kerabat yang diiringi alunan gending serta nuansa keanggunan keraton.',
   },
 ]
 
-const TraditionAccordionSection = ({ props = {}, isWeb = true }) => {
+const TraditionAccordionSection = ({ props = {}, isWeb = true, theme = {} }) => {
   const {
     title = 'Tata Upacara & Prosesi Adat Jawa',
-    subtitle = 'Rangkaian Ritual Suci Sakral Penganten Jawa',
+    subtitle = 'Rangkaian Ritual Suci Sakral Pengantin Jawa',
     ornament = 'gunungan',
     items = DEFAULT_ITEMS,
   } = props
 
-  // By default, the first item is expanded
   const [expandedId, setExpandedId] = useState(items[0]?.id || 'item-1')
 
   const toggleItem = (id) => {
     setExpandedId(expandedId === id ? null : id)
   }
 
-  const primaryGold = '#C5A059'
-  const bronzeGold = '#7D5B20' // Accessible high-contrast warm bronze gold (> 5.5:1 on light cream)
-  const deepSogan = '#4A3525'
-  const softBg = '#FAF6EE'
-  const cardBg = '#FFFDF9'
+  const assets = theme?.assets || {}
+  const isOrnamentAnimated = theme?.animation?.ornament_motion !== false
+  const gununganUrl = props.gunungan_url || props.ornament_url || assets.gunungan_url || ''
+  const dividerUrl = props.divider_url || assets.divider_url || ''
+  const cornerUrl = props.corner_url || assets.corner_url || ''
+  const patternUrl =
+    props.pattern_secondary_url ||
+    props.pattern_url ||
+    assets.pattern_secondary_url ||
+    assets.pattern_url ||
+    ''
 
   return (
     <div
-      className="position-relative text-center"
+      className="position-relative text-center inv-section-framed"
       style={{
-        backgroundColor: softBg,
-        color: deepSogan,
-        padding: isWeb ? '4rem 2rem' : '3rem 1.25rem',
+        backgroundColor: 'var(--inv-surface, #F3ECE0)',
+        color: 'var(--inv-text, #2B1E16)',
+        padding: isWeb ? '4.25rem 2rem' : '3rem 1.25rem',
         borderRadius: isWeb ? '12px' : '0',
-        borderTop: '1px solid rgba(197, 160, 89, 0.25)',
-        borderBottom: '1px solid rgba(197, 160, 89, 0.25)',
+        borderTop: '1px solid var(--inv-border, rgba(197, 160, 89, 0.28))',
+        borderBottom: '1px solid var(--inv-border, rgba(197, 160, 89, 0.28))',
       }}
     >
-      {/* Header Ornamen */}
-      <div className="mb-2">
-        {ornament === 'gunungan' && (
-          <div className="mb-2">
-            <GununganEmblem width={48} height={58} color={primaryGold} />
+      <ThemeBatikOverlay patternUrl={patternUrl} isWeb={isWeb} opacity={0.34} />
+      <CornerOrnaments
+        cornerUrl={cornerUrl}
+        isWeb={isWeb}
+        variant="full"
+        opacity={0.6}
+        size={isWeb ? 82 : 52}
+        offset={isWeb ? 12 : 8}
+        animated={isOrnamentAnimated}
+      />
+
+      <div className="position-relative" style={{ zIndex: 2 }}>
+        {(ornament === 'gunungan' || gununganUrl) && (
+          <div className={isOrnamentAnimated ? 'mb-2 inv-ornament-emblem' : 'mb-2'}>
+            {gununganUrl ? (
+              <img
+                src={gununganUrl}
+                alt="Gunungan Wayang"
+                style={{ width: isWeb ? '56px' : '44px', height: 'auto' }}
+              />
+            ) : (
+              <GununganEmblem width={48} height={58} color="var(--inv-accent, #C5A059)" />
+            )}
           </div>
         )}
-        <h2
-          className="font-serif fw-bold mb-1"
+
+        <SectionHeaderOrnaments
+          eyebrow={subtitle}
+          title={title}
+          dividerUrl={dividerUrl}
+          isWeb={isWeb}
+        />
+
+        {/* Accordion List */}
+        <div
+          className="mx-auto text-start mt-4"
           style={{
-            fontFamily: "'Playfair Display', Georgia, serif",
-            fontSize: isWeb ? '2.1rem' : '1.6rem',
-            color: deepSogan,
-            letterSpacing: '0.5px',
+            maxWidth: isWeb ? '720px' : '100%',
           }}
         >
-          {title}
-        </h2>
-        {subtitle && (
-          <p
-            className="small text-uppercase tracking-wider mb-2"
-            style={{
-              color: bronzeGold,
-              letterSpacing: '2px',
-              fontSize: '0.8rem',
-              fontWeight: 700,
-            }}
-          >
-            {subtitle}
-          </p>
-        )}
-        {props.divider_url ? (
-          <div className="mx-auto my-2" style={{ maxWidth: isWeb ? '220px' : '160px' }}>
-            <img src={props.divider_url} alt="" style={{ width: '100%', height: 'auto' }} />
-          </div>
-        ) : (
-          <JavaneseDivider color={primaryGold} width={isWeb ? '220px' : '160px'} />
-        )}
-      </div>
+          <div className="d-flex flex-column gap-3">
+            {(items || []).map((item, index) => {
+              const isExpanded = expandedId === item.id
 
-      {/* Accordion List */}
-      <div
-        className="mx-auto text-start mt-4"
-        style={{
-          maxWidth: isWeb ? '720px' : '100%',
-        }}
-      >
-        <div className="d-flex flex-column gap-3">
-          {(items || []).map((item, index) => {
-            const isExpanded = expandedId === item.id
-
-            return (
-              <div
-                key={item.id || index}
-                className="rounded-3 shadow-sm transition-all overflow-hidden"
-                style={{
-                  backgroundColor: cardBg,
-                  border: isExpanded
-                    ? `1.5px solid ${primaryGold}`
-                    : '1px solid rgba(197, 160, 89, 0.28)',
-                  boxShadow: isExpanded
-                    ? '0 6px 20px rgba(197, 160, 89, 0.15)'
-                    : '0 2px 6px rgba(0, 0, 0, 0.04)',
-                }}
-              >
-                {/* Accordion Header / Trigger Button */}
-                <button
-                  type="button"
-                  onClick={() => toggleItem(item.id)}
-                  className="w-100 p-3 d-flex align-items-center justify-content-between border-0 bg-transparent text-start cursor-pointer"
-                  style={{ outline: 'none' }}
+              return (
+                <div
+                  key={item.id || index}
+                  className="rounded-3 shadow-sm transition-all overflow-hidden inv-card-framed"
+                  style={{
+                    backgroundColor: 'var(--inv-card, #FFFDF9)',
+                    border: isExpanded
+                      ? '1.5px solid var(--inv-accent, #C5A059)'
+                      : '1px solid var(--inv-border, rgba(197, 160, 89, 0.3))',
+                    boxShadow: isExpanded
+                      ? '0 8px 22px rgba(138, 103, 40, 0.16)'
+                      : '0 2px 8px rgba(74, 53, 37, 0.05)',
+                  }}
                 >
-                  <div className="d-flex align-items-center gap-3">
-                    {item.icon_url ? (
-                      <img
-                        src={item.icon_url}
-                        alt=""
-                        className="flex-shrink-0"
-                        style={{ width: '32px', height: '32px' }}
-                      />
-                    ) : (
-                      <div
-                        className="d-flex align-items-center justify-content-center rounded-circle flex-shrink-0 fw-bold"
-                        style={{
-                          width: '32px',
-                          height: '32px',
-                          fontSize: '0.85rem',
-                          backgroundColor: isExpanded ? primaryGold : 'rgba(197, 160, 89, 0.15)',
-                          color: isExpanded ? '#242420' : deepSogan,
-                          border: `1px solid ${primaryGold}`,
-                          transition: 'all 0.2s ease',
-                        }}
-                      >
-                        {index + 1}
-                      </div>
-                    )}
-                    <div>
-                      <h6
-                        className="mb-0 fw-bold font-serif"
-                        style={{
-                          fontFamily: "'Playfair Display', Georgia, serif",
-                          fontSize: isWeb ? '1.1rem' : '0.98rem',
-                          color: deepSogan,
-                        }}
-                      >
-                        {item.title}
-                      </h6>
-                      {item.time_info && (
-                        <small
-                          className="d-block mt-0"
+                  {/* Accordion Header / Trigger Button */}
+                  <button
+                    type="button"
+                    onClick={() => toggleItem(item.id)}
+                    className="w-100 p-3 d-flex align-items-center justify-content-between border-0 bg-transparent text-start cursor-pointer"
+                    style={{ outline: 'none' }}
+                  >
+                    <div className="d-flex align-items-center gap-3">
+                      {item.icon_url ? (
+                        <img
+                          src={item.icon_url}
+                          alt=""
+                          className="flex-shrink-0"
+                          style={{ width: '34px', height: '34px' }}
+                        />
+                      ) : (
+                        <div
+                          className="d-flex align-items-center justify-content-center rounded-circle flex-shrink-0 fw-bold"
                           style={{
-                            color: bronzeGold,
-                            fontSize: '0.75rem',
-                            fontWeight: 700,
+                            width: '34px',
+                            height: '34px',
+                            fontSize: '0.85rem',
+                            backgroundColor: isExpanded
+                              ? 'var(--inv-accent, #C5A059)'
+                              : 'rgba(197, 160, 89, 0.16)',
+                            color: isExpanded ? '#241B15' : 'var(--inv-text, #2B1E16)',
+                            border: '1px solid var(--inv-accent, #C5A059)',
+                            transition: 'all 0.2s ease',
                           }}
                         >
-                          {item.time_info}
-                        </small>
+                          {index + 1}
+                        </div>
                       )}
-                    </div>
-                  </div>
-
-                  {/* Expand / Collapse Indicator */}
-                  <div
-                    className="flex-shrink-0 ms-2"
-                    style={{
-                      width: '26px',
-                      height: '26px',
-                      borderRadius: '50%',
-                      backgroundColor: 'rgba(197, 160, 89, 0.15)',
-                      color: bronzeGold,
-                      display: 'flex',
-                      alignItems: 'center',
-                      justifyContent: 'center',
-                      fontSize: '0.9rem',
-                      fontWeight: 'bold',
-                      transform: isExpanded ? 'rotate(180deg)' : 'rotate(0deg)',
-                      transition: 'transform 0.25s ease',
-                    }}
-                  >
-                    ▾
-                  </div>
-                </button>
-
-                {/* Accordion Body Content */}
-                {isExpanded && (
-                  <div
-                    className="px-3 pb-3 pt-1 border-top"
-                    style={{
-                      borderColor: 'rgba(197, 160, 89, 0.18)',
-                      backgroundColor: 'rgba(250, 246, 238, 0.5)',
-                    }}
-                  >
-                    {item.location && (
-                      <div className="mb-2 small" style={{ color: deepSogan, opacity: 0.85 }}>
-                        📍 <strong>Papan / Lokasi:</strong> {item.location}
+                      <div>
+                        <h6
+                          className="mb-0 fw-bold font-serif"
+                          style={{
+                            fontFamily: "var(--inv-font-heading, 'Playfair Display', Georgia, serif)",
+                            fontSize: isWeb ? '1.1rem' : '0.98rem',
+                            color: 'var(--inv-text, #2B1E16)',
+                          }}
+                        >
+                          {item.title}
+                        </h6>
+                        {item.time_info && (
+                          <small
+                            className="d-block mt-0"
+                            style={{
+                              color: 'var(--inv-primary, #8A6728)',
+                              fontSize: '0.75rem',
+                              fontWeight: 700,
+                            }}
+                          >
+                            {item.time_info}
+                          </small>
+                        )}
                       </div>
-                    )}
-                    <p
-                      className="mb-0 small"
+                    </div>
+
+                    {/* Expand / Collapse Indicator */}
+                    <div
+                      className="flex-shrink-0 ms-2"
                       style={{
-                        lineHeight: 1.65,
-                        color: deepSogan,
-                        opacity: 0.9,
-                        fontSize: isWeb ? '0.9rem' : '0.85rem',
+                        width: '28px',
+                        height: '28px',
+                        borderRadius: '50%',
+                        backgroundColor: 'rgba(197, 160, 89, 0.16)',
+                        color: 'var(--inv-primary, #8A6728)',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        fontSize: '0.9rem',
+                        fontWeight: 'bold',
+                        transform: isExpanded ? 'rotate(180deg)' : 'rotate(0deg)',
+                        transition: 'transform 0.25s ease',
                       }}
                     >
-                      {item.description}
-                    </p>
-                  </div>
-                )}
-              </div>
-            )
-          })}
+                      ▾
+                    </div>
+                  </button>
+
+                  {/* Accordion Body Content */}
+                  {isExpanded && (
+                    <div
+                      className="px-3 pb-3 pt-2 border-top"
+                      style={{
+                        borderColor: 'var(--inv-border, rgba(197, 160, 89, 0.22))',
+                        backgroundColor: 'var(--inv-surface, #F3ECE0)',
+                      }}
+                    >
+                      {item.location && (
+                        <div className="mb-2 small" style={{ color: 'var(--inv-text, #2B1E16)', opacity: 0.88 }}>
+                          📍 <strong>Lokasi:</strong> {item.location}
+                        </div>
+                      )}
+                      <p
+                        className="mb-0 small"
+                        style={{
+                          lineHeight: 1.65,
+                          color: 'var(--inv-text, #2B1E16)',
+                          opacity: 0.92,
+                          fontSize: isWeb ? '0.9rem' : '0.85rem',
+                        }}
+                      >
+                        {item.description}
+                      </p>
+                    </div>
+                  )}
+                </div>
+              )
+            })}
+          </div>
         </div>
       </div>
     </div>
@@ -263,6 +265,12 @@ TraditionAccordionSection.propTypes = {
     title: PropTypes.string,
     subtitle: PropTypes.string,
     ornament: PropTypes.string,
+    ornament_url: PropTypes.string,
+    gunungan_url: PropTypes.string,
+    divider_url: PropTypes.string,
+    corner_url: PropTypes.string,
+    pattern_url: PropTypes.string,
+    pattern_secondary_url: PropTypes.string,
     items: PropTypes.arrayOf(
       PropTypes.shape({
         id: PropTypes.string,
@@ -270,10 +278,12 @@ TraditionAccordionSection.propTypes = {
         time_info: PropTypes.string,
         location: PropTypes.string,
         description: PropTypes.string,
+        icon_url: PropTypes.string,
       })
     ),
   }),
   isWeb: PropTypes.bool,
+  theme: PropTypes.object,
 }
 
 export default TraditionAccordionSection

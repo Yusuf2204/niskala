@@ -146,13 +146,14 @@ class InvitationApiTest extends TestCase
 
     public function test_authenticated_user_can_create_invitation_with_adat_jawa_theme_and_accordion(): void
     {
+        $this->seed(ThemeSeeder::class);
         Sanctum::actingAs($this->userA);
 
         $jawaTheme = Theme::where('slug', 'adat-jawa')->first();
         $this->assertNotNull($jawaTheme, 'Theme Adat Jawa should exist');
 
         $payload = [
-            'title' => 'Dhaup Suci Rama & Shinta',
+            'title' => 'Pernikahan Rama & Shinta',
             'theme_id' => $jawaTheme->id,
             'event_type' => 'wedding',
         ];
@@ -160,12 +161,18 @@ class InvitationApiTest extends TestCase
         $response = $this->postJson('/api/v1/invitations', $payload);
 
         $response->assertStatus(201)
-            ->assertJsonPath('data.title', 'Dhaup Suci Rama & Shinta')
+            ->assertJsonPath('data.title', 'Pernikahan Rama & Shinta')
             ->assertJsonPath('data.theme_id', $jawaTheme->id);
 
         $invitationId = $response->json('data.id');
         $content = \App\Models\InvitationContent::where('invitation_id', $invitationId)->first();
         $this->assertNotNull($content);
+
+        $this->assertSame('adat-jawa', $content->settings['theme_style'] ?? null);
+        $this->assertSame('keraton-royal', $content->settings['animation']['preset'] ?? null);
+        $this->assertNotEmpty($content->settings['assets']['corner_url'] ?? null);
+        $this->assertNotEmpty($content->settings['assets']['frame_url'] ?? null);
+        $this->assertNotEmpty($content->settings['assets']['pattern_url'] ?? null);
 
         $sectionTypes = collect($content->sections_data)->pluck('type')->all();
         $this->assertContains('TraditionAccordion', $sectionTypes);

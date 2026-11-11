@@ -1,51 +1,59 @@
 import React from 'react'
 import PropTypes from 'prop-types'
+import { CornerOrnaments, SectionHeaderOrnaments, ThemeBatikOverlay } from './ThemeDecorators'
 
-const EventScheduleSection = ({ props = {}, isWeb = true }) => {
+const EventScheduleSection = ({ props = {}, isWeb = true, theme = {} }) => {
   const {
     title = 'Rangkaian Acara',
     subtitle = 'Waktu & Tempat Pelaksanaan',
     events = [],
   } = props
 
+  const assets = theme?.assets || {}
+  const isOrnamentAnimated = theme?.animation?.ornament_motion !== false
+  const dividerUrl = props.divider_url || assets.divider_url || ''
+  const cornerUrl = props.corner_url || assets.corner_url || ''
+  const patternUrl = props.pattern_url || assets.pattern_url || ''
+
   return (
     <div
-      className="py-5 px-3 text-center"
+      className="position-relative py-5 px-3 text-center inv-section-framed"
       style={{
-        backgroundColor: '#FAF8F5',
-        color: '#34342F',
+        backgroundColor: 'var(--inv-bg, #FAF6EE)',
+        color: 'var(--inv-text, #2B1E16)',
       }}
     >
-      <div className="container" style={{ maxWidth: isWeb ? '940px' : '100%' }}>
-        <p
-          className="text-uppercase tracking-wider fw-semibold mb-1"
-          style={{ color: '#A68B65', fontSize: '0.85rem', letterSpacing: '2px' }}
-        >
-          Informasi Acara
-        </p>
-        <h2
-          className="font-serif mb-2"
-          style={{
-            fontFamily: "'Playfair Display', Georgia, serif",
-            color: '#34342F',
-            fontSize: isWeb ? '2.2rem' : '1.7rem',
-          }}
-        >
-          {title}
-        </h2>
-        <p className="text-muted mb-4 small">{subtitle}</p>
+      <ThemeBatikOverlay patternUrl={patternUrl} isWeb={isWeb} opacity={0.26} />
+      <CornerOrnaments
+        cornerUrl={cornerUrl}
+        isWeb={isWeb}
+        variant="top"
+        opacity={0.58}
+        size={isWeb ? 76 : 48}
+        offset={isWeb ? 12 : 8}
+        animated={isOrnamentAnimated}
+      />
+
+      <div className="container position-relative" style={{ maxWidth: isWeb ? '940px' : '100%', zIndex: 2 }}>
+        <SectionHeaderOrnaments
+          eyebrow="Informasi Acara"
+          title={title}
+          subtitle={subtitle}
+          dividerUrl={dividerUrl}
+          isWeb={isWeb}
+        />
 
         {/* Grid of Events */}
         <div
-          className={`d-flex ${isWeb ? 'flex-row' : 'flex-column'} justify-content-center align-items-stretch gap-3`}
+          className={`d-flex ${isWeb ? 'flex-row' : 'flex-column'} justify-content-center align-items-stretch gap-3 mt-4`}
         >
           {events.map((evt, idx) => (
             <div
               key={evt.id || idx}
-              className="p-4 rounded-3 shadow-sm flex-grow-1 text-center"
+              className="p-4 rounded-3 shadow-sm flex-grow-1 text-center inv-card-framed"
               style={{
-                backgroundColor: '#FFFFFF',
-                border: '1px solid rgba(166, 139, 101, 0.3)',
+                backgroundColor: 'var(--inv-card, #FFFDF9)',
+                border: '1px solid var(--inv-border, rgba(197, 160, 89, 0.35))',
                 maxWidth: isWeb ? '420px' : '100%',
               }}
             >
@@ -54,8 +62,9 @@ const EventScheduleSection = ({ props = {}, isWeb = true }) => {
                 style={{
                   width: '48px',
                   height: '48px',
-                  backgroundColor: 'rgba(166, 139, 101, 0.15)',
-                  color: '#A68B65',
+                  backgroundColor: 'rgba(197, 160, 89, 0.16)',
+                  color: 'var(--inv-primary, #8A6728)',
+                  border: '1px solid var(--inv-border, rgba(197, 160, 89, 0.35))',
                   fontSize: '1.2rem',
                 }}
               >
@@ -63,20 +72,29 @@ const EventScheduleSection = ({ props = {}, isWeb = true }) => {
               </div>
               <h4
                 className="font-serif fw-bold mb-2"
-                style={{ fontFamily: "'Playfair Display', Georgia, serif", color: '#34342F' }}
+                style={{
+                  fontFamily: "var(--inv-font-heading, 'Playfair Display', Georgia, serif)",
+                  color: 'var(--inv-text, #2B1E16)',
+                }}
               >
                 {evt.name}
               </h4>
               <div
                 className="mx-auto my-2"
-                style={{ width: '40px', height: '1.5px', backgroundColor: '#A68B65' }}
+                style={{ width: '44px', height: '1.5px', backgroundColor: 'var(--inv-accent, #C5A059)' }}
               />
-              <p className="fw-semibold mb-1" style={{ color: '#A68B65', fontSize: '0.9rem' }}>
+              <p className="fw-semibold mb-1" style={{ color: 'var(--inv-primary, #8A6728)', fontSize: '0.9rem' }}>
                 {evt.date}
               </p>
-              <p className="small fw-medium mb-3" style={{ color: '#34342F' }}>{evt.time}</p>
-              <h6 className="fw-bold mb-1" style={{ color: '#34342F' }}>{evt.location}</h6>
-              <p className="small mb-0" style={{ color: 'rgba(52, 52, 47, 0.7)' }}>{evt.address}</p>
+              <p className="small fw-medium mb-3" style={{ color: 'var(--inv-text, #2B1E16)' }}>
+                {evt.time}
+              </p>
+              <h6 className="fw-bold mb-1" style={{ color: 'var(--inv-text, #2B1E16)' }}>
+                {evt.location}
+              </h6>
+              <p className="small mb-0" style={{ color: 'var(--inv-muted, #6A5342)' }}>
+                {evt.address}
+              </p>
             </div>
           ))}
         </div>
@@ -88,6 +106,7 @@ const EventScheduleSection = ({ props = {}, isWeb = true }) => {
 EventScheduleSection.propTypes = {
   props: PropTypes.object,
   isWeb: PropTypes.bool,
+  theme: PropTypes.object,
 }
 
 export default EventScheduleSection

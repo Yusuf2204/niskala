@@ -75,8 +75,11 @@ class InvitationCreationService
                 'sections_data' => $sectionsData,
                 'music_url' => $defaultConfig['default_music_url'] ?? null,
                 'settings' => [
+                    'theme_style' => $defaultConfig['theme_style'] ?? ($theme?->slug ?? 'standard'),
                     'palette' => $defaultConfig['palette'] ?? null,
                     'typography' => $defaultConfig['typography'] ?? null,
+                    'assets' => $defaultConfig['assets'] ?? null,
+                    'animation' => $defaultConfig['animation'] ?? null,
                 ],
             ]);
 

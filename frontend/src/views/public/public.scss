@@ -1,14 +1,19 @@
 // ============================================================
 // Niskala Public Invitation Renderer Styles (PRD 04)
 // ============================================================
+@use './invitationThemes';
 
 .public-invitation-root {
-  --inv-bg: #FAF8F5;
-  --inv-surface: #F1EDE5;
-  --inv-primary: #34342F;
-  --inv-secondary: #A68B65;
-  --inv-text: #34342F;
-  --inv-accent: #D8C2A0;
+  --inv-bg: #FAF6EE;
+  --inv-surface: #F3ECE0;
+  --inv-card: #FFFDF9;
+  --inv-primary: #8A6728;
+  --inv-secondary: #4A3525;
+  --inv-text: #2B1E16;
+  --inv-muted: #6A5342;
+  --inv-accent: #C5A059;
+  --inv-dark-bg: #241B15;
+  --inv-border: rgba(197, 160, 89, 0.38);
   --inv-font-heading: 'Playfair Display', Georgia, serif;
   --inv-font-body: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
 

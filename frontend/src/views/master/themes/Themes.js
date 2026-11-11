@@ -17,7 +17,7 @@ import {
 import CIcon from '@coreui/icons-react'
 import { cilPaint, cilReload, cilCheckAlt, cilPlus } from '@coreui/icons'
 import api from '../../../services/api'
-import { GununganEmblem } from '../../invitations/editor/sections/Ornaments'
+import { ThemePreviewBanner } from '../../invitations/editor/sections/ThemeDecorators'
 
 const Themes = () => {
   const navigate = useNavigate()
@@ -115,61 +115,21 @@ const Themes = () => {
               <CCol xs={12} md={6} lg={4} key={theme.id}>
                 <CCard className="h-100 shadow-sm border-0 rounded-3 overflow-hidden">
                   {/* Banner Preview Tema */}
-                  <div
-                    style={{
-                      height: '160px',
-                      background: palette.background || '#FAF6EE',
-                      borderBottom: '1px solid rgba(197, 160, 89, 0.3)',
-                      position: 'relative',
-                      display: 'flex',
-                      flexDirection: 'column',
-                      justifyContent: 'center',
-                      alignItems: 'center',
-                      color: palette.text || '#2B1E16',
-                      padding: '1rem',
-                    }}
-                  >
-                    {hasGunungan && (
-                      <div className="mb-2">
-                        <GununganEmblem
-                          width={38}
-                          height={46}
-                          color={palette.primary || '#C5A059'}
-                        />
-                      </div>
-                    )}
-                    <span
-                      style={{
-                        fontFamily: typography.heading_font || "'Playfair Display', serif",
-                        fontSize: '1.35rem',
-                        fontWeight: 'bold',
-                        letterSpacing: '0.05em',
-                        color: palette.secondary || '#4A3525',
-                      }}
-                    >
-                      {theme.name}
-                    </span>
-                    <span
-                      className="small mt-1 px-2 py-0.5 rounded-pill"
-                      style={{
-                        fontSize: '0.72rem',
-                        backgroundColor: 'rgba(197, 160, 89, 0.18)',
-                        color: palette.secondary || '#4A3525',
-                        fontWeight: 600,
-                      }}
-                    >
-                      Tema Spesifik Budaya Tradisi
-                    </span>
-
-                    {theme.is_active && (
-                      <span
-                        className="badge position-absolute top-0 end-0 m-2"
-                        style={{ backgroundColor: '#C5A059', color: '#242420', fontWeight: 'bold' }}
-                      >
-                        <CIcon icon={cilCheckAlt} size="sm" className="me-1" /> Aktif
-                      </span>
-                    )}
-                  </div>
+                  <ThemePreviewBanner
+                    theme={theme}
+                    height="160px"
+                    subtitle="Tema Spesifik Budaya Tradisi"
+                    badge={
+                      theme.is_active ? (
+                        <span
+                          className="badge position-absolute top-0 end-0 m-2"
+                          style={{ backgroundColor: '#C5A059', color: '#242420', fontWeight: 'bold' }}
+                        >
+                          <CIcon icon={cilCheckAlt} size="sm" className="me-1" /> Aktif
+                        </span>
+                      ) : null
+                    }
+                  />
 
                   <CCardBody className="d-flex flex-column justify-content-between p-3">
                     <div>
@@ -206,30 +166,32 @@ const Themes = () => {
                         <small className="fw-semibold text-secondary d-block mb-1">
                           Palet Warna (60-30-10):
                         </small>
-                        <div className="d-flex gap-2">
-                          {Object.entries(palette).map(([key, val]) => (
-                            <div
-                              key={key}
-                              title={`${key}: ${val}`}
-                              style={{
-                                width: '22px',
-                                height: '22px',
-                                borderRadius: '50%',
-                                backgroundColor: val,
-                                border: '1px solid #ccc',
-                                cursor: 'help',
-                              }}
-                            />
-                          ))}
+                        <div className="d-flex flex-wrap gap-2">
+                          {Object.entries(palette)
+                            .filter(([key]) => key !== 'background' && key !== 'border')
+                            .map(([key, val]) => (
+                              <div
+                                key={key}
+                                title={`${key}: ${val}`}
+                                style={{
+                                  width: '22px',
+                                  height: '22px',
+                                  borderRadius: '50%',
+                                  backgroundColor: val,
+                                  border: '1px solid #ccc',
+                                  cursor: 'help',
+                                }}
+                              />
+                            ))}
                         </div>
                       </div>
 
                       <div className="mb-2 small text-muted">
                         <div>
-                          <strong>Heading:</strong> {typography.heading_font || '-'}
+                          <strong>Heading:</strong> {typography.heading_font || typography.heading || '-'}
                         </div>
                         <div>
-                          <strong>Body:</strong> {typography.body_font || '-'}
+                          <strong>Body:</strong> {typography.body_font || typography.body || '-'}
                         </div>
                         <div className="mt-1">
                           <strong>Default Sections:</strong> {sections.length} komponen bawaan

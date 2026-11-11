@@ -1,0 +1,146 @@
+// ============================================================
+// Niskala Invitation Theme Tokens, Decorators & Motion System
+// Shared between Public Renderer, /blank Preview & Visual Editor
+// ============================================================
+
+.invitation-canvas-isolated {
+  font-family: var(--inv-font-body, 'Plus Jakarta Sans', sans-serif);
+  background-color: var(--inv-bg, #FAF6EE);
+  color: var(--inv-text, #2B1E16);
+
+  &[data-inv-theme='adat-jawa'] {
+    .inv-section-framed {
+      position: relative;
+      overflow: hidden;
+    }
+
+    .inv-card-framed {
+      background-color: var(--inv-card, #FFFDF9);
+      border: 1px solid var(--inv-border, rgba(197, 160, 89, 0.38));
+      box-shadow: 0 8px 24px rgba(74, 53, 37, 0.08);
+      transition: transform 0.35s ease, box-shadow 0.35s ease;
+
+      &:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 12px 28px rgba(138, 103, 40, 0.14);
+      }
+    }
+
+    .inv-gallery-tile {
+      border: 2px solid var(--inv-accent, #C5A059);
+      box-shadow: 0 6px 18px rgba(74, 53, 37, 0.12);
+
+      &:hover img {
+        transform: scale(1.06);
+      }
+    }
+
+    .inv-joglo-portrait img:last-child {
+      transition: transform 0.45s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+
+    .inv-joglo-portrait:hover img:last-child {
+      transform: scale(1.02);
+    }
+  }
+}
+
+// ── Theme-Driven Animations ─────────────────────────────────
+@keyframes invFadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes invFadeUpSlow {
+  from {
+    opacity: 0;
+    transform: translateY(26px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes invGununganBreathe {
+  0%, 100% {
+    transform: translateY(0) scale(1);
+    filter: drop-shadow(0 4px 10px rgba(74, 53, 37, 0.35));
+  }
+  50% {
+    transform: translateY(-4px) scale(1.025);
+    filter: drop-shadow(0 8px 16px rgba(212, 175, 55, 0.42));
+  }
+}
+
+@keyframes invCornerPulse {
+  0%, 100% {
+    opacity: 0.72;
+  }
+  50% {
+    opacity: 0.92;
+  }
+}
+
+.animate-fade-in {
+  animation: invFadeIn 0.85s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+.inv-ornament-emblem {
+  display: inline-block;
+  animation: invGununganBreathe 5.5s ease-in-out infinite;
+}
+
+.inv-ornament-float img {
+  animation: invCornerPulse 6s ease-in-out infinite;
+}
+
+// Scroll Reveal for Public & /blank Preview (disabled inside Visual Editor canvas)
+.public-invitation-root[data-inv-motion='active'] {
+  .inv-reveal-slot {
+    opacity: 0;
+    transform: translateY(24px);
+    transition: opacity 0.8s cubic-bezier(0.22, 1, 0.36, 1),
+      transform 0.85s cubic-bezier(0.22, 1, 0.36, 1);
+    will-change: opacity, transform;
+
+    &.is-revealed {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+}
+
+.envelope-gate[data-inv-gate='keraton-reveal'] {
+  transition: transform 1.05s cubic-bezier(0.77, 0, 0.175, 1),
+    opacity 0.8s ease;
+
+  &.open {
+    transform: translateY(-104%) scale(1.02);
+    opacity: 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .animate-fade-in,
+  .inv-ornament-emblem,
+  .inv-ornament-float img {
+    animation: none !important;
+  }
+
+  .public-invitation-root[data-inv-motion='active'] .inv-reveal-slot {
+    opacity: 1 !important;
+    transform: none !important;
+    transition: none !important;
+  }
+
+  .envelope-gate[data-inv-gate='keraton-reveal'] {
+    transition: opacity 0.25s ease !important;
+  }
+}

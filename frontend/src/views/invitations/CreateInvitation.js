@@ -16,7 +16,7 @@ import { cilArrowLeft, cilArrowRight, cilCheck, cilPaint, cilDescription } from 
 import { useNavigate, useSearchParams } from 'react-router-dom'
 import api from '../../services/api'
 import { toastSuccess, toastError } from '../../services/toastService'
-import { GununganEmblem } from './editor/sections/Ornaments'
+import { ThemePreviewBanner } from './editor/sections/ThemeDecorators'
 
 const CreateInvitation = () => {
   const [searchParams] = useSearchParams()
@@ -188,7 +188,6 @@ const CreateInvitation = () => {
               {themes.map((theme) => {
                 const isSelected = selectedThemeId === theme.id
                 const palette = theme.default_config?.palette || {}
-                const typography = theme.default_config?.typography || {}
                 const presets = theme.default_config?.section_presets || {}
                 const hasGunungan =
                   theme.slug === 'adat-jawa' ||
@@ -207,49 +206,25 @@ const CreateInvitation = () => {
                       }}
                       onClick={() => setSelectedThemeId(theme.id)}
                     >
-                      <div
-                        style={{
-                          height: '140px',
-                          background: palette.background || '#F1EDE5',
-                          display: 'flex',
-                          flexDirection: 'column',
-                          justifyContent: 'center',
-                          alignItems: 'center',
-                          position: 'relative',
-                          borderBottom: '1px solid rgba(197, 160, 89, 0.3)',
-                          padding: '1rem',
-                        }}
-                      >
-                        {hasGunungan && (
-                          <div className="mb-2">
-                            <GununganEmblem width={36} height={44} color={palette.primary || '#C5A059'} />
-                          </div>
-                        )}
-                        <span
-                          style={{
-                            fontFamily: typography.heading_font || 'serif',
-                            fontSize: '1.25rem',
-                            fontWeight: 'bold',
-                            color: palette.secondary || palette.text || '#34342F',
-                          }}
-                        >
-                          {theme.name}
-                        </span>
-
-                        {isSelected && (
-                          <div
-                            className="position-absolute top-0 end-0 m-2 rounded-circle d-flex align-items-center justify-content-center shadow-sm"
-                            style={{
-                              width: '28px',
-                              height: '28px',
-                              backgroundColor: '#C5A059',
-                              color: '#242420',
-                            }}
-                          >
-                            <CIcon icon={cilCheck} size="sm" />
-                          </div>
-                        )}
-                      </div>
+                      <ThemePreviewBanner
+                        theme={theme}
+                        height="140px"
+                        badge={
+                          isSelected ? (
+                            <div
+                              className="position-absolute top-0 end-0 m-2 rounded-circle d-flex align-items-center justify-content-center shadow-sm"
+                              style={{
+                                width: '28px',
+                                height: '28px',
+                                backgroundColor: '#C5A059',
+                                color: '#242420',
+                              }}
+                            >
+                              <CIcon icon={cilCheck} size="sm" />
+                            </div>
+                          ) : null
+                        }
+                      />
 
                       <CCardBody className="p-3">
                         <div className="d-flex justify-content-between align-items-center mb-1">
@@ -277,23 +252,25 @@ const CreateInvitation = () => {
                           </span>
                         </div>
 
-                        <div className="d-flex gap-1 align-items-center">
+                        <div className="d-flex flex-wrap gap-1 align-items-center">
                           <small className="text-body-secondary me-1" style={{ fontSize: '0.75rem' }}>
                             Palet:
                           </small>
-                          {Object.entries(palette).map(([k, col]) => (
-                            <div
-                              key={k}
-                              title={`${k}: ${col}`}
-                              style={{
-                                width: '18px',
-                                height: '18px',
-                                borderRadius: '50%',
-                                backgroundColor: col,
-                                border: '1px solid #ccc',
-                              }}
-                            />
-                          ))}
+                          {Object.entries(palette)
+                            .filter(([k]) => k !== 'background' && k !== 'border')
+                            .map(([k, col]) => (
+                              <div
+                                key={k}
+                                title={`${k}: ${col}`}
+                                style={{
+                                  width: '18px',
+                                  height: '18px',
+                                  borderRadius: '50%',
+                                  backgroundColor: col,
+                                  border: '1px solid #ccc',
+                                }}
+                              />
+                            ))}
                         </div>
                       </CCardBody>
                     </CCard>

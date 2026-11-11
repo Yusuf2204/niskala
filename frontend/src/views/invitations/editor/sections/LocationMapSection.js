@@ -1,7 +1,8 @@
 import React from 'react'
 import PropTypes from 'prop-types'
+import { SectionHeaderOrnaments, ThemeBatikOverlay } from './ThemeDecorators'
 
-const LocationMapSection = ({ props = {}, isWeb = true }) => {
+const LocationMapSection = ({ props = {}, isWeb = true, theme = {} }) => {
   const {
     title = 'Lokasi & Peta Acara',
     venue_name = 'Grand Ballroom Hotel Mulia',
@@ -11,41 +12,42 @@ const LocationMapSection = ({ props = {}, isWeb = true }) => {
     button_label = 'Buka di Google Maps',
   } = props
 
+  const assets = theme?.assets || {}
+  const dividerUrl = props.divider_url || assets.divider_url || ''
+  const patternUrl = props.pattern_url || assets.pattern_url || ''
+
   return (
     <div
-      className="py-5 px-3 text-center"
+      className="position-relative py-5 px-3 text-center inv-section-framed"
       style={{
-        backgroundColor: '#F1EDE5',
-        color: '#34342F',
+        backgroundColor: 'var(--inv-bg, #FAF6EE)',
+        color: 'var(--inv-text, #2B1E16)',
       }}
     >
-      <div className="container" style={{ maxWidth: isWeb ? '840px' : '100%' }}>
-        <p
-          className="text-uppercase tracking-wider fw-semibold mb-1"
-          style={{ color: '#A68B65', fontSize: '0.85rem', letterSpacing: '2px' }}
-        >
-          Penunjuk Arah
+      <ThemeBatikOverlay patternUrl={patternUrl} isWeb={isWeb} opacity={0.2} />
+
+      <div className="container position-relative" style={{ maxWidth: isWeb ? '840px' : '100%', zIndex: 2 }}>
+        <SectionHeaderOrnaments
+          eyebrow="Penunjuk Arah"
+          title={title}
+          dividerUrl={dividerUrl}
+          isWeb={isWeb}
+        />
+
+        <h5 className="fw-bold mb-1" style={{ color: 'var(--inv-text, #2B1E16)' }}>
+          {venue_name}
+        </h5>
+        <p className="small mb-4" style={{ color: 'var(--inv-muted, #6A5342)' }}>
+          {address}
         </p>
-        <h2
-          className="font-serif mb-2"
-          style={{
-            fontFamily: "'Playfair Display', Georgia, serif",
-            color: '#34342F',
-            fontSize: isWeb ? '2.2rem' : '1.7rem',
-          }}
-        >
-          {title}
-        </h2>
-        <h5 className="fw-bold mb-1" style={{ color: '#34342F' }}>{venue_name}</h5>
-        <p className="small mb-4" style={{ color: 'rgba(52, 52, 47, 0.7)' }}>{address}</p>
 
         {/* Embedded Map Frame */}
         <div
-          className="rounded-3 overflow-hidden shadow-sm mb-3"
+          className="rounded-3 overflow-hidden shadow-sm mb-4"
           style={{
             height: isWeb ? '340px' : '260px',
-            border: '2px solid rgba(166, 139, 101, 0.4)',
-            backgroundColor: '#FAF8F5',
+            border: '2px solid var(--inv-border, rgba(197, 160, 89, 0.45))',
+            backgroundColor: 'var(--inv-card, #FFFDF9)',
           }}
         >
           <iframe
@@ -67,11 +69,11 @@ const LocationMapSection = ({ props = {}, isWeb = true }) => {
             rel="noopener noreferrer"
             className="btn px-4 py-2 rounded-pill shadow-sm"
             style={{
-              backgroundColor: '#34342F',
-              color: '#F1EDE5',
+              backgroundColor: 'var(--inv-dark-bg, #241B15)',
+              color: '#FAF6EE',
               fontWeight: 600,
               fontSize: '0.9rem',
-              border: 'none',
+              border: '1px solid var(--inv-accent, #C5A059)',
             }}
           >
             📍 {button_label}
@@ -85,6 +87,7 @@ const LocationMapSection = ({ props = {}, isWeb = true }) => {
 LocationMapSection.propTypes = {
   props: PropTypes.object,
   isWeb: PropTypes.bool,
+  theme: PropTypes.object,
 }
 
 export default LocationMapSection

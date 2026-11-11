@@ -91,48 +91,48 @@ export const COMPONENT_REGISTRY = {
     icon: 'cilList',
     defaultProps: {
       title: 'Tata Upacara & Prosesi Adat Jawa',
-      subtitle: 'Rangkaian Ritual Suci Sakral Penganten Jawa',
+      subtitle: 'Rangkaian Ritual Suci Sakral Pengantin Jawa',
       ornament: 'gunungan',
       items: [
         {
           id: 'item-1',
           title: 'Upacara Siraman',
-          time_info: 'Jumat Pon, 11 Desember 2026 — 09:00 WIB',
+          time_info: 'Jumat, 11 Desember 2026 — 09:00 WIB',
           location: 'Kediaman Mempelai Putri',
           description:
-            'Upacara sesuci raga dalah jiwa calon penganten kanthi toya pitu sumber kembang setaman, pinangka lambang reresik lair lan batin sadurunge ngambah gesang anyar.',
+            'Ritual penyucian diri lahir dan batin calon pengantin menggunakan air dari tujuh sumber dengan taburan kembang setaman sebelum memasuki kehidupan berumah tangga.',
         },
         {
           id: 'item-2',
           title: 'Malam Midodareni',
-          time_info: 'Jumat Pon, 11 Desember 2026 — 19:00 WIB',
+          time_info: 'Jumat, 11 Desember 2026 — 19:00 WIB',
           location: 'Kediaman Mempelai Putri',
           description:
-            'Wanci wengi ing ngendi para widadari mudhun maringi berkah kaendahan, kasekten, lan karaharjan dhumateng calon penganten putri.',
+            'Malam tirakatan dan doa restu keluarga besar di kediaman mempelai putri sebagai simbol turunnya keberkahan menjelang hari akad nikah.',
         },
         {
           id: 'item-3',
           title: 'Ijab Kabul / Akad Nikah',
-          time_info: 'Sabtu Pahing, 12 Desember 2026 — 08:00 WIB',
+          time_info: 'Sabtu, 12 Desember 2026 — 08:00 WIB',
           location: 'Pendopo Ageng Handrawina',
           description:
-            'Ikrar suci prajanjen nikah ing ngarsanipun Gusti Allah SWT, saksi, para sepuh, lan wali.',
+            'Prosesi pengucapan ikrar suci pernikahan di hadapan penghulu, wali, saksi, dan keluarga besar sebagai puncak sakral ikatan pernikahan.',
         },
         {
           id: 'item-4',
           title: 'Upacara Panggih Penganten',
-          time_info: 'Sabtu Pahing, 12 Desember 2026 — 10:00 WIB',
+          time_info: 'Sabtu, 12 Desember 2026 — 10:00 WIB',
           location: 'Sasana Hinggil Handrawina',
           description:
-            'Temuning sri penganten kakung lan putri lumantar prosesi adat Balangan Gantal, Wijik Suku/Ngidak Endhog, Sinduran, Kacar Kucur, Dahar Klimah, lan Sungkeman.',
+            'Pertemuan adat kedua mempelai setelah akad nikah melalui rangkaian prosesi Balangan Gantal, Wijik Suku, Sinduran, Kacar Kucur, Dahar Klimah, dan Sungkeman.',
         },
         {
           id: 'item-5',
-          title: 'Pahargyan Temu Manten (Resepsi)',
-          time_info: 'Sabtu Pahing, 12 Desember 2026 — 11:30 - 14:00 WIB',
+          title: 'Resepsi / Pahargyan Temu Manten',
+          time_info: 'Sabtu, 12 Desember 2026 — 11:30 - 14:00 WIB',
           location: 'Grand Ballroom Handrawina',
           description:
-            'Syukuran agung bebarengan para tamu rawuh kinurmatan dalah sedherek kanthi suwasana pinarak gamelan lan beksan Jawa.',
+            'Perjamuan syukuran bersama seluruh tamu undangan dan kerabat yang diiringi alunan gending serta nuansa keanggunan keraton.',
         },
       ],
     },

@@ -1,59 +1,61 @@
 import React from 'react'
 import PropTypes from 'prop-types'
+import { SectionHeaderOrnaments, ThemeBatikOverlay } from './ThemeDecorators'
 
-const LoveStorySection = ({ props = {}, isWeb = true }) => {
+const LoveStorySection = ({ props = {}, isWeb = true, theme = {} }) => {
   const {
     title = 'Kisah Kasih Kami',
     subtitle = 'Perjalanan Menuju Satu Ikatan Suci',
     stories = [],
   } = props
 
+  const assets = theme?.assets || {}
+  const dividerUrl = props.divider_url || assets.divider_url || ''
+  const patternUrl =
+    props.pattern_secondary_url ||
+    props.pattern_url ||
+    assets.pattern_secondary_url ||
+    assets.pattern_url ||
+    ''
+
   return (
     <div
-      className="py-5 px-3 text-center"
+      className="position-relative py-5 px-3 text-center inv-section-framed"
       style={{
-        backgroundColor: '#F1EDE5',
-        color: '#34342F',
+        backgroundColor: 'var(--inv-surface, #F3ECE0)',
+        color: 'var(--inv-text, #2B1E16)',
       }}
     >
-      <div className="container" style={{ maxWidth: isWeb ? '860px' : '100%' }}>
-        <p
-          className="text-uppercase tracking-wider fw-semibold mb-1"
-          style={{ color: '#A68B65', fontSize: '0.85rem', letterSpacing: '2px' }}
-        >
-          Cerita Cinta
-        </p>
-        <h2
-          className="font-serif mb-2"
-          style={{
-            fontFamily: "'Playfair Display', Georgia, serif",
-            color: '#34342F',
-            fontSize: isWeb ? '2.2rem' : '1.7rem',
-          }}
-        >
-          {title}
-        </h2>
-        <p className="text-muted mb-4 small">{subtitle}</p>
+      <ThemeBatikOverlay patternUrl={patternUrl} isWeb={isWeb} opacity={0.28} />
+
+      <div className="container position-relative" style={{ maxWidth: isWeb ? '860px' : '100%', zIndex: 2 }}>
+        <SectionHeaderOrnaments
+          eyebrow="Cerita Cinta"
+          title={title}
+          subtitle={subtitle}
+          dividerUrl={dividerUrl}
+          isWeb={isWeb}
+        />
 
         {/* Timeline Stories */}
         <div
-          className={`d-flex ${isWeb ? 'flex-row' : 'flex-column'} justify-content-center align-items-stretch gap-3`}
+          className={`d-flex ${isWeb ? 'flex-row' : 'flex-column'} justify-content-center align-items-stretch gap-3 mt-4`}
         >
           {stories.map((story, idx) => (
             <div
               key={idx}
-              className="p-4 rounded-3 shadow-sm flex-grow-1 text-center"
+              className="p-4 rounded-3 shadow-sm flex-grow-1 text-center inv-card-framed"
               style={{
-                backgroundColor: '#FAF8F5',
-                border: '1px solid rgba(166, 139, 101, 0.3)',
+                backgroundColor: 'var(--inv-card, #FFFDF9)',
+                border: '1px solid var(--inv-border, rgba(197, 160, 89, 0.35))',
                 maxWidth: isWeb ? '280px' : '100%',
               }}
             >
               <span
                 className="badge px-3 py-1 mb-2 rounded-pill"
                 style={{
-                  backgroundColor: '#34342F',
-                  color: '#D8C2A0',
+                  backgroundColor: 'var(--inv-dark-bg, #241B15)',
+                  color: '#E7D4B5',
                   fontWeight: 600,
                   fontSize: '0.8rem',
                 }}
@@ -62,11 +64,16 @@ const LoveStorySection = ({ props = {}, isWeb = true }) => {
               </span>
               <h5
                 className="font-serif fw-bold my-2"
-                style={{ fontFamily: "'Playfair Display', Georgia, serif", color: '#34342F' }}
+                style={{
+                  fontFamily: "var(--inv-font-heading, 'Playfair Display', Georgia, serif)",
+                  color: 'var(--inv-text, #2B1E16)',
+                }}
               >
                 {story.title}
               </h5>
-              <p className="text-muted small mb-0">{story.text}</p>
+              <p className="small mb-0" style={{ color: 'var(--inv-muted, #6A5342)', lineHeight: 1.6 }}>
+                {story.text}
+              </p>
             </div>
           ))}
         </div>
@@ -78,6 +85,7 @@ const LoveStorySection = ({ props = {}, isWeb = true }) => {
 LoveStorySection.propTypes = {
   props: PropTypes.object,
   isWeb: PropTypes.bool,
+  theme: PropTypes.object,
 }
 
 export default LoveStorySection

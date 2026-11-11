@@ -1,7 +1,13 @@
 import React from 'react'
 import PropTypes from 'prop-types'
+import {
+  CornerOrnaments,
+  JogloPortraitFrame,
+  SectionHeaderOrnaments,
+  ThemeBatikOverlay,
+} from './ThemeDecorators'
 
-const CoupleProfileSection = ({ props = {}, isWeb = true }) => {
+const CoupleProfileSection = ({ props = {}, isWeb = true, theme = {} }) => {
   const {
     section_title = 'Mempelai Pria & Wanita',
     quote = 'Dengan memohon rahmat dan ridho Allah SWT, kami bermaksud menyelenggarakan syukuran pernikahan putra-putri kami:',
@@ -15,78 +21,73 @@ const CoupleProfileSection = ({ props = {}, isWeb = true }) => {
     bride_instagram = '@shintadewi',
   } = props
 
+  const assets = theme?.assets || {}
+  const isOrnamentAnimated = theme?.animation?.ornament_motion !== false
+  const dividerUrl = props.divider_url || assets.divider_url || ''
+  const cornerUrl = props.corner_url || assets.corner_url || ''
+  const patternUrl = props.pattern_url || assets.pattern_url || ''
+  const frameUrl = props.frame_url || assets.frame_url || ''
+
   return (
     <div
-      className="py-5 px-3 text-center"
+      className="position-relative py-5 px-3 text-center inv-section-framed"
       style={{
-        backgroundColor: '#FAF8F5',
-        color: '#34342F',
+        backgroundColor: 'var(--inv-bg, #FAF6EE)',
+        color: 'var(--inv-text, #2B1E16)',
       }}
     >
-      <div className="container" style={{ maxWidth: isWeb ? '900px' : '100%' }}>
-        <p
-          className="text-uppercase tracking-wider fw-semibold mb-1"
-          style={{ color: '#A68B65', fontSize: '0.85rem', letterSpacing: '2px' }}
-        >
-          Pasangan Mempelai
-        </p>
-        <h2
-          className="font-serif mb-2"
-          style={{
-            fontFamily: "'Playfair Display', Georgia, serif",
-            color: '#34342F',
-            fontSize: isWeb ? '2.2rem' : '1.7rem',
-          }}
-        >
-          {section_title}
-        </h2>
-        {props.divider_url && (
-          <div className="mx-auto my-3" style={{ maxWidth: isWeb ? '220px' : '160px' }}>
-            <img src={props.divider_url} alt="" style={{ width: '100%', height: 'auto' }} />
-          </div>
-        )}
-        <p
-          className="mx-auto mb-5 text-muted"
-          style={{ maxWidth: '620px', fontSize: isWeb ? '0.95rem' : '0.85rem' }}
-        >
-          {quote}
-        </p>
+      <ThemeBatikOverlay patternUrl={patternUrl} isWeb={isWeb} opacity={0.3} />
+      <CornerOrnaments
+        cornerUrl={cornerUrl}
+        isWeb={isWeb}
+        variant="top"
+        opacity={0.62}
+        size={isWeb ? 78 : 50}
+        offset={isWeb ? 12 : 8}
+        animated={isOrnamentAnimated}
+      />
+
+      <div className="container position-relative" style={{ maxWidth: isWeb ? '900px' : '100%', zIndex: 2 }}>
+        <SectionHeaderOrnaments
+          eyebrow="Pasangan Mempelai"
+          title={section_title}
+          subtitle={quote}
+          dividerUrl={dividerUrl}
+          isWeb={isWeb}
+        />
 
         <div
-          className={`d-flex ${isWeb ? 'flex-row' : 'flex-column'} align-items-center justify-content-center gap-4`}
+          className={`d-flex ${isWeb ? 'flex-row' : 'flex-column'} align-items-center justify-content-center gap-4 mt-4`}
         >
           {/* Mempelai Pria */}
           <div className="flex-grow-1" style={{ maxWidth: isWeb ? '360px' : '100%' }}>
-            <div
-              className="mx-auto rounded-circle overflow-hidden shadow-sm mb-3"
-              style={{
-                width: isWeb ? '180px' : '140px',
-                height: isWeb ? '180px' : '140px',
-                border: '4px solid #A68B65',
-              }}
-            >
-              <img
-                src={groom_photo}
-                alt={groom_name}
-                style={{ width: '100%', height: '100%', objectFit: 'cover' }}
-              />
-            </div>
+            <JogloPortraitFrame
+              photoUrl={groom_photo}
+              alt={groom_name}
+              frameUrl={frameUrl}
+              isWeb={isWeb}
+            />
             <h4
               className="fw-bold mb-1 font-serif"
-              style={{ fontFamily: "'Playfair Display', Georgia, serif", color: '#34342F' }}
+              style={{
+                fontFamily: "var(--inv-font-heading, 'Playfair Display', Georgia, serif)",
+                color: 'var(--inv-text, #2B1E16)',
+              }}
             >
               {groom_name}
             </h4>
-            <p className="text-muted small mb-2">{groom_parents}</p>
+            <p className="small mb-2" style={{ color: 'var(--inv-muted, #6A5342)' }}>
+              {groom_parents}
+            </p>
             {groom_instagram && (
               <span
                 className="badge px-3 py-1 rounded-pill"
                 style={{
-                  backgroundColor: '#F1EDE5',
-                  color: '#A68B65',
+                  backgroundColor: 'var(--inv-surface, #F3ECE0)',
+                  color: 'var(--inv-primary, #8A6728)',
                   fontWeight: 600,
                   fontSize: '0.75rem',
-                  border: '1px solid rgba(166,139,101,0.3)',
+                  border: '1px solid var(--inv-border, rgba(197, 160, 89, 0.35))',
                 }}
               >
                 Instagram {groom_instagram}
@@ -101,9 +102,9 @@ const CoupleProfileSection = ({ props = {}, isWeb = true }) => {
           >
             <span
               style={{
-                fontFamily: "'Playfair Display', Georgia, serif",
+                fontFamily: "var(--inv-font-heading, 'Playfair Display', Georgia, serif)",
                 fontSize: isWeb ? '3rem' : '2.2rem',
-                color: '#A68B65',
+                color: 'var(--inv-accent, #C5A059)',
                 fontStyle: 'italic',
               }}
             >
@@ -113,36 +114,33 @@ const CoupleProfileSection = ({ props = {}, isWeb = true }) => {
 
           {/* Mempelai Wanita */}
           <div className="flex-grow-1" style={{ maxWidth: isWeb ? '360px' : '100%' }}>
-            <div
-              className="mx-auto rounded-circle overflow-hidden shadow-sm mb-3"
-              style={{
-                width: isWeb ? '180px' : '140px',
-                height: isWeb ? '180px' : '140px',
-                border: '4px solid #A68B65',
-              }}
-            >
-              <img
-                src={bride_photo}
-                alt={bride_name}
-                style={{ width: '100%', height: '100%', objectFit: 'cover' }}
-              />
-            </div>
+            <JogloPortraitFrame
+              photoUrl={bride_photo}
+              alt={bride_name}
+              frameUrl={frameUrl}
+              isWeb={isWeb}
+            />
             <h4
               className="fw-bold mb-1 font-serif"
-              style={{ fontFamily: "'Playfair Display', Georgia, serif", color: '#34342F' }}
+              style={{
+                fontFamily: "var(--inv-font-heading, 'Playfair Display', Georgia, serif)",
+                color: 'var(--inv-text, #2B1E16)',
+              }}
             >
               {bride_name}
             </h4>
-            <p className="text-muted small mb-2">{bride_parents}</p>
+            <p className="small mb-2" style={{ color: 'var(--inv-muted, #6A5342)' }}>
+              {bride_parents}
+            </p>
             {bride_instagram && (
               <span
                 className="badge px-3 py-1 rounded-pill"
                 style={{
-                  backgroundColor: '#F1EDE5',
-                  color: '#A68B65',
+                  backgroundColor: 'var(--inv-surface, #F3ECE0)',
+                  color: 'var(--inv-primary, #8A6728)',
                   fontWeight: 600,
                   fontSize: '0.75rem',
-                  border: '1px solid rgba(166,139,101,0.3)',
+                  border: '1px solid var(--inv-border, rgba(197, 160, 89, 0.35))',
                 }}
               >
                 Instagram {bride_instagram}
@@ -158,6 +156,7 @@ const CoupleProfileSection = ({ props = {}, isWeb = true }) => {
 CoupleProfileSection.propTypes = {
   props: PropTypes.object,
   isWeb: PropTypes.bool,
+  theme: PropTypes.object,
 }
 
 export default CoupleProfileSection

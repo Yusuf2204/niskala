@@ -1,6 +1,7 @@
 // ============================================================
 // Niskala Visual Editor — Dark / Light Mode Adaptive Styles
 // ============================================================
+@use '../../public/invitationThemes';
 
 .visual-editor-container {
   display: flex;
@@ -88,13 +89,13 @@
 // of whether the admin dashboard is in Dark or Light mode.
 .invitation-canvas-isolated {
   // Reset CoreUI dark variables inside the wedding preview
-  --cui-body-bg: #FAF8F5;
-  --cui-body-color: #34342F;
-  --cui-secondary-color: rgba(52, 52, 47, 0.7);
+  --cui-body-bg: var(--inv-bg, #FAF6EE);
+  --cui-body-color: var(--inv-text, #2B1E16);
+  --cui-secondary-color: var(--inv-muted, rgba(52, 52, 47, 0.7));
   --cui-tertiary-color: rgba(52, 52, 47, 0.5);
 
-  background-color: #FAF8F5;
-  color: #34342F;
+  background-color: var(--inv-bg, #FAF6EE);
+  color: var(--inv-text, #2B1E16);
 
   h1, h2, h3, h4, h5, h6 {
     color: inherit;
