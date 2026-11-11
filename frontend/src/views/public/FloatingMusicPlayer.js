@@ -6,7 +6,7 @@ const FloatingMusicPlayer = ({ isPlaying, onToggle }) => {
     <button
       type="button"
       onClick={onToggle}
-      className={`floating-music-btn ${isPlaying ? 'spinning' : 'paused'}`}
+      className={`floating-music-btn inv-floating-enter ${isPlaying ? 'spinning' : 'paused'}`}
       title={isPlaying ? 'Jeda Musik' : 'Putar Musik'}
       aria-label="Kontrol Musik Latar"
     >

@@ -1,6 +1,7 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import { CornerOrnaments, SectionHeaderOrnaments, ThemeBatikOverlay } from './ThemeDecorators'
+import { getStaggerStyle } from '../../../../utils/invitationTheme'
 
 const PhotoGallerySection = ({ props = {}, isWeb = true, onImageClick, theme = {} }) => {
   const {
@@ -55,8 +56,9 @@ const PhotoGallerySection = ({ props = {}, isWeb = true, onImageClick, theme = {
           {images.map((imgUrl, idx) => (
             <div
               key={idx}
-              className="rounded-3 overflow-hidden shadow-sm position-relative inv-gallery-tile"
+              className="rounded-3 overflow-hidden shadow-sm position-relative inv-gallery-tile inv-zoom-tile"
               style={{
+                ...getStaggerStyle(idx + 1, 75, 10),
                 height: isWeb ? '220px' : '160px',
                 border: '2px solid var(--inv-border, rgba(197, 160, 89, 0.4))',
                 cursor: onImageClick ? 'pointer' : 'default',

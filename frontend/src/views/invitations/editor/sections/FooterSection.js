@@ -2,6 +2,7 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import { GununganEmblem, JavaneseDivider } from './Ornaments'
 import { CornerOrnaments } from './ThemeDecorators'
+import { getStaggerStyle } from '../../../../utils/invitationTheme'
 
 const FooterSection = ({ props = {}, isWeb = true, theme = {} }) => {
   const {
@@ -36,28 +37,34 @@ const FooterSection = ({ props = {}, isWeb = true, theme = {} }) => {
 
       <div className="container position-relative" style={{ maxWidth: isWeb ? '720px' : '100%', zIndex: 2 }}>
         {(gununganUrl || theme?.isJavanese) && (
-          <div className={`mb-2 ${isOrnamentAnimated ? 'inv-ornament-emblem' : ''}`}>
-            {gununganUrl ? (
-              <img src={gununganUrl} alt="" style={{ width: '40px', height: 'auto', opacity: 0.9 }} />
-            ) : (
-              <GununganEmblem width={36} height={44} color="var(--inv-accent, #C5A059)" />
-            )}
+          <div className="mb-2 inv-stagger-item" style={getStaggerStyle(0)}>
+            <span className={isOrnamentAnimated ? 'inv-ornament-emblem' : 'd-inline-block'}>
+              {gununganUrl ? (
+                <img src={gununganUrl} alt="" style={{ width: '40px', height: 'auto', opacity: 0.9 }} />
+              ) : (
+                <GununganEmblem width={36} height={44} color="var(--inv-accent, #C5A059)" />
+              )}
+            </span>
           </div>
         )}
 
         {dividerUrl ? (
-          <div className="mx-auto mb-3 inv-divider-wrap" style={{ maxWidth: isWeb ? '200px' : '150px' }}>
+          <div
+            className="mx-auto mb-3 inv-divider-wrap inv-divider-unfold"
+            style={{ ...getStaggerStyle(1), maxWidth: isWeb ? '200px' : '150px' }}
+          >
             <img src={dividerUrl} alt="" style={{ width: '100%', height: 'auto', display: 'block' }} />
           </div>
         ) : (
-          <div className="mb-3">
+          <div className="mb-3 inv-divider-unfold" style={getStaggerStyle(1)}>
             <JavaneseDivider color="var(--inv-accent, #C5A059)" width="140px" />
           </div>
         )}
 
         <p
-          className="fst-italic mb-3"
+          className="fst-italic mb-3 inv-stagger-item"
           style={{
+            ...getStaggerStyle(2),
             fontSize: isWeb ? '1rem' : '0.85rem',
             color: 'rgba(250, 246, 238, 0.88)',
             lineHeight: 1.7,
@@ -66,8 +73,9 @@ const FooterSection = ({ props = {}, isWeb = true, theme = {} }) => {
           &quot;{closing_quote}&quot;
         </p>
         <h6
-          className="font-serif fw-bold mb-4"
+          className="font-serif fw-bold mb-4 inv-stagger-item"
           style={{
+            ...getStaggerStyle(3),
             fontFamily: "var(--inv-font-heading, 'Playfair Display', Georgia, serif)",
             color: '#E7D4B5',
             fontSize: isWeb ? '1.15rem' : '1rem',
@@ -76,8 +84,8 @@ const FooterSection = ({ props = {}, isWeb = true, theme = {} }) => {
           {family_signatures}
         </h6>
         <div
-          className="pt-3 border-top"
-          style={{ borderColor: 'rgba(231, 212, 181, 0.22)' }}
+          className="pt-3 border-top inv-stagger-item"
+          style={{ ...getStaggerStyle(4), borderColor: 'rgba(231, 212, 181, 0.22)' }}
         >
           <small style={{ color: 'rgba(250, 246, 238, 0.6)', fontSize: '0.75rem' }}>
             {brand_credit}

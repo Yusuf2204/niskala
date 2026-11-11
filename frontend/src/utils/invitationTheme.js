@@ -125,3 +125,33 @@ export const buildInvitationCssVars = (resolvedTheme) => {
     '--inv-pattern-secondary-url': patternSecondaryUrl ? `url("${patternSecondaryUrl}")` : 'none',
   }
 }
+
+export const SECTION_SLIDE_EFFECTS = {
+  HeroCover: 'hero-handoff',
+  CoupleProfile: 'converge-split',
+  CountdownTimer: 'stagger-rise',
+  EventSchedule: 'card-elevate',
+  TraditionAccordion: 'fold-reveal',
+  AccordionSection: 'fold-reveal',
+  LocationMap: 'editorial-rise',
+  LoveStory: 'stagger-rise',
+  PhotoGallery: 'zoom-gallery',
+  GiftRegistry: 'card-elevate',
+  RsvpSection: 'editorial-rise',
+  RsvpForm: 'editorial-rise',
+  FooterSection: 'editorial-rise',
+}
+
+/**
+ * Resolve GPU-composited slide reveal choreography variant for a given section type.
+ */
+export const getSlideEffectForSection = (sectionType, fallback = 'editorial-rise') =>
+  SECTION_SLIDE_EFFECTS[sectionType] || fallback
+
+/**
+ * Build bounded inline CSS custom property for sequential child stagger delays.
+ */
+export const getStaggerStyle = (index = 0, stepMs = 85, maxSteps = 8) => ({
+  '--inv-stagger-i': Math.min(Math.max(Number(index) || 0, 0), maxSteps),
+  '--inv-stagger-step': `${stepMs}ms`,
+})

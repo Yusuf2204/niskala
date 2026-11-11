@@ -1,6 +1,6 @@
 // ============================================================
-// Niskala Invitation Theme Tokens, Decorators & Motion System
-// Shared between Public Renderer, /blank Preview & Visual Editor
+// Niskala Invitation Theme Tokens, Decorators & Motion System (PRD 07)
+// GPU-Composited CSS Choreography shared by Public & /preview
 // ============================================================
 
 .invitation-canvas-isolated {
@@ -18,10 +18,10 @@
       background-color: var(--inv-card, #FFFDF9);
       border: 1px solid var(--inv-border, rgba(197, 160, 89, 0.38));
       box-shadow: 0 8px 24px rgba(74, 53, 37, 0.08);
-      transition: transform 0.35s ease, box-shadow 0.35s ease;
+      transition: transform 0.35s cubic-bezier(0.22, 1, 0.36, 1), box-shadow 0.35s ease;
 
       &:hover {
-        transform: translateY(-2px);
+        transform: translate3d(0, -2px, 0);
         box-shadow: 0 12px 28px rgba(138, 103, 40, 0.14);
       }
     }
@@ -45,37 +45,35 @@
   }
 }
 
-// ── Theme-Driven Animations ─────────────────────────────────
+// ── Ambient Theme Keyframes (Compositor-Only) ───────────────
 @keyframes invFadeIn {
   from {
     opacity: 0;
-    transform: translateY(8px);
+    transform: translate3d(0, 10px, 0);
   }
   to {
     opacity: 1;
-    transform: translateY(0);
+    transform: translate3d(0, 0, 0);
   }
 }
 
-@keyframes invFadeUpSlow {
+@keyframes invHandoffRise {
   from {
     opacity: 0;
-    transform: translateY(26px);
+    transform: translate3d(0, 18px, 0) scale(0.985);
   }
   to {
     opacity: 1;
-    transform: translateY(0);
+    transform: translate3d(0, 0, 0) scale(1);
   }
 }
 
 @keyframes invGununganBreathe {
   0%, 100% {
-    transform: translateY(0) scale(1);
-    filter: drop-shadow(0 4px 10px rgba(74, 53, 37, 0.35));
+    transform: translate3d(0, 0, 0) scale(1);
   }
   50% {
-    transform: translateY(-4px) scale(1.025);
-    filter: drop-shadow(0 8px 16px rgba(212, 175, 55, 0.42));
+    transform: translate3d(0, -4px, 0) scale(1.025);
   }
 }
 
@@ -88,59 +86,544 @@
   }
 }
 
+@keyframes envLetterItemIn {
+  from {
+    opacity: 0;
+    transform: translate3d(0, 14px, 0);
+  }
+  to {
+    opacity: 1;
+    transform: translate3d(0, 0, 0);
+  }
+}
+
+@keyframes invFloatingEnter {
+  from {
+    opacity: 0;
+    transform: translate3d(0, 18px, 0) scale(0.94);
+  }
+  to {
+    opacity: 1;
+    transform: translate3d(0, 0, 0) scale(1);
+  }
+}
+
+@keyframes invFloatingNavEnter {
+  from {
+    opacity: 0;
+    transform: translate3d(-50%, 18px, 0) scale(0.96);
+  }
+  to {
+    opacity: 1;
+    transform: translate3d(-50%, 0, 0) scale(1);
+  }
+}
+
+@keyframes invLightboxEnter {
+  from {
+    opacity: 0;
+    transform: scale(0.94);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes invSealPulse {
+  0%, 100% {
+    transform: translate3d(-50%, 0, 0) scale(1);
+  }
+  50% {
+    transform: translate3d(-50%, 0, 0) scale(1.06);
+  }
+}
+
+@keyframes invSlideFocusSwitch {
+  0% {
+    opacity: 0.84;
+    transform: translate3d(0, 20px, 0) scale(0.978);
+  }
+  100% {
+    opacity: 1;
+    transform: translate3d(0, 0, 0) scale(1);
+  }
+}
+
+@keyframes invSlideHaloFlash {
+  0% {
+    opacity: 0;
+  }
+  30% {
+    opacity: 0.9;
+  }
+  100% {
+    opacity: 0;
+  }
+}
+
 .animate-fade-in {
-  animation: invFadeIn 0.85s cubic-bezier(0.22, 1, 0.36, 1) both;
+  animation: invFadeIn 0.8s cubic-bezier(0.22, 1, 0.36, 1) both;
 }
 
 .inv-ornament-emblem {
   display: inline-block;
   animation: invGununganBreathe 5.5s ease-in-out infinite;
+  will-change: transform;
 }
 
 .inv-ornament-float img {
   animation: invCornerPulse 6s ease-in-out infinite;
 }
 
-// Scroll Reveal for Public & /blank Preview (disabled inside Visual Editor canvas)
-.public-invitation-root[data-inv-motion='active'] {
-  .inv-reveal-slot {
-    opacity: 0;
-    transform: translateY(24px);
-    transition: opacity 0.8s cubic-bezier(0.22, 1, 0.36, 1),
-      transform 0.85s cubic-bezier(0.22, 1, 0.36, 1);
-    will-change: opacity, transform;
+// ── Top Scroll Progress Hairline ────────────────────────────
+.inv-scroll-progress-track {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  z-index: 1038;
+  background-color: rgba(36, 27, 21, 0.25);
+  pointer-events: none;
 
-    &.is-revealed {
-      opacity: 1;
-      transform: translateY(0);
+  .public-invitation-root.has-preview-bar & {
+    top: 52px;
+  }
+}
+
+.inv-scroll-progress-bar {
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, var(--inv-primary, #8A6728), var(--inv-accent, #C5A059), #E7D4B5);
+  transform-origin: left center;
+  transform: scaleX(0);
+  will-change: transform;
+}
+
+// ── Floating UI Entrance & Active Pill States ───────────────
+.floating-music-btn.inv-floating-enter {
+  animation: invFloatingEnter 0.65s cubic-bezier(0.22, 1, 0.36, 1) 0.72s both;
+}
+
+.floating-nav-pill.inv-floating-nav-enter {
+  animation: invFloatingNavEnter 0.65s cubic-bezier(0.22, 1, 0.36, 1) 0.78s both;
+}
+
+.lightbox-overlay {
+  animation: invFadeIn 0.25s ease both;
+
+  img {
+    animation: invLightboxEnter 0.32s cubic-bezier(0.22, 1, 0.36, 1) both;
+  }
+}
+
+// ── Multi-Stage 3D Envelope Gate (PRD 07) ───────────────────
+.envelope-gate {
+  opacity: 1;
+  visibility: visible;
+  transform: translate3d(0, 0, 0);
+  // Crisp return when preview curtain resets back to closed
+  transition:
+    transform 0.42s cubic-bezier(0.22, 1, 0.36, 1),
+    opacity 0.35s ease,
+    visibility 0s linear 0s;
+
+  .envelope-stage {
+    position: relative;
+    width: calc(100% - 1.75rem);
+    max-width: 520px;
+    margin: 0 auto;
+    transform-style: preserve-3d;
+    transition: transform 0.6s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+
+  .envelope-pocket {
+    position: relative;
+    border-radius: 18px;
+    background: linear-gradient(165deg, rgba(48, 34, 25, 0.94), rgba(28, 19, 14, 0.98));
+    border: 1px solid var(--inv-border, rgba(197, 160, 89, 0.48));
+    box-shadow: 0 24px 48px rgba(0, 0, 0, 0.55);
+    overflow: hidden;
+
+    &::after {
+      content: '';
+      position: absolute;
+      inset: auto 0 0 0;
+      height: 54px;
+      background: linear-gradient(180deg, rgba(36, 27, 21, 0) 0%, rgba(197, 160, 89, 0.1) 100%);
+      border-top: 1px solid rgba(197, 160, 89, 0.16);
+      pointer-events: none;
+      z-index: 3;
+    }
+  }
+
+  .envelope-flap {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 112px;
+    clip-path: polygon(0 0, 100% 0, 50% 100%);
+    background: linear-gradient(180deg, rgba(58, 41, 29, 0.98) 0%, rgba(36, 25, 18, 0.96) 100%);
+    border-top: 1px solid rgba(231, 212, 181, 0.25);
+    transform-origin: top center;
+    transform: rotateX(0deg);
+    opacity: 1;
+    z-index: 4;
+    pointer-events: none;
+    transition: transform 0.42s ease, opacity 0.3s ease;
+
+    &::after {
+      content: '';
+      position: absolute;
+      inset: 6px 14px 10px 14px;
+      clip-path: polygon(0 0, 100% 0, 50% 100%);
+      border-top: 1px solid rgba(212, 175, 55, 0.38);
+      background: linear-gradient(180deg, rgba(212, 175, 55, 0.14), transparent 70%);
+    }
+  }
+
+  .envelope-seal {
+    position: absolute;
+    top: 76px;
+    left: 50%;
+    transform: translate3d(-50%, 0, 0) scale(1);
+    width: 58px;
+    height: 58px;
+    border-radius: 50%;
+    border: 1.5px solid rgba(255, 244, 214, 0.65);
+    background: radial-gradient(circle at 35% 30%, #e7c979 0%, #c5a059 55%, #8a6728 100%);
+    color: #241b15;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    z-index: 6;
+    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.42);
+    animation: envLetterItemIn 0.55s cubic-bezier(0.22, 1, 0.36, 1) 0.1s both,
+      invSealPulse 3.2s ease-in-out 0.9s infinite;
+    transition: transform 0.26s cubic-bezier(0.22, 1, 0.36, 1), opacity 0.24s ease;
+
+    &:hover {
+      animation-play-state: paused;
+      transform: translate3d(-50%, 0, 0) scale(1.08);
+    }
+  }
+
+  .envelope-letter {
+    position: relative;
+    z-index: 2;
+    max-height: calc(100dvh - 3rem);
+    overflow-y: auto;
+    scrollbar-width: none;
+    padding: 5.75rem 1.75rem 2.25rem;
+    text-align: center;
+    color: #F5EFE6;
+    transform: translate3d(0, 0, 0) scale(1);
+    transition: transform 0.42s ease;
+
+    &::-webkit-scrollbar {
+      display: none;
+    }
+  }
+
+  .env-enter {
+    animation: envLetterItemIn 0.65s cubic-bezier(0.22, 1, 0.36, 1)
+      calc(120ms + var(--env-i, 0) * 80ms) both;
+  }
+
+  .envelope-open-btn {
+    transition: transform 0.24s cubic-bezier(0.22, 1, 0.36, 1), opacity 0.24s ease;
+
+    &:hover {
+      transform: translate3d(0, -1px, 0) scale(1.03);
+    }
+  }
+
+  // Opening Sequence (~1.05s total, pure GPU transform/opacity)
+  &.open {
+    transform: translate3d(0, -102%, 0) scale(1.02);
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+    transition:
+      transform 0.64s cubic-bezier(0.77, 0, 0.175, 1) 0.38s,
+      opacity 0.52s ease 0.44s,
+      visibility 0s linear 1.04s;
+
+    .envelope-seal {
+      animation: none;
+      transform: translate3d(-50%, -8px, 0) scale(1.22) rotate(-10deg);
+      opacity: 0;
+      pointer-events: none;
+    }
+
+    .envelope-flap {
+      transform: rotateX(176deg);
+      opacity: 0.2;
+      transition: transform 0.48s cubic-bezier(0.4, 0, 0.2, 1) 0.1s, opacity 0.35s ease 0.28s;
+    }
+
+    .envelope-letter {
+      transform: translate3d(0, -26px, 0) scale(1.02);
+      transition: transform 0.52s cubic-bezier(0.22, 1, 0.36, 1) 0.18s;
+    }
+
+    .envelope-open-btn {
+      transform: scale(0.96);
+      opacity: 0.7;
+    }
+  }
+
+  @media (max-width: 575.98px) {
+    .envelope-stage {
+      width: calc(100% - 1.25rem);
+    }
+
+    .envelope-flap {
+      height: 86px;
+    }
+
+    .envelope-seal {
+      top: 52px;
+      width: 50px;
+      height: 50px;
+    }
+
+    .envelope-letter {
+      max-height: calc(100dvh - 2rem);
+      padding: 4.5rem 1.15rem 1.75rem;
     }
   }
 }
 
-.envelope-gate[data-inv-gate='keraton-reveal'] {
-  transition: transform 1.05s cubic-bezier(0.77, 0, 0.175, 1),
-    opacity 0.8s ease;
+// ── Accordion Smooth Collapse (CSS Grid Transition) ─────────
+.inv-accordion-collapse {
+  display: grid;
+  grid-template-rows: 0fr;
+  opacity: 0;
+  transition:
+    grid-template-rows 0.38s cubic-bezier(0.22, 1, 0.36, 1),
+    opacity 0.28s ease;
 
-  &.open {
-    transform: translateY(-104%) scale(1.02);
-    opacity: 0;
+  &.is-expanded {
+    grid-template-rows: 1fr;
+    opacity: 1;
   }
 }
 
+.inv-accordion-collapse-inner {
+  overflow: hidden;
+}
+
+// ── Choreographed Section Transitions (Public & Preview Only) ─
+.public-invitation-root[data-inv-motion='active'] {
+  // Whole-section card container choreography between gaps (GPU-composited)
+  .inv-reveal-slot {
+    transition:
+      opacity 0.68s cubic-bezier(0.22, 1, 0.36, 1),
+      transform 0.72s cubic-bezier(0.22, 1, 0.36, 1);
+    will-change: opacity, transform;
+
+    &::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      border-radius: inherit;
+      border: 2px solid var(--inv-accent, #C5A059);
+      opacity: 0;
+      pointer-events: none;
+      z-index: 6;
+    }
+
+    &.inv-slide-switching {
+      animation: invSlideFocusSwitch 0.72s cubic-bezier(0.22, 1, 0.36, 1) both;
+
+      &::after {
+        animation: invSlideHaloFlash 0.85s ease-out both;
+      }
+    }
+  }
+
+  .inv-reveal-slot.is-below-view:not([data-inv-slide-effect='hero-handoff']) {
+    opacity: 0;
+    transform: translate3d(0, 42px, 0) scale(0.96);
+
+    &[data-inv-slide-effect='card-elevate'] {
+      transform: perspective(1200px) rotateX(4deg) translate3d(0, 44px, 0) scale(0.955);
+    }
+
+    &[data-inv-slide-effect='converge-split'] {
+      transform: translate3d(0, 34px, 0) scale(0.965);
+    }
+
+    &[data-inv-slide-effect='fold-reveal'] {
+      transform: perspective(1200px) rotateX(-5deg) translate3d(0, 36px, 0) scale(0.965);
+    }
+
+    &[data-inv-slide-effect='zoom-gallery'] {
+      transform: translate3d(0, 30px, 0) scale(0.935);
+    }
+  }
+
+  .inv-reveal-slot.is-above-view:not([data-inv-slide-effect='hero-handoff']) {
+    opacity: 0.92;
+    transform: translate3d(0, -14px, 0) scale(0.985);
+  }
+
+  .inv-reveal-slot.is-revealed.is-in-view,
+  .inv-reveal-slot.is-revealed:not(.is-below-view):not(.is-above-view) {
+    opacity: 1;
+    transform: perspective(1200px) rotateX(0deg) translate3d(0, 0, 0) scale(1);
+  }
+
+  // Base defaults for inner reveal pieces
+  .inv-stagger-item,
+  .inv-split-left,
+  .inv-split-right,
+  .inv-split-center,
+  .inv-zoom-tile,
+  .inv-divider-unfold {
+    transition:
+      opacity 0.75s cubic-bezier(0.22, 1, 0.36, 1),
+      transform 0.8s cubic-bezier(0.22, 1, 0.36, 1);
+    transition-delay: calc(var(--inv-stagger-i, 0) * var(--inv-stagger-step, 85ms));
+    will-change: opacity, transform;
+  }
+
+  // Hero Handoff triggers cleanly right as envelope finishes uncovering hero
+  .inv-reveal-slot[data-inv-slide-effect='hero-handoff'].is-revealed {
+    .inv-stagger-item,
+    .inv-divider-unfold {
+      animation: invHandoffRise 0.72s cubic-bezier(0.22, 1, 0.36, 1)
+        calc(440ms + var(--inv-stagger-i, 0) * var(--inv-stagger-step, 85ms)) both;
+    }
+  }
+
+  // Sections 1..N start offset before entering viewport, settle smoothly when .is-revealed
+  .inv-reveal-slot:not([data-inv-slide-effect='hero-handoff']):not(.is-revealed) {
+    .inv-stagger-item {
+      opacity: 0;
+      transform: translate3d(0, 22px, 0);
+    }
+
+    .inv-divider-unfold {
+      opacity: 0;
+      transform: scaleX(0.76);
+    }
+
+    .inv-split-left {
+      opacity: 0;
+      transform: translate3d(-26px, 8px, 0);
+    }
+
+    .inv-split-right {
+      opacity: 0;
+      transform: translate3d(26px, 8px, 0);
+    }
+
+    .inv-split-center {
+      opacity: 0;
+      transform: scale(0.84);
+    }
+
+    .inv-zoom-tile {
+      opacity: 0;
+      transform: translate3d(0, 14px, 0) scale(0.93);
+    }
+  }
+
+  // Slight elevation flavor for card-elevate sections
+  .inv-reveal-slot[data-inv-slide-effect='card-elevate']:not(.is-revealed) {
+    .inv-stagger-item {
+      opacity: 0;
+      transform: translate3d(0, 24px, 0) scale(0.97);
+    }
+  }
+
+  // Mobile-safe horizontal displacement to avoid jitter on narrow phones
+  @media (max-width: 767.98px) {
+    .inv-reveal-slot:not([data-inv-slide-effect='hero-handoff']):not(.is-revealed) {
+      .inv-split-left {
+        transform: translate3d(-14px, 8px, 0);
+      }
+
+      .inv-split-right {
+        transform: translate3d(14px, 8px, 0);
+      }
+    }
+  }
+
+  &.is-mobile-viewport {
+    .inv-reveal-slot:not([data-inv-slide-effect='hero-handoff']):not(.is-revealed) {
+      .inv-split-left {
+        transform: translate3d(-14px, 8px, 0);
+      }
+
+      .inv-split-right {
+        transform: translate3d(14px, 8px, 0);
+      }
+    }
+  }
+
+  .inv-reveal-slot.is-revealed {
+    .inv-stagger-item,
+    .inv-split-left,
+    .inv-split-right,
+    .inv-split-center,
+    .inv-zoom-tile,
+    .inv-divider-unfold {
+      opacity: 1;
+      transform: translate3d(0, 0, 0) scale(1);
+    }
+  }
+}
+
+// ── Accessibility: Respect Reduced Motion ───────────────────
 @media (prefers-reduced-motion: reduce) {
   .animate-fade-in,
   .inv-ornament-emblem,
-  .inv-ornament-float img {
+  .inv-ornament-float img,
+  .envelope-gate .env-enter,
+  .envelope-gate .envelope-seal,
+  .floating-music-btn.inv-floating-enter,
+  .floating-nav-pill.inv-floating-nav-enter,
+  .lightbox-overlay,
+  .lightbox-overlay img {
     animation: none !important;
   }
 
-  .public-invitation-root[data-inv-motion='active'] .inv-reveal-slot {
-    opacity: 1 !important;
-    transform: none !important;
-    transition: none !important;
+  .envelope-gate,
+  .envelope-gate .envelope-flap,
+  .envelope-gate .envelope-letter,
+  .envelope-gate .envelope-seal,
+  .inv-accordion-collapse {
+    transition: opacity 0.2s ease !important;
   }
 
-  .envelope-gate[data-inv-gate='keraton-reveal'] {
-    transition: opacity 0.25s ease !important;
+  .public-invitation-root[data-inv-motion='active'] {
+    .inv-reveal-slot,
+    .inv-reveal-slot.is-below-view,
+    .inv-reveal-slot.is-above-view,
+    .inv-reveal-slot.inv-slide-switching,
+    .inv-reveal-slot.inv-slide-switching::after,
+    .inv-reveal-slot:not(.is-revealed) .inv-stagger-item,
+    .inv-reveal-slot:not(.is-revealed) .inv-split-left,
+    .inv-reveal-slot:not(.is-revealed) .inv-split-right,
+    .inv-reveal-slot:not(.is-revealed) .inv-split-center,
+    .inv-reveal-slot:not(.is-revealed) .inv-zoom-tile,
+    .inv-reveal-slot:not(.is-revealed) .inv-divider-unfold,
+    .inv-reveal-slot.is-revealed .inv-stagger-item,
+    .inv-reveal-slot.is-revealed .inv-split-left,
+    .inv-reveal-slot.is-revealed .inv-split-right,
+    .inv-reveal-slot.is-revealed .inv-split-center,
+    .inv-reveal-slot.is-revealed .inv-zoom-tile,
+    .inv-reveal-slot.is-revealed .inv-divider-unfold {
+      opacity: 1 !important;
+      transform: none !important;
+      transition: none !important;
+      animation: none !important;
+    }
   }
 }

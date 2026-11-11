@@ -1,6 +1,7 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import { GununganEmblem, JavaneseDivider } from './Ornaments'
+import { getStaggerStyle } from '../../../../utils/invitationTheme'
 
 const CORNER_POSITIONS = [
   { key: 'tl', style: { top: 0, left: 0 }, transform: 'none' },
@@ -118,8 +119,9 @@ export const SectionHeaderOrnaments = ({
     <div className="mb-4 position-relative" style={{ zIndex: 2 }}>
       {eyebrow && (
         <p
-          className="text-uppercase fw-semibold mb-1"
+          className="text-uppercase fw-semibold mb-1 inv-stagger-item"
           style={{
+            ...getStaggerStyle(0),
             color: accentColor,
             fontSize: isWeb ? '0.8rem' : '0.72rem',
             letterSpacing: '2.5px',
@@ -129,8 +131,9 @@ export const SectionHeaderOrnaments = ({
         </p>
       )}
       <h2
-        className="font-serif fw-bold mb-2"
+        className="font-serif fw-bold mb-2 inv-stagger-item"
         style={{
+          ...getStaggerStyle(1),
           fontFamily: 'var(--inv-font-heading, Georgia, serif)',
           color: titleColor,
           fontSize: isWeb ? '2.15rem' : '1.65rem',
@@ -140,18 +143,21 @@ export const SectionHeaderOrnaments = ({
       </h2>
       {dividerUrl ? (
         <div
-          className="mx-auto my-2 inv-divider-wrap"
-          style={{ maxWidth: isWeb ? '230px' : '170px' }}
+          className="mx-auto my-2 inv-divider-wrap inv-divider-unfold"
+          style={{ ...getStaggerStyle(2), maxWidth: isWeb ? '230px' : '170px' }}
         >
           <img src={dividerUrl} alt="" style={{ width: '100%', height: 'auto', display: 'block' }} />
         </div>
       ) : (
-        <JavaneseDivider color={accentColor} width={isWeb ? '200px' : '150px'} />
+        <div className="inv-divider-unfold" style={getStaggerStyle(2)}>
+          <JavaneseDivider color={accentColor} width={isWeb ? '200px' : '150px'} />
+        </div>
       )}
       {subtitle && (
         <p
-          className="mx-auto mb-0 small"
+          className="mx-auto mb-0 small inv-stagger-item"
           style={{
+            ...getStaggerStyle(3),
             maxWidth: '620px',
             color: subtitleColor,
             lineHeight: 1.65,

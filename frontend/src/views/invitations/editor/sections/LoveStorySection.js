@@ -1,6 +1,7 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import { SectionHeaderOrnaments, ThemeBatikOverlay } from './ThemeDecorators'
+import { getStaggerStyle } from '../../../../utils/invitationTheme'
 
 const LoveStorySection = ({ props = {}, isWeb = true, theme = {} }) => {
   const {
@@ -44,8 +45,9 @@ const LoveStorySection = ({ props = {}, isWeb = true, theme = {} }) => {
           {stories.map((story, idx) => (
             <div
               key={idx}
-              className="p-4 rounded-3 shadow-sm flex-grow-1 text-center inv-card-framed"
+              className="p-4 rounded-3 shadow-sm flex-grow-1 text-center inv-card-framed inv-stagger-item"
               style={{
+                ...getStaggerStyle(idx + 2, 100),
                 backgroundColor: 'var(--inv-card, #FFFDF9)',
                 border: '1px solid var(--inv-border, rgba(197, 160, 89, 0.35))',
                 maxWidth: isWeb ? '280px' : '100%',

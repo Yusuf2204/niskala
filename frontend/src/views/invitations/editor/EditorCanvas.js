@@ -63,7 +63,11 @@ const EditorCanvas = ({
           data-inv-animation={resolvedTheme.animation?.preset || 'classic-minimal'}
           style={{
             ...themeVars,
-            backgroundColor: 'var(--inv-bg, #FAF6EE)',
+            backgroundColor: '#201813',
+            display: 'flex',
+            flexDirection: 'column',
+            gap: isWeb ? '18px' : '12px',
+            padding: isWeb ? '16px' : '10px',
             borderRadius: isWeb ? '16px' : '36px',
             border: isWeb ? '1px solid rgba(52, 52, 47, 0.15)' : '10px solid #242420',
             minHeight: '600px',
@@ -92,7 +96,14 @@ const EditorCanvas = ({
 
           {/* Render All Sections in Order */}
           {sections.length === 0 ? (
-            <div className="py-5 text-center px-4" style={{ color: '#34342F' }}>
+            <div
+              className="py-5 text-center px-4 rounded-4"
+              style={{
+                backgroundColor: 'var(--inv-bg, #FAF6EE)',
+                border: '1px solid rgba(197, 160, 89, 0.3)',
+                color: '#34342F',
+              }}
+            >
               <div
                 className="mx-auto my-4 d-flex align-items-center justify-content-center rounded-circle"
                 style={{
@@ -135,6 +146,9 @@ const EditorCanvas = ({
                   onClick={() => onSelectSection(sec.id)}
                   className="position-relative transition-all"
                   style={{
+                    borderRadius: isWeb ? '16px' : '12px',
+                    overflow: 'hidden',
+                    border: '1px solid rgba(197, 160, 89, 0.28)',
                     outline: isSelected ? '3px solid #A68B65' : '1px dashed transparent',
                     outlineOffset: '-2px',
                     boxShadow: isSelected ? '0 0 20px rgba(166, 139, 101, 0.3)' : 'none',

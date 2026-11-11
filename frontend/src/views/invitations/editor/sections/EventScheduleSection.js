@@ -1,6 +1,7 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import { CornerOrnaments, SectionHeaderOrnaments, ThemeBatikOverlay } from './ThemeDecorators'
+import { getStaggerStyle } from '../../../../utils/invitationTheme'
 
 const EventScheduleSection = ({ props = {}, isWeb = true, theme = {} }) => {
   const {
@@ -50,8 +51,9 @@ const EventScheduleSection = ({ props = {}, isWeb = true, theme = {} }) => {
           {events.map((evt, idx) => (
             <div
               key={evt.id || idx}
-              className="p-4 rounded-3 shadow-sm flex-grow-1 text-center inv-card-framed"
+              className="p-4 rounded-3 shadow-sm flex-grow-1 text-center inv-card-framed inv-stagger-item"
               style={{
+                ...getStaggerStyle(idx + 2, 110),
                 backgroundColor: 'var(--inv-card, #FFFDF9)',
                 border: '1px solid var(--inv-border, rgba(197, 160, 89, 0.35))',
                 maxWidth: isWeb ? '420px' : '100%',

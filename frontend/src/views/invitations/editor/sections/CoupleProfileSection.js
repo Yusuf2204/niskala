@@ -6,6 +6,7 @@ import {
   SectionHeaderOrnaments,
   ThemeBatikOverlay,
 } from './ThemeDecorators'
+import { getStaggerStyle } from '../../../../utils/invitationTheme'
 
 const CoupleProfileSection = ({ props = {}, isWeb = true, theme = {} }) => {
   const {
@@ -60,7 +61,10 @@ const CoupleProfileSection = ({ props = {}, isWeb = true, theme = {} }) => {
           className={`d-flex ${isWeb ? 'flex-row' : 'flex-column'} align-items-center justify-content-center gap-4 mt-4`}
         >
           {/* Mempelai Pria */}
-          <div className="flex-grow-1" style={{ maxWidth: isWeb ? '360px' : '100%' }}>
+          <div
+            className="flex-grow-1 inv-split-left"
+            style={{ ...getStaggerStyle(2, 95), maxWidth: isWeb ? '360px' : '100%' }}
+          >
             <JogloPortraitFrame
               photoUrl={groom_photo}
               alt={groom_name}
@@ -97,8 +101,8 @@ const CoupleProfileSection = ({ props = {}, isWeb = true, theme = {} }) => {
 
           {/* Pemisah Simbol & */}
           <div
-            className="my-2 my-md-0 d-flex align-items-center justify-content-center"
-            style={{ minWidth: '60px' }}
+            className="my-2 my-md-0 d-flex align-items-center justify-content-center inv-split-center"
+            style={{ ...getStaggerStyle(3, 95), minWidth: '60px' }}
           >
             <span
               style={{
@@ -113,7 +117,10 @@ const CoupleProfileSection = ({ props = {}, isWeb = true, theme = {} }) => {
           </div>
 
           {/* Mempelai Wanita */}
-          <div className="flex-grow-1" style={{ maxWidth: isWeb ? '360px' : '100%' }}>
+          <div
+            className="flex-grow-1 inv-split-right"
+            style={{ ...getStaggerStyle(4, 95), maxWidth: isWeb ? '360px' : '100%' }}
+          >
             <JogloPortraitFrame
               photoUrl={bride_photo}
               alt={bride_name}

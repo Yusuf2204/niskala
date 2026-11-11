@@ -32,16 +32,19 @@
     }
   }
 
-  // The central invitation canvas sheet
+  // The central invitation canvas sheet (card-stacked sections with crisp gaps)
   .invitation-sheet {
     width: 100%;
     max-width: 1040px;
     margin: 0 auto;
-    background-color: var(--inv-bg, #FAF8F5);
-    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.45);
+    background-color: transparent;
     min-height: 100vh;
     position: relative;
     overflow-x: clip;
+    display: flex;
+    flex-direction: column;
+    gap: 22px;
+    padding: 20px 18px 96px;
     color: var(--inv-text, #34342F);
     transition: max-width 0.25s ease;
 
@@ -51,16 +54,36 @@
 
     &.viewport-mobile {
       max-width: 390px;
+      gap: 14px;
+      padding: 12px 10px 88px;
       border-left: 1px solid rgba(166, 139, 101, 0.28);
       border-right: 1px solid rgba(166, 139, 101, 0.28);
     }
   }
 
   .invitation-section-slot {
-    scroll-margin-top: 64px;
+    position: relative;
+    border-radius: 18px;
+    overflow: hidden;
+    border: 1px solid var(--inv-border, rgba(197, 160, 89, 0.34));
+    box-shadow: 0 14px 36px rgba(0, 0, 0, 0.28);
+    scroll-margin-top: 72px;
+  }
+
+  &.has-preview-bar .invitation-section-slot {
+    scroll-margin-top: 84px;
   }
 
   @media (max-width: 767.98px) {
+    .invitation-sheet {
+      gap: 14px;
+      padding: 12px 10px 88px;
+    }
+
+    .invitation-section-slot {
+      border-radius: 14px;
+    }
+
     .floating-music-btn {
       bottom: 78px;
       right: 16px;
@@ -73,6 +96,10 @@
   }
 
   &.is-mobile-viewport {
+    .invitation-section-slot {
+      border-radius: 14px;
+    }
+
     .floating-music-btn {
       bottom: 78px;
       right: 16px;
@@ -200,7 +227,8 @@
   }
 }
 
-// ── Envelope Gate (Opening Curtain) ─────────────────────────
+// ── Envelope Gate Base Backdrop ─────────────────────────────
+// Detailed 3D fold, seal release, and stage choreography live in invitationThemes.scss
 .envelope-gate {
   position: fixed;
   inset: 0;
@@ -211,13 +239,7 @@
   align-items: center;
   background-size: cover;
   background-position: center;
-  transition: transform 0.9s cubic-bezier(0.77, 0, 0.175, 1), opacity 0.7s ease;
-
-  &.open {
-    transform: translateY(-100%);
-    opacity: 0;
-    pointer-events: none;
-  }
+  perspective: 1200px;
 }
 
 // ── Floating Vinyl Music Player ──────────────────────────────
@@ -308,6 +330,12 @@
     &:hover {
       background-color: rgba(166, 139, 101, 0.3);
       color: #D8C2A0;
+    }
+
+    &.active {
+      background-color: var(--inv-accent, #C5A059);
+      color: #241B15;
+      font-weight: 700;
     }
   }
 }

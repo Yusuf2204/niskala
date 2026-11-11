@@ -2,6 +2,7 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import { GununganEmblem, JavaneseDivider } from './Ornaments'
 import { CornerOrnaments, ThemeBatikOverlay } from './ThemeDecorators'
+import { getStaggerStyle } from '../../../../utils/invitationTheme'
 
 const HeroCoverSection = ({ props = {}, isWeb = true, onExploreClick, theme = {} }) => {
   const {
@@ -34,7 +35,7 @@ const HeroCoverSection = ({ props = {}, isWeb = true, onExploreClick, theme = {}
         backgroundPosition: 'center',
         color: '#FAF6EE',
         padding: isWeb ? '4.25rem 2rem' : '2.75rem 1.25rem',
-        borderRadius: isWeb ? '12px' : '0',
+        borderRadius: '0',
       }}
     >
       <ThemeBatikOverlay patternUrl={patternUrl} isWeb={isWeb} opacity={0.18} />
@@ -50,29 +51,32 @@ const HeroCoverSection = ({ props = {}, isWeb = true, onExploreClick, theme = {}
 
       <div className="position-relative" style={{ maxWidth: isWeb ? '720px' : '100%', zIndex: 2 }}>
         {showGunungan && (
-          <div className={`mb-3 animate-fade-in ${isOrnamentAnimated ? 'inv-ornament-emblem' : ''}`}>
-            {gununganUrl ? (
-              <img
-                src={gununganUrl}
-                alt="Gunungan Wayang"
-                style={{
-                  width: isWeb ? '68px' : '52px',
-                  height: 'auto',
-                  filter: 'drop-shadow(0 4px 10px rgba(0, 0, 0, 0.6))',
-                }}
-              />
-            ) : (
-              <GununganEmblem
-                width={isWeb ? 54 : 44}
-                height={isWeb ? 64 : 54}
-                color="var(--inv-accent, #C5A059)"
-              />
-            )}
+          <div className="mb-3 inv-stagger-item" style={getStaggerStyle(0)}>
+            <span className={isOrnamentAnimated ? 'inv-ornament-emblem' : 'd-inline-block'}>
+              {gununganUrl ? (
+                <img
+                  src={gununganUrl}
+                  alt="Gunungan Wayang"
+                  style={{
+                    width: isWeb ? '68px' : '52px',
+                    height: 'auto',
+                    filter: 'drop-shadow(0 4px 10px rgba(0, 0, 0, 0.6))',
+                  }}
+                />
+              ) : (
+                <GununganEmblem
+                  width={isWeb ? 54 : 44}
+                  height={isWeb ? 64 : 54}
+                  color="var(--inv-accent, #C5A059)"
+                />
+              )}
+            </span>
           </div>
         )}
         <p
-          className="text-uppercase tracking-widest mb-2"
+          className="text-uppercase tracking-widest mb-2 inv-stagger-item"
           style={{
+            ...getStaggerStyle(1),
             letterSpacing: '3px',
             fontSize: isWeb ? '0.92rem' : '0.78rem',
             color: '#E7D4B5',
@@ -81,8 +85,9 @@ const HeroCoverSection = ({ props = {}, isWeb = true, onExploreClick, theme = {}
           {title}
         </p>
         <h1
-          className="my-3 font-serif"
+          className="my-3 font-serif inv-stagger-item"
           style={{
+            ...getStaggerStyle(2),
             fontFamily: "var(--inv-font-heading, 'Playfair Display', Georgia, serif)",
             fontSize: isWeb ? '3.2rem' : '2.15rem',
             fontWeight: 700,
@@ -94,17 +99,21 @@ const HeroCoverSection = ({ props = {}, isWeb = true, onExploreClick, theme = {}
           {primary_names}
         </h1>
         {dividerUrl ? (
-          <div className="mx-auto my-3 inv-divider-wrap" style={{ maxWidth: isWeb ? '240px' : '180px' }}>
+          <div
+            className="mx-auto my-3 inv-divider-wrap inv-divider-unfold"
+            style={{ ...getStaggerStyle(3), maxWidth: isWeb ? '240px' : '180px' }}
+          >
             <img src={dividerUrl} alt="" style={{ width: '100%', height: 'auto', display: 'block' }} />
           </div>
         ) : (
-          <div className="my-2">
+          <div className="my-2 inv-divider-unfold" style={getStaggerStyle(3)}>
             <JavaneseDivider color="var(--inv-accent, #C5A059)" width={isWeb ? '200px' : '150px'} />
           </div>
         )}
         <p
-          className="mb-3 fst-italic"
+          className="mb-3 fst-italic inv-stagger-item"
           style={{
+            ...getStaggerStyle(4),
             fontSize: isWeb ? '1rem' : '0.85rem',
             color: 'rgba(250, 246, 238, 0.92)',
             maxWidth: '540px',
@@ -115,8 +124,9 @@ const HeroCoverSection = ({ props = {}, isWeb = true, onExploreClick, theme = {}
         </p>
 
         <div
-          className="p-3 my-3 rounded-3"
+          className="p-3 my-3 rounded-3 inv-stagger-item"
           style={{
+            ...getStaggerStyle(5),
             backgroundColor: 'rgba(36, 27, 21, 0.56)',
             backdropFilter: 'blur(4px)',
             border: '1px solid rgba(197, 160, 89, 0.45)',
@@ -134,7 +144,7 @@ const HeroCoverSection = ({ props = {}, isWeb = true, onExploreClick, theme = {}
           </span>
         </div>
 
-        <div className="mt-2">
+        <div className="mt-2 inv-stagger-item" style={getStaggerStyle(6)}>
           <p
             className="fw-semibold mb-3"
             style={{ color: '#FAF6EE', fontSize: isWeb ? '1.05rem' : '0.9rem' }}

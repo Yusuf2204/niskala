@@ -2,6 +2,7 @@ import React, { useState } from 'react'
 import PropTypes from 'prop-types'
 import { GununganEmblem } from './Ornaments'
 import { CornerOrnaments, SectionHeaderOrnaments, ThemeBatikOverlay } from './ThemeDecorators'
+import { getStaggerStyle } from '../../../../utils/invitationTheme'
 
 const DEFAULT_ITEMS = [
   {
@@ -79,9 +80,7 @@ const TraditionAccordionSection = ({ props = {}, isWeb = true, theme = {} }) => 
         backgroundColor: 'var(--inv-surface, #F3ECE0)',
         color: 'var(--inv-text, #2B1E16)',
         padding: isWeb ? '4.25rem 2rem' : '3rem 1.25rem',
-        borderRadius: isWeb ? '12px' : '0',
-        borderTop: '1px solid var(--inv-border, rgba(197, 160, 89, 0.28))',
-        borderBottom: '1px solid var(--inv-border, rgba(197, 160, 89, 0.28))',
+        borderRadius: '0',
       }}
     >
       <ThemeBatikOverlay patternUrl={patternUrl} isWeb={isWeb} opacity={0.34} />
@@ -97,16 +96,18 @@ const TraditionAccordionSection = ({ props = {}, isWeb = true, theme = {} }) => 
 
       <div className="position-relative" style={{ zIndex: 2 }}>
         {(ornament === 'gunungan' || gununganUrl) && (
-          <div className={isOrnamentAnimated ? 'mb-2 inv-ornament-emblem' : 'mb-2'}>
-            {gununganUrl ? (
-              <img
-                src={gununganUrl}
-                alt="Gunungan Wayang"
-                style={{ width: isWeb ? '56px' : '44px', height: 'auto' }}
-              />
-            ) : (
-              <GununganEmblem width={48} height={58} color="var(--inv-accent, #C5A059)" />
-            )}
+          <div className="mb-2 inv-stagger-item" style={getStaggerStyle(0)}>
+            <span className={isOrnamentAnimated ? 'inv-ornament-emblem' : 'd-inline-block'}>
+              {gununganUrl ? (
+                <img
+                  src={gununganUrl}
+                  alt="Gunungan Wayang"
+                  style={{ width: isWeb ? '56px' : '44px', height: 'auto' }}
+                />
+              ) : (
+                <GununganEmblem width={48} height={58} color="var(--inv-accent, #C5A059)" />
+              )}
+            </span>
           </div>
         )}
 
@@ -131,8 +132,9 @@ const TraditionAccordionSection = ({ props = {}, isWeb = true, theme = {} }) => 
               return (
                 <div
                   key={item.id || index}
-                  className="rounded-3 shadow-sm transition-all overflow-hidden inv-card-framed"
+                  className="rounded-3 shadow-sm overflow-hidden inv-card-framed inv-stagger-item"
                   style={{
+                    ...getStaggerStyle(index + 2, 85),
                     backgroundColor: 'var(--inv-card, #FFFDF9)',
                     border: isExpanded
                       ? '1.5px solid var(--inv-accent, #C5A059)'
@@ -146,6 +148,7 @@ const TraditionAccordionSection = ({ props = {}, isWeb = true, theme = {} }) => 
                   <button
                     type="button"
                     onClick={() => toggleItem(item.id)}
+                    aria-expanded={isExpanded}
                     className="w-100 p-3 d-flex align-items-center justify-content-between border-0 bg-transparent text-start cursor-pointer"
                     style={{ outline: 'none' }}
                   >
@@ -223,33 +226,38 @@ const TraditionAccordionSection = ({ props = {}, isWeb = true, theme = {} }) => 
                     </div>
                   </button>
 
-                  {/* Accordion Body Content */}
-                  {isExpanded && (
-                    <div
-                      className="px-3 pb-3 pt-2 border-top"
-                      style={{
-                        borderColor: 'var(--inv-border, rgba(197, 160, 89, 0.22))',
-                        backgroundColor: 'var(--inv-surface, #F3ECE0)',
-                      }}
-                    >
-                      {item.location && (
-                        <div className="mb-2 small" style={{ color: 'var(--inv-text, #2B1E16)', opacity: 0.88 }}>
-                          📍 <strong>Lokasi:</strong> {item.location}
-                        </div>
-                      )}
-                      <p
-                        className="mb-0 small"
+                  {/* Accordion Body Content (CSS Grid GPU Collapse/Expand) */}
+                  <div
+                    className={`inv-accordion-collapse ${isExpanded ? 'is-expanded' : ''}`}
+                    aria-hidden={!isExpanded}
+                  >
+                    <div className="inv-accordion-collapse-inner">
+                      <div
+                        className="px-3 pb-3 pt-2 border-top"
                         style={{
-                          lineHeight: 1.65,
-                          color: 'var(--inv-text, #2B1E16)',
-                          opacity: 0.92,
-                          fontSize: isWeb ? '0.9rem' : '0.85rem',
+                          borderColor: 'var(--inv-border, rgba(197, 160, 89, 0.22))',
+                          backgroundColor: 'var(--inv-surface, #F3ECE0)',
                         }}
                       >
-                        {item.description}
-                      </p>
+                        {item.location && (
+                          <div className="mb-2 small" style={{ color: 'var(--inv-text, #2B1E16)', opacity: 0.88 }}>
+                            📍 <strong>Lokasi:</strong> {item.location}
+                          </div>
+                        )}
+                        <p
+                          className="mb-0 small"
+                          style={{
+                            lineHeight: 1.65,
+                            color: 'var(--inv-text, #2B1E16)',
+                            opacity: 0.92,
+                            fontSize: isWeb ? '0.9rem' : '0.85rem',
+                          }}
+                        >
+                          {item.description}
+                        </p>
+                      </div>
                     </div>
-                  )}
+                  </div>
                 </div>
               )
             })}

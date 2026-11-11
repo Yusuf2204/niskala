@@ -1,6 +1,7 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import { SectionHeaderOrnaments, ThemeBatikOverlay } from './ThemeDecorators'
+import { getStaggerStyle } from '../../../../utils/invitationTheme'
 
 const LocationMapSection = ({ props = {}, isWeb = true, theme = {} }) => {
   const {
@@ -34,17 +35,20 @@ const LocationMapSection = ({ props = {}, isWeb = true, theme = {} }) => {
           isWeb={isWeb}
         />
 
-        <h5 className="fw-bold mb-1" style={{ color: 'var(--inv-text, #2B1E16)' }}>
-          {venue_name}
-        </h5>
-        <p className="small mb-4" style={{ color: 'var(--inv-muted, #6A5342)' }}>
-          {address}
-        </p>
+        <div className="inv-stagger-item" style={getStaggerStyle(2, 95)}>
+          <h5 className="fw-bold mb-1" style={{ color: 'var(--inv-text, #2B1E16)' }}>
+            {venue_name}
+          </h5>
+          <p className="small mb-4" style={{ color: 'var(--inv-muted, #6A5342)' }}>
+            {address}
+          </p>
+        </div>
 
         {/* Embedded Map Frame */}
         <div
-          className="rounded-3 overflow-hidden shadow-sm mb-4"
+          className="rounded-3 overflow-hidden shadow-sm mb-4 inv-stagger-item"
           style={{
+            ...getStaggerStyle(3, 95),
             height: isWeb ? '340px' : '260px',
             border: '2px solid var(--inv-border, rgba(197, 160, 89, 0.45))',
             backgroundColor: 'var(--inv-card, #FFFDF9)',
@@ -62,7 +66,7 @@ const LocationMapSection = ({ props = {}, isWeb = true, theme = {} }) => {
           />
         </div>
 
-        <div>
+        <div className="inv-stagger-item" style={getStaggerStyle(4, 95)}>
           <a
             href={maps_direction_url}
             target="_blank"

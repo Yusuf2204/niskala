@@ -4,7 +4,11 @@ import EnvelopeGate from './EnvelopeGate'
 import FloatingMusicPlayer from './FloatingMusicPlayer'
 import FloatingQuickNav from './FloatingQuickNav'
 import SECTION_COMPONENTS from '../invitations/editor/sections'
-import { resolveInvitationTheme, buildInvitationCssVars } from '../../utils/invitationTheme'
+import {
+  resolveInvitationTheme,
+  buildInvitationCssVars,
+  getSlideEffectForSection,
+} from '../../utils/invitationTheme'
 import './public.scss'
 
 const SECTION_ANCHOR_MAP = {
@@ -27,18 +31,23 @@ const SectionRevealSlot = ({
   id,
   sectionId,
   index,
+  slideEffect = 'editorial-rise',
   isEnvelopeOpen,
   motionEnabled,
   registerRef,
   children,
 }) => {
   const slotRef = useRef(null)
-  const [observedReveal, setObservedReveal] = useState(false)
-  const isRevealed =
-    !motionEnabled ||
-    index === 0 ||
-    typeof IntersectionObserver === 'undefined' ||
-    (isEnvelopeOpen && observedReveal)
+  const [viewportPos, setViewportPos] = useState('below')
+
+  const effectiveViewportPos =
+    !motionEnabled || index === 0 || typeof IntersectionObserver === 'undefined'
+      ? 'in'
+      : !isEnvelopeOpen
+        ? 'below'
+        : viewportPos
+
+  const isRevealed = effectiveViewportPos !== 'below'
 
   useEffect(() => {
     if (
@@ -56,13 +65,18 @@ const SectionRevealSlot = ({
     const observer = new IntersectionObserver(
       (entries) => {
         entries.forEach((entry) => {
-          if (entry.isIntersecting || entry.boundingClientRect.top < window.innerHeight) {
-            setObservedReveal(true)
-            observer.unobserve(entry.target)
+          if (entry.isIntersecting) {
+            setViewportPos('in')
+            return
+          }
+          if (entry.boundingClientRect.bottom <= 0 || entry.boundingClientRect.top < 0) {
+            setViewportPos('above')
+          } else {
+            setViewportPos('below')
           }
         })
       },
-      { threshold: 0.01, rootMargin: '120px 0px -10px 0px' },
+      { threshold: 0.01, rootMargin: '0px 0px -24px 0px' },
     )
 
     observer.observe(node)
@@ -72,6 +86,13 @@ const SectionRevealSlot = ({
   const slotClasses = ['invitation-section-slot', 'inv-reveal-slot']
   if (isRevealed) {
     slotClasses.push('is-revealed')
+  }
+  if (effectiveViewportPos === 'below') {
+    slotClasses.push('is-below-view')
+  } else if (effectiveViewportPos === 'above') {
+    slotClasses.push('is-above-view')
+  } else {
+    slotClasses.push('is-in-view')
   }
 
   return (
@@ -84,6 +105,7 @@ const SectionRevealSlot = ({
         }
       }}
       className={slotClasses.join(' ')}
+      data-inv-slide-effect={slideEffect}
     >
       {children}
     </div>
@@ -94,6 +116,7 @@ SectionRevealSlot.propTypes = {
   id: PropTypes.string,
   sectionId: PropTypes.string,
   index: PropTypes.number.isRequired,
+  slideEffect: PropTypes.string,
   isEnvelopeOpen: PropTypes.bool.isRequired,
   motionEnabled: PropTypes.bool.isRequired,
   registerRef: PropTypes.func,
@@ -111,12 +134,37 @@ const InvitationRenderer = ({
 }) => {
   const [isPlayingMusic, setIsPlayingMusic] = useState(false)
   const [activeLightboxImg, setActiveLightboxImg] = useState(null)
+  const [activeAnchorId, setActiveAnchorId] = useState('')
   const [windowWidth, setWindowWidth] = useState(() =>
     typeof window !== 'undefined' ? window.innerWidth : 1200,
   )
 
   const audioRef = useRef(null)
   const sectionRefs = useRef({})
+  const progressBarRef = useRef(null)
+  const switchTimersRef = useRef(new Map())
+
+  useEffect(() => {
+    const timers = switchTimersRef.current
+    return () => {
+      timers.forEach((timerId) => window.clearTimeout(timerId))
+      timers.clear()
+    }
+  }, [])
+
+  const anchorIds = useMemo(() => {
+    const secs = invitation?.content?.sections_data || []
+    const seen = new Set()
+    const ids = []
+    secs.forEach((sec) => {
+      const mapped = SECTION_ANCHOR_MAP[sec.type]
+      if (mapped && !seen.has(mapped)) {
+        seen.add(mapped)
+        ids.push(mapped)
+      }
+    })
+    return ids
+  }, [invitation])
 
   // Track responsive width in public mode so desktop views use full layout
   useEffect(() => {
@@ -140,6 +188,53 @@ const InvitationRenderer = ({
       audioRef.current.pause()
     }
   }, [isEnvelopeOpen])
+
+  // Track top scroll progress hairline & active QuickNav section via rAF
+  useEffect(() => {
+    if (!isEnvelopeOpen || typeof window === 'undefined') return undefined
+
+    let rafId = null
+
+    const updateScrollTelemetry = () => {
+      rafId = null
+      const docEl = document.documentElement
+      const maxScroll = Math.max(docEl.scrollHeight - window.innerHeight, 0)
+      const ratio = maxScroll > 0 ? Math.min(Math.max(window.scrollY / maxScroll, 0), 1) : 0
+      if (progressBarRef.current) {
+        progressBarRef.current.style.transform = `scaleX(${ratio.toFixed(4)})`
+      }
+
+      const threshold = window.innerHeight * 0.45
+      let currentAnchor = ''
+      for (let i = 0; i < anchorIds.length; i += 1) {
+        const el = document.getElementById(anchorIds[i])
+        if (el && el.getBoundingClientRect().top <= threshold) {
+          currentAnchor = anchorIds[i]
+        }
+      }
+      if (maxScroll > 0 && window.scrollY >= maxScroll - 30 && anchorIds.length > 0) {
+        currentAnchor = anchorIds[anchorIds.length - 1]
+      }
+      setActiveAnchorId((prev) => (prev === currentAnchor ? prev : currentAnchor))
+    }
+
+    const scheduleTelemetry = () => {
+      if (rafId !== null) return
+      rafId = window.requestAnimationFrame(updateScrollTelemetry)
+    }
+
+    scheduleTelemetry()
+    window.addEventListener('scroll', scheduleTelemetry, { passive: true })
+    window.addEventListener('resize', scheduleTelemetry, { passive: true })
+
+    return () => {
+      if (rafId !== null) {
+        window.cancelAnimationFrame(rafId)
+      }
+      window.removeEventListener('scroll', scheduleTelemetry)
+      window.removeEventListener('resize', scheduleTelemetry)
+    }
+  }, [isEnvelopeOpen, anchorIds])
 
   const sections = invitation?.content?.sections_data || []
   const musicUrl = invitation?.content?.music_url || ''
@@ -178,11 +273,41 @@ const InvitationRenderer = ({
     }
   }
 
+  const triggerSlideSwitch = (targetEl) => {
+    if (!targetEl || !motionEnabled || typeof window === 'undefined') return
+    const prevTimer = switchTimersRef.current.get(targetEl)
+    if (prevTimer) {
+      window.clearTimeout(prevTimer)
+    }
+    targetEl.classList.remove('inv-slide-switching')
+    window.requestAnimationFrame(() => {
+      window.requestAnimationFrame(() => {
+        if (targetEl.isConnected) {
+          targetEl.classList.add('inv-slide-switching')
+        }
+      })
+    })
+    const timerId = window.setTimeout(() => {
+      targetEl.classList.remove('inv-slide-switching')
+      switchTimersRef.current.delete(targetEl)
+    }, 860)
+    switchTimersRef.current.set(targetEl, timerId)
+  }
+
+  const handleNavigateToAnchor = (anchorId) => {
+    const targetEl = document.getElementById(anchorId)
+    if (targetEl) {
+      targetEl.scrollIntoView({ behavior: 'smooth', block: 'start' })
+      triggerSlideSwitch(targetEl)
+    }
+  }
+
   const handleExploreFromHero = (currentIdx) => {
     const nextSec = sections[currentIdx + 1]
     const targetEl = nextSec ? sectionRefs.current[nextSec.id] : null
     if (targetEl) {
       targetEl.scrollIntoView({ behavior: 'smooth', block: 'start' })
+      triggerSlideSwitch(targetEl)
     }
   }
 
@@ -233,13 +358,22 @@ const InvitationRenderer = ({
         />
       )}
 
-      {/* 3. Floating Controls (visible when envelope curtain is open) */}
+      {/* 3. Top Scroll Progress & Floating Controls */}
       {isEnvelopeOpen && (
         <>
+          {motionEnabled && (
+            <div className="inv-scroll-progress-track" aria-hidden="true">
+              <div ref={progressBarRef} className="inv-scroll-progress-bar" />
+            </div>
+          )}
           {musicUrl && (
             <FloatingMusicPlayer isPlaying={isPlayingMusic} onToggle={handleToggleMusic} />
           )}
-          <FloatingQuickNav availableSections={sections} />
+          <FloatingQuickNav
+            availableSections={sections}
+            activeSectionId={isEnvelopeOpen ? activeAnchorId : ''}
+            onSelectSection={handleNavigateToAnchor}
+          />
         </>
       )}
 
@@ -250,7 +384,14 @@ const InvitationRenderer = ({
         data-inv-animation={resolvedTheme.animation?.preset || 'subtle-fade'}
       >
         {sections.length === 0 ? (
-          <div className="text-center py-5 px-4" style={{ color: 'var(--inv-muted, #6A5342)' }}>
+          <div
+            className="text-center py-5 px-4 rounded-4"
+            style={{
+              backgroundColor: 'var(--inv-bg, #FAF8F5)',
+              color: 'var(--inv-muted, #6A5342)',
+              border: '1px solid var(--inv-border, rgba(197, 160, 89, 0.34))',
+            }}
+          >
             Belum ada section konten pada undangan ini.
           </div>
         ) : (
@@ -271,6 +412,7 @@ const InvitationRenderer = ({
                 id={anchorId}
                 sectionId={sec.id}
                 index={index}
+                slideEffect={getSlideEffectForSection(sec.type)}
                 isEnvelopeOpen={isEnvelopeOpen}
                 motionEnabled={motionEnabled}
                 registerRef={registerSectionRef}

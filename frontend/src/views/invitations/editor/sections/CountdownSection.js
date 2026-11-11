@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import PropTypes from 'prop-types'
 import { SectionHeaderOrnaments, ThemeBatikOverlay } from './ThemeDecorators'
+import { getStaggerStyle } from '../../../../utils/invitationTheme'
 
 const CountdownSection = ({ props = {}, isWeb = true, theme = {} }) => {
   const {
@@ -72,8 +73,9 @@ const CountdownSection = ({ props = {}, isWeb = true, theme = {} }) => {
           ].map((item, idx) => (
             <div
               key={idx}
-              className="p-3 rounded-3 shadow-sm text-center inv-card-framed"
+              className="p-3 rounded-3 shadow-sm text-center inv-card-framed inv-stagger-item"
               style={{
+                ...getStaggerStyle(idx + 2, 90),
                 backgroundColor: 'var(--inv-card, #FFFDF9)',
                 border: '1px solid var(--inv-border, rgba(197, 160, 89, 0.42))',
                 minWidth: isWeb ? '104px' : '70px',

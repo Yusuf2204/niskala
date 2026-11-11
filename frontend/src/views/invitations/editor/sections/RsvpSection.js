@@ -4,6 +4,7 @@ import { CSpinner } from '@coreui/react'
 import api from '../../../../services/api'
 import { ATTENDANCE_LABELS, formatDateTimeId } from '../../../guests/guestHelpers'
 import { SectionHeaderOrnaments, ThemeBatikOverlay } from './ThemeDecorators'
+import { getStaggerStyle } from '../../../../utils/invitationTheme'
 
 const SAMPLE_PREVIEW_WISHES = [
   {
@@ -189,14 +190,18 @@ const RsvpSection = ({
           dividerUrl={dividerUrl}
           isWeb={isWeb}
         />
-        <p className="mb-4 small fst-italic" style={{ color: 'var(--inv-muted, #6A5342)' }}>
+        <p
+          className="mb-4 small fst-italic inv-stagger-item"
+          style={{ ...getStaggerStyle(2, 95), color: 'var(--inv-muted, #6A5342)' }}
+        >
           {note}
         </p>
 
         {/* RSVP Form Card */}
         <div
-          className="p-4 rounded-3 shadow-sm text-start inv-card-framed"
+          className="p-4 rounded-3 shadow-sm text-start inv-card-framed inv-stagger-item"
           style={{
+            ...getStaggerStyle(3, 95),
             backgroundColor: 'var(--inv-card, #FFFDF9)',
             border: '1px solid var(--inv-border, rgba(197, 160, 89, 0.4))',
           }}
@@ -345,8 +350,9 @@ const RsvpSection = ({
 
         {/* Wishes Feed */}
         <div
-          className="mt-4 p-4 rounded-3 shadow-sm text-start inv-card-framed"
+          className="mt-4 p-4 rounded-3 shadow-sm text-start inv-card-framed inv-stagger-item"
           style={{
+            ...getStaggerStyle(4, 95),
             backgroundColor: 'var(--inv-card, #FFFDF9)',
             border: '1px solid var(--inv-border, rgba(197, 160, 89, 0.35))',
           }}

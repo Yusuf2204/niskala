@@ -1,6 +1,7 @@
 import React, { useState } from 'react'
 import PropTypes from 'prop-types'
 import { CornerOrnaments, SectionHeaderOrnaments, ThemeBatikOverlay } from './ThemeDecorators'
+import { getStaggerStyle } from '../../../../utils/invitationTheme'
 
 const GiftRegistrySection = ({ props = {}, isWeb = true, theme = {} }) => {
   const {
@@ -64,8 +65,9 @@ const GiftRegistrySection = ({ props = {}, isWeb = true, theme = {} }) => {
           {accounts.map((acc, idx) => (
             <div
               key={idx}
-              className="p-4 rounded-3 shadow-sm flex-grow-1 text-center inv-card-framed"
+              className="p-4 rounded-3 shadow-sm flex-grow-1 text-center inv-card-framed inv-stagger-item"
               style={{
+                ...getStaggerStyle(idx + 2, 100),
                 backgroundColor: 'var(--inv-card, #FFFDF9)',
                 border: '1px solid var(--inv-border, rgba(197, 160, 89, 0.4))',
                 maxWidth: isWeb ? '340px' : '100%',
@@ -107,8 +109,9 @@ const GiftRegistrySection = ({ props = {}, isWeb = true, theme = {} }) => {
 
         {physical_gift_address && (
           <div
-            className="p-3 rounded-3 text-start mx-auto"
+            className="p-3 rounded-3 text-start mx-auto inv-stagger-item"
             style={{
+              ...getStaggerStyle(4, 100),
               backgroundColor: 'var(--inv-card, #FFFDF9)',
               border: '1px dashed var(--inv-border, rgba(197, 160, 89, 0.5))',
               maxWidth: '680px',
